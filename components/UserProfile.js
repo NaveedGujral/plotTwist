@@ -4,7 +4,7 @@ export default function UserProfile() {
     return(
         <View>
             <Text>
-                Hi
+                You are on user Profile!!! not home...
             </Text>
         </View>
     )

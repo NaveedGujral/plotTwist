@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { Button } from "react-native-elements";
 import supabase from "../config/supabaseClient";
 
+import CarouselComponent from "./CarouselComponent";
+
 const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     async function compareId(id) {
@@ -21,24 +23,31 @@ const HomeScreen = ({ navigation }) => {
     .then(async(id) => {
       const {data} = await compareId(id)
       if(!data){
-        navigation.navigate("UserProfile")
+        // navigation.navigate("UserProfile")
+        console.log('hello')
       }
     })
   }, []);
 
 
+  // return (
+  //   <View>
+  //     <Text>You're in the home screen!</Text>
+  //     <Button
+  //       title="sign out"
+  //       onPress={() => {
+  //         supabase.auth.signOut();
+  //         navigation.navigate("Welcome");
+  //       }}
+  //     />
+  //   </View>
+  // );
+
   return (
     <View>
-      <Text>You're in the home screen!</Text>
-      <Button
-        title="sign out"
-        onPress={() => {
-          supabase.auth.signOut();
-          navigation.navigate("Welcome");
-        }}
-      />
+      <CarouselComponent />
     </View>
-  );
+  )
 };
 
 export default HomeScreen;
