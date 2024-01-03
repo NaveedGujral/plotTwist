@@ -1,8 +1,8 @@
-
 import { Pressable, Text, View } from "react-native";
 import supabase from "../config/supabaseClient";
 import { useEffect, useState } from "react";
 import { Input } from "react-native-elements";
+import handleProfilePictureSelection from "./UploadImage";
 
 export default function UserProfile() {
   const [id, setId] = useState("");
@@ -49,6 +49,13 @@ export default function UserProfile() {
       .select();
   }
 
+  async function updateData(userid) {
+    const { data, error } = await supabase
+      .from("Users")
+      .update({ username: username, email_address: email, phone_number: phone })
+      .eq("user_id", userid);
+  }
+
   if (editing) {
     return (
       <View>
@@ -84,9 +91,25 @@ export default function UserProfile() {
         </View>
         <View>
           <Pressable
+            title="Select Profile Picture"
+            onPress={() => {
+              if (id) {
+                handleProfilePictureSelection(id);
+              }
+            }}
+          >
+            <Text>Select Profile Picture</Text>
+          </Pressable>
+        </View>
+        <View>
+          <Pressable
             onPress={() => {
               setIsEditing(false);
-              sendNewData();
+              if (id) {
+                updateData(id);
+              } else {
+                console.log("nope");
+              }
             }}
           >
             <Text>Save</Text>
@@ -118,6 +141,3 @@ export default function UserProfile() {
     </View>
   );
 }
-
-
-

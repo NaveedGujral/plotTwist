@@ -17,6 +17,7 @@ const HomeScreen = ({ navigation }) => {
     async function getData() {
       const { data, error } = await supabase.auth.getSession();
       const { session } = data;
+      console.log(session)
       return session.user.id;
     }
     getData()
