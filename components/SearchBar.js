@@ -5,7 +5,7 @@ import BookDetails from "./BookFetch"
 import BookTitleSearch from "./BookSearch";
 import AuthorSearch from "./AuthorSearch";
 
-const WishList = () => {
+const SearchBar = () => {
 
 	const [titleSearch, setTitleSearch] = useState("")
 	const [authorSearch, setAuthorSearch] = useState("")
@@ -23,4 +23,4 @@ const WishList = () => {
 	);
 };
 
-export default WishList;
+export default SearchBar;
