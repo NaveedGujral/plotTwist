@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, Image } from 'react-native';
-
+const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
 const queryBooks = async (authorSearch) => {
     
     try {
-        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=inauthor:${authorSearch}&key=AIzaSyBMR5p0dW3LjnGfX74FAk5GGeB2veYACIk`);
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=inauthor:${authorSearch}&key=${apiKey}}`);
         const json = await response.json();
         return json.items;
     } catch (error) {

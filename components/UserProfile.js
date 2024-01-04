@@ -1,4 +1,3 @@
-
 import { Pressable, Text, View } from "react-native";
 import supabase from "../config/supabaseClient";
 import { useEffect, useState } from "react";

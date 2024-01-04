@@ -1,7 +1,4 @@
 import supabase from "../config/supabaseClient";
-import { GoogleOAuth } from "./GoogleAuth";
-// import { GoogleSignin } from '@react-native-google-signin/google-signin';
-
 import { useState } from "react";
 import { Alert, View } from "react-native";
 import { Button, Input } from "react-native-elements";
@@ -10,19 +7,6 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   
-  
-  async function signInWithGoogle() {
-    console.log("hi")
-    const { data, error } = await supabase.auth.signInWithOAuth({
-     provider: 'google',
-    })
-   console.log(data)
-    if (error) {
-     console.error('Error signing in with Google: ', error)
-    } else {
-     console.log('Signed in with Google: ', data)
-    }
-   }
 
   async function signUpWithEmail() {
     const {
@@ -42,7 +26,6 @@ export default function SignUp() {
       Alert.alert("Please check your inbox for email verification!");
     }
   }
-
 
   return (
     <View>
@@ -73,22 +56,29 @@ export default function SignUp() {
       </View>
       <View>
         <Button title="Sign Up" onPress={() => signUpWithEmail()} />
-        <Button
+        {/* <Button
           title="Sign Up With Google"
           onPress={() => signInWithGoogle()}
-        />
-        {/* <GoogleSigninButton
-          style={{ width: 192, height: 48 }}
-          size={GoogleSigninButton.Size.Standard}
-          color={GoogleSigninButton.Color.Dark}
-          // onPress={() => handleSignInWithGoogle()}
-          disabled={false}
         /> */}
-        {/* <GoogleOAuth /> */}
       </View>
     </View>
   );
 }
+//this one worked!!!
+// async function signInWithGoogle() {
+  //   console.log("hi")
+  //   const { data, error } = await supabase.auth.signInWithOAuth({
+  //    provider: 'google',
+  //   })
+  //  console.log(data)
+  //   if (error) {
+  //    console.error('Error signing in with Google: ', error)
+  //   } else {
+  //    console.log('Signed in with Google: ', data)
+  //   }
+  //  }
+
+
 
 // async function handleSignInWithGoogle() {
   //   try {
