@@ -12,6 +12,8 @@ import HomeScreen from "./components/Home";
 import WishList from "./components/WishList";
 import Footer from "./components/Footer";
 import UserProfile from "./components/UserProfile";
+import BookDetails from "./components/BookFetch";
+import BookList from "./components/BookList";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -29,6 +31,11 @@ function DrawerNavigator() {
 				component={WishList}
 				options={{ headerTitleAlign: "center" }}
 			/>
+      {/* <Drawer.Screen
+				name="Book List"
+				component={BookList}
+				options={{ headerTitleAlign: "center" }}
+			/> */}
 		</Drawer.Navigator>
 	);
 }

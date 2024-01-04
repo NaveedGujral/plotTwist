@@ -1,10 +1,12 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View} from "react-native";
+import BookDetails from "./BookDetails";
 
 const WishList = () => {
 	return (
 		<View>
-			<Text>This is WishList Screen</Text>
+			<BookDetails  bookId="7" />
+			<BookDetails bookId="144" />
 		</View>
 	);
 };

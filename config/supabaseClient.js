@@ -16,3 +16,10 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 export default supabase;
+
+
+// import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
+
+// const supabase = createClient(supabaseUrl, supabaseAnonKey);
+

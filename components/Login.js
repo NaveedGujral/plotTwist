@@ -3,6 +3,7 @@ import { View, Text, ScrollView, StyleSheet, Alert } from "react-native";
 import { Button, Input } from "react-native-elements";
 import supabase from "../config/supabaseClient";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import SignInScreen from "./SignIn";
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState("");
@@ -52,6 +53,9 @@ export default function Login({navigation}) {
       </View>
       <View>
         <Button title="Sign In" onPress={() => signInWithEmail()} />
+      </View>
+      <View>
+        {/* <SignInScreen /> */}
       </View>
     </View>
   );
