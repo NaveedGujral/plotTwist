@@ -45,14 +45,14 @@ export default function Footer({newNotif}) {
 
 const styles = StyleSheet.create({
   footer: {
-    height: screenHeight * 0.09,
+    height: screenHeight * 0.1,
     justifyContent: "center",
     alignItems: "center",
     position: "fixed",
-    bottom: 0,
+    bottom: -1,
     width: screenWidth,
     borderTopWidth: 2,
-    backgroundColor: "white",
+    backgroundColor: "#77AB5F",
   },
   footerContent: {
     width: screenWidth * 0.8,

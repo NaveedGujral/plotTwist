@@ -49,7 +49,7 @@ function App() {
               title: "Home",
               headerShown: false,
               headerStyle: {
-                backgroundColor: "#72d5ff",
+                backgroundColor: "#77AB5F",
               },
               headerTintColor: "black",
               headerTitleStyle: {

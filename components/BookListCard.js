@@ -102,8 +102,11 @@ export default function BookListCard({ listing, id }) {
 
 const styles = StyleSheet.create({
   bookCard: {
-    height: 150,
-    resizeMode: "contain",
+    height: 180,
+    width: 120,
+    resizeMode: "cover",
+    justifyContent: "center",
+    borderRadius: 16
   },
   cardContainer: {
     flex: 1,
@@ -113,8 +116,8 @@ const styles = StyleSheet.create({
   },
   heartContainer: {
     position: "absolute",
-    top: 10,
-    right: 10,
+    top: 7,
+    right: 24,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",

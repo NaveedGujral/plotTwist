@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 10,
     paddingBottom: 10,
+    backgroundColor: "#292929",
   },
   webFix: {
     flex: 1,
@@ -92,7 +93,15 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     marginBottom: screenHeight * 0.09,
+    backgroundColor: "#292929",
   },
+  header: {
+    fontSize: 21,
+    fontFamily: "Times New Roman",
+    fontWeight: 600,
+    backgroundColor: "#292929",
+    color: "white"
+  }
 });
 
 export default HomeScreen;

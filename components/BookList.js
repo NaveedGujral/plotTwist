@@ -30,11 +30,12 @@ export default function BookList({ categoryName, id }) {
   }, []);
 
   return (
+    <View style={styles.bckg}>
     <View style={styles.categoryContainer}>
       <View style={styles.categoryHeader}>
         <Text style={styles.categoryHeader}>{categoryName}</Text>
         <Pressable>
-          <Text>See More</Text>
+          <Text style={styles.seemore}>See More</Text>
         </Pressable>
       </View>
       <View style={styles.categoryList}>
@@ -44,6 +45,7 @@ export default function BookList({ categoryName, id }) {
           })}
         </ScrollView>
       </View>
+    </View>
     </View>
   );
 }
@@ -59,10 +61,25 @@ const styles = StyleSheet.create({
     width: screenWidth * 0.9,
     alignItems: "center",
     justifyContent: "space-between",
+    fontSize: 18,
+    fontFamily: "Times New Roman",
+    fontWeight: 500,
+    color: "white"
   },
   categoryList: {
     width: screenWidth,
     flexDirection: "row",
-    marginTop: 10,
+    marginTop: 7,
+    marginBottom: 10,
+    marginLeft: 16,
   },
+  seemore: {
+    fontFamily: "Times New Roman",
+    fontSize: 14,
+    color: "white"
+
+  },
+  bckg: {
+    backgroundColor: "#292929",
+  }
 });
