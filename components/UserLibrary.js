@@ -1,4 +1,4 @@
-import { React, useCallback, useEffect, useState } from "react";
+import { React, useCallback, useEffect, useState, useRef } from "react";
 import supabase from "../config/supabaseClient";
 import {
 	Text,
@@ -19,11 +19,15 @@ import {
 } from "@expo-google-fonts/dev";
 import { LinearGradient } from "expo-linear-gradient";
 import Collapsible from "react-native-collapsible";
+import BackToTopButton from "./BackToTopButton";
 
 const UserLibrary = ({ session }) => {
 	const [books, setBooks] = useState([]);
 	const [refreshing, setRefreshing] = useState(false);
 	const [isDescriptionCollapsed, setIsDescriptionCollapsed] = useState(true);
+	const scrollRef = useRef();
+	const [scrollOffset, setScrollOffset] = useState(0);
+	const scrollOffsetLimit = 200;
 
 	useEffect(() => {
 		if (session) getListings(session?.user?.user_metadata?.username);
@@ -84,50 +88,59 @@ const UserLibrary = ({ session }) => {
 	}
 
 	return (
-		<ScrollView
-			contentContainerStyle={styles.container}
-			refreshControl={
-				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-			}
-			style={{backgroundColor: "#272727"}}
-		>
-			<Text style={styles.headerText}>User Library</Text>
-			{books.map((book) => (
-				<LinearGradient
-					colors={["#307361", "rgba(169, 169, 169, 0.10)"]}
-					start={{ x: 0, y: 0 }}
-					end={{ x: 1, y: 1 }}
-					style={{
-						borderRadius: 30,
-						overflow: "hidden",
-						marginBottom: 25,
-					}}
-				>
-					<View key={book.book_id} style={styles.bookContainer}>
-						<Text style={styles.categoryText}>{book.Category}</Text>
-						<Text style={styles.titleText}>{book.book_title}</Text>
-						<Text style={styles.authorText}>{book.author}</Text>
-						<Image source={{ uri: book.img_url }} style={styles.image} />
-						<Pressable
-							onPress={() => setIsDescriptionCollapsed(!isDescriptionCollapsed)}
-							style={styles.descriptionButton}
-						>
-							<Text style={{ color: "white", fontFamily: "JosefinSans_400Regular" }}>
-								{isDescriptionCollapsed ? "Show Description" : "Hide Description"}
-							</Text>
-						</Pressable>
-						<Collapsible collapsed={isDescriptionCollapsed}>
-							<Text style={styles.descriptionText}>{book.description}</Text>
-						</Collapsible>
-						<Pressable onPress={() => removeFromLibrary(book)} style={styles.button}>
-							<Text style={{ color: "white", fontFamily: "JosefinSans_400Regular" }}>
-								Remove
-							</Text>
-						</Pressable>
-					</View>
-				</LinearGradient>
-			))}
-		</ScrollView>
+		<View style={{flex: 1,}}>
+			<ScrollView
+				contentContainerStyle={styles.container}
+				showsVerticalScrollIndicator={false}
+				refreshControl={
+					<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+				}
+				ref={scrollRef}
+				onScroll={event => {
+					setScrollOffset(event.nativeEvent.contentOffset.y);
+				}}
+				scrollEventThrottle={16}
+				style={{backgroundColor: "#272727"}}
+			>
+				<Text style={styles.headerText}>User Library</Text>
+				{books.map((book) => (
+					<LinearGradient
+						colors={["#307361", "rgba(169, 169, 169, 0.10)"]}
+						start={{ x: 0, y: 0 }}
+						end={{ x: 1, y: 1 }}
+						style={{
+							borderRadius: 30,
+							overflow: "hidden",
+							marginBottom: 25,
+						}}
+					>
+						<View key={book.book_id} style={styles.bookContainer}>
+							<Text style={styles.categoryText}>{book.Category}</Text>
+							<Text style={styles.titleText}>{book.book_title}</Text>
+							<Text style={styles.authorText}>{book.author}</Text>
+							<Image source={{ uri: book.img_url }} style={styles.image} />
+							<Pressable
+								onPress={() => setIsDescriptionCollapsed(!isDescriptionCollapsed)}
+								style={styles.descriptionButton}
+							>
+								<Text style={{ color: "white", fontFamily: "JosefinSans_400Regular" }}>
+									{isDescriptionCollapsed ? "Show Description" : "Hide Description"}
+								</Text>
+							</Pressable>
+							<Collapsible collapsed={isDescriptionCollapsed}>
+								<Text style={styles.descriptionText}>{book.description}</Text>
+							</Collapsible>
+							<Pressable onPress={() => removeFromLibrary(book)} style={styles.button}>
+								<Text style={{ color: "white", fontFamily: "JosefinSans_400Regular" }}>
+									Remove
+								</Text>
+							</Pressable>
+						</View>
+					</LinearGradient>
+				))}
+			</ScrollView>
+			<BackToTopButton scrollRef={scrollRef} scrollOffset={scrollOffset} scrollOffsetLimit={scrollOffsetLimit} />
+		</View>
 	);
 };
 

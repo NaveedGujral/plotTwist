@@ -1,13 +1,17 @@
-import { React, useCallback, useEffect, useState } from 'react';
+import { React, useCallback, useEffect, useState, useRef } from 'react';
 import supabase from '../config/supabaseClient';
 import { Text, View, Image, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import BackToTopButton from './BackToTopButton';
 
 const WishList = ({ session }) => {
     const [books, setBooks] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [username, setUsername] = useState('');
+    const scrollRef = useRef();
+    const [scrollOffset, setScrollOffset] = useState(0);
+    const scrollOffsetLimit = 200
 
     useEffect(() => {
         if (session) {
@@ -65,41 +69,50 @@ const WishList = ({ session }) => {
     };
 
     return (
-        <ScrollView
-            style={styles.container}
-            refreshControl={
-                <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                />
-            }
-        >
-            <View>
-                <Text style={styles.textStyling}>Your Wishlist:</Text>
-                {books.map(({ book, img_url }) => (
-                    <View
-                        key={book}
-                        style={styles.listContainer}
-                    >
-                        <Entypo
-                            name="circle-with-cross"
-                            size={20}
-                            style={styles.icon}
-                            onPress={() => removeFromWishList(book)}
-                        />
-                        <View style={styles.itemContainer}>
-                            {img_url && (
-                                <Image
-                                    source={{ uri: img_url }}
-                                    style={styles.bookImage}
-                                />
-                            )}
-                            <Text style={[styles.textStyling, styles.hightlightText]}>{book}</Text>
+        <View style={{flex: 1,}}>
+            <ScrollView
+                style={styles.container}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
+                ref={scrollRef}
+				onScroll={event => {
+					setScrollOffset(event.nativeEvent.contentOffset.y);
+				}}
+				scrollEventThrottle={16}
+                showsVerticalScrollIndicator={false}
+            >
+                <View>
+                    <Text style={styles.textStyling}>Your Wishlist:</Text>
+                    {books.map(({ book, img_url }) => (
+                        <View
+                            key={book}
+                            style={styles.listContainer}
+                        >
+                            <Entypo
+                                name="circle-with-cross"
+                                size={20}
+                                style={styles.icon}
+                                onPress={() => removeFromWishList(book)}
+                            />
+                            <View style={styles.itemContainer}>
+                                {img_url && (
+                                    <Image
+                                        source={{ uri: img_url }}
+                                        style={styles.bookImage}
+                                    />
+                                )}
+                                <Text style={[styles.textStyling, styles.hightlightText]}>{book}</Text>
+                            </View>
                         </View>
-                    </View>
-                ))}
-            </View>
-        </ScrollView>
+                    ))}
+                </View>
+            </ScrollView>
+            <BackToTopButton scrollRef={scrollRef} scrollOffset={scrollOffset} scrollOffsetLimit={scrollOffsetLimit} />
+        </View>
     );
 };
 

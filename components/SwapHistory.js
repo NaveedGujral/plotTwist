@@ -1,12 +1,15 @@
 
-import { React, useCallback, useEffect, useState } from 'react';
+import { React, useCallback, useEffect, useState, useRef } from 'react';
 import supabase from '../config/supabaseClient';
 import { Text, View, Image, StyleSheet, ScrollView, Dimensions, RefreshControl, Pressable } from 'react-native';
-
+import BackToTopButton from './BackToTopButton';
 
 const SwapHistory = ({ session }) => {
     const [userID, setUserID] = useState('');
     const [userData, setUserData] = useState([]);
+    const scrollRef = useRef();
+    const [scrollOffset, setScrollOffset] = useState(0);
+    const scrollOffsetLimit = 200;
 
     useEffect(() => {
         if (session) {
@@ -39,7 +42,14 @@ async function getBookOwner() {
     };
 
     return (
-        <ScrollView style={swapStyles.pageContainer}>
+      <View style={{flex: 1,}}>
+        <ScrollView style={swapStyles.pageContainer}
+        ref={scrollRef}
+				onScroll={event => {
+					setScrollOffset(event.nativeEvent.contentOffset.y);
+				}}
+				scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}>
           {userData.map(swap => (
             <Pressable
               key={swap.pending_swap_id}
@@ -60,6 +70,8 @@ async function getBookOwner() {
             </Pressable>
           ))}
         </ScrollView>
+        <BackToTopButton scrollRef={scrollRef} scrollOffset={scrollOffset} scrollOffsetLimit={scrollOffsetLimit} />
+      </View>
       );
     };
     

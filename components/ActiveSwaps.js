@@ -1,8 +1,9 @@
-import { React, useCallback, useEffect, useState } from 'react';
+import { React, useCallback, useEffect, useState, useRef } from 'react';
 import supabase from '../config/supabaseClient';
 import { useNavigation } from '@react-navigation/native';
 import { Text, View, Image, StyleSheet, ScrollView, Dimensions, RefreshControl, Pressable, Platform } from 'react-native';
 import SwapCard from './SwapCard';
+import BackToTopButton from './BackToTopButton';
 
 const {height, width} = Dimensions.get('screen');
 
@@ -14,6 +15,9 @@ const ActiveSwaps = ({ session }) => {
     const [sentSwaps, setSentSwaps] = useState([]);
     const [receivedSwaps, setReceivedSwaps] = useState([]);
     const [activeSwaps, setActiveSwaps] = useState([]);
+    const scrollRef = useRef();
+    const [scrollOffset, setScrollOffset] = useState(0);
+    const scrollOffsetLimit = 200
 
 
     useEffect(() => {
@@ -43,7 +47,13 @@ const ActiveSwaps = ({ session }) => {
         <ScrollView style={Platform.OS === 'ios'
             ? styles.pageContainer
             : {...styles.pageContainer, ...styles.webFix}
-        }>
+            
+        }
+        ref={scrollRef}
+        onScroll={event => {
+            setScrollOffset(event.nativeEvent.contentOffset.y);
+        }}
+        scrollEventThrottle={16}>
             <Text style={styles.title}>Active Swaps</Text>
             <View style={styles.hr} />
 

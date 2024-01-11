@@ -12,6 +12,7 @@ import supabase from "../config/supabaseClient";
 import { useNavigation } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
+import BackToTopButton from "./BackToTopButton";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -19,6 +20,9 @@ const Notifications = ({ route }) => {
   const [notifications, setNotifications] = useState([]);
   const { session, setNewNotif } = route.params;
   const [processedNotifications, setProcessedNotifications] = useState([]);
+  const scrollRef = useRef();
+	const [scrollOffset, setScrollOffset] = useState(0);
+	const scrollOffsetLimit = 200;
 
   const navigation = useNavigation();
 
@@ -136,112 +140,60 @@ const Notifications = ({ route }) => {
   }, [notifications]);
 
   return (
-    <ScrollView style={styles.pageContainer}>
-      <View style={styles.notificationsList}>
-        {processedNotifications.map((notification) => {
-          switch (notification.type) {
-            case "Swap_Request":
-              if (notification.swapData) {
-                return (
-                  <View style={styles.notificationContainer}>
-                    <Pressable
-                      style={styles.notCard}
-                      onPress={() => {
-                        if (
-                          Object.entries(notification.swapData).every(
-                            ([key, value]) => !!value
-                          )
-                        ) {
-                          navigation.navigate("SwapNegotiationPage", {
-                            info: notification.swapData,
-                            user1_book: notification.swapData,
-                            user2_book: notification.swapData,
-                          });
-                        } else {
-                          navigation.navigate("SwapOffer", {
-                            info: notification.swapData,
-                            notification: notification,
-                          });
-                        }
-                      }}
-                    >
-                      <Image
-                        source={{
-                          uri: notification.swapData.user1_book_imgurl,
+    <View style={{flex: 1,}}>
+      <ScrollView style={styles.pageContainer}
+      ref={scrollRef}
+      onScroll={event => {
+        setScrollOffset(event.nativeEvent.contentOffset.y);
+      }}
+      scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}>
+        <View style={styles.notificationsList}>
+          {processedNotifications.map((notification) => {
+            switch (notification.type) {
+              case "Swap_Request":
+                if (notification.swapData) {
+                  return (
+                    <View style={styles.notificationContainer}>
+                      <Pressable
+                        style={styles.notCard}
+                        onPress={() => {
+                          if (
+                            Object.entries(notification.swapData).every(
+                              ([key, value]) => !!value
+                            )
+                          ) {
+                            navigation.navigate("SwapNegotiationPage", {
+                              info: notification.swapData,
+                              user1_book: notification.swapData,
+                              user2_book: notification.swapData,
+                            });
+                          } else {
+                            navigation.navigate("SwapOffer", {
+                              info: notification.swapData,
+                              notification: notification,
+                            });
+                          }
                         }}
-                        style={styles.bookImg}
-                      />
-                      <View style={styles.textContent}>
-                        <View style={styles.header}>
-                          <Text style={styles.headerText}>
-                            {daysSince(notification.created_at)} days ago
-                          </Text>
-                          <Entypo
-                            name="circle-with-cross"
-                            size={24}
-                            color="#C1514B"
-                            onPress={() => deleteNotification(notification.id)}
-                          />
-                        </View>
-                        <View style={styles.messageBorder}>
-                          <Text style={styles.message}>
-                            <Text
-                              style={{
-                                fontStyle: "italic",
-                                fontWeight: "bold",
-                              }}
-                            >
-                              {notification.swapData.user2_username}
-                            </Text>{" "}
-                            wants to swap{" "}
-                            <Text
-                              style={{
-                                fontStyle: "italic",
-                                fontWeight: "bold",
-                              }}
-                            >
-                              {notification.swapData.user1_book_title}
+                      >
+                        <Image
+                          source={{
+                            uri: notification.swapData.user1_book_imgurl,
+                          }}
+                          style={styles.bookImg}
+                        />
+                        <View style={styles.textContent}>
+                          <View style={styles.header}>
+                            <Text style={styles.headerText}>
+                              {daysSince(notification.created_at)} days ago
                             </Text>
-                          </Text>
-                        </View>
-                      </View>
-                    </Pressable>
-                  </View>
-                );
-              }
-              break;
-            case "Chosen_Book":
-              if (notification.swapData) {
-                return (
-                  <View style={styles.notificationContainer}>
-                    <Pressable
-                      style={styles.notCard}
-                      onPress={() => {
-                        navigation.navigate("SwapNegotiationPage", {
-                          info: notification.swapData,
-                        });
-                      }}
-                    >
-                      <Image
-                        source={{
-                          uri: notification.swapData.user2_book_imgurl,
-                        }}
-                        style={styles.bookImg}
-                      />
-                      <View style={styles.textContent}>
-                        <View style={styles.header}>
-                          <Text style={styles.headerText}>
-                            {daysSince(notification.created_at)} days ago
-                          </Text>
-                          <Entypo
-                            name="circle-with-cross"
-                            size={24}
-                            color="#C1514B"
-                            onPress={() => deleteNotification(notification.id)}
-                            style={styles.deleteButton}
-                          />
-                        </View>
-                        <View style={{ flex: 1, justifyContent: "center" }}>
+                            <Entypo
+                              name="circle-with-cross"
+                              size={24}
+                              color="#C1514B"
+                              onPress={() => deleteNotification(notification.id)}
+                            />
+                          </View>
                           <View style={styles.messageBorder}>
                             <Text style={styles.message}>
                               <Text
@@ -250,33 +202,94 @@ const Notifications = ({ route }) => {
                                   fontWeight: "bold",
                                 }}
                               >
-                                {notification.swapData.user1_username}
+                                {notification.swapData.user2_username}
                               </Text>{" "}
-                              has chosen{" "}
+                              wants to swap{" "}
                               <Text
                                 style={{
                                   fontStyle: "italic",
                                   fontWeight: "bold",
                                 }}
                               >
-                                {notification.swapData.user2_book_title}
-                              </Text>{" "}
-                              from your library!
+                                {notification.swapData.user1_book_title}
+                              </Text>
                             </Text>
                           </View>
                         </View>
-                      </View>
-                    </Pressable>
-                  </View>
-                );
-              }
-              break;
-            default:
-              return null;
-          }
-        })}
-      </View>
-    </ScrollView>
+                      </Pressable>
+                    </View>
+                  );
+                }
+                break;
+              case "Chosen_Book":
+                if (notification.swapData) {
+                  return (
+                    <View style={styles.notificationContainer}>
+                      <Pressable
+                        style={styles.notCard}
+                        onPress={() => {
+                          navigation.navigate("SwapNegotiationPage", {
+                            info: notification.swapData,
+                          });
+                        }}
+                      >
+                        <Image
+                          source={{
+                            uri: notification.swapData.user2_book_imgurl,
+                          }}
+                          style={styles.bookImg}
+                        />
+                        <View style={styles.textContent}>
+                          <View style={styles.header}>
+                            <Text style={styles.headerText}>
+                              {daysSince(notification.created_at)} days ago
+                            </Text>
+                            <Entypo
+                              name="circle-with-cross"
+                              size={24}
+                              color="#C1514B"
+                              onPress={() => deleteNotification(notification.id)}
+                              style={styles.deleteButton}
+                            />
+                          </View>
+                          <View style={{ flex: 1, justifyContent: "center" }}>
+                            <View style={styles.messageBorder}>
+                              <Text style={styles.message}>
+                                <Text
+                                  style={{
+                                    fontStyle: "italic",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {notification.swapData.user1_username}
+                                </Text>{" "}
+                                has chosen{" "}
+                                <Text
+                                  style={{
+                                    fontStyle: "italic",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {notification.swapData.user2_book_title}
+                                </Text>{" "}
+                                from your library!
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                      </Pressable>
+                    </View>
+                  );
+                }
+                break;
+              default:
+                return null;
+            }
+          })}
+        </View>
+      </ScrollView>
+      <BackToTopButton scrollRef={scrollRef} scrollOffset={scrollOffset} scrollOffsetLimit={scrollOffsetLimit} />
+    </View>
   );
 };
 

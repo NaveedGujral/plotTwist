@@ -4,11 +4,10 @@ import supabase from "../config/supabaseClient";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Ionicons } from '@expo/vector-icons'; 
-import { FontAwesome } from "@expo/vector-icons";
 
 import BookList from "./BookList";
 import TopTenCarousel from "./TopTenCarousel";
+import BackToTopButton from "./BackToTopButton";
 
 const {height, width} = Dimensions.get("window");
 
@@ -72,9 +71,9 @@ const HomeScreen = ({  navigation }) => {
 	return (
 		<View style={{flex: 1,}}>
 			<View style={{flex: 1,}}>
-			<ScrollView showsVerticalScrollIndicator={false} ref={scrollRef} onScroll={event => {
-				setScrollOffset(event.nativeEvent.contentOffset.y);
-			}} scrollEventThrottle={16}>
+				<ScrollView showsVerticalScrollIndicator={false} ref={scrollRef} onScroll={event => {
+					setScrollOffset(event.nativeEvent.contentOffset.y);
+				}} scrollEventThrottle={16}>
 					<View
 						style={
 							Platform.OS === "web"
@@ -92,40 +91,8 @@ const HomeScreen = ({  navigation }) => {
 						<StatusBar style="auto" />
 					</View>
 				</ScrollView>
-			<Pressable style={styles.BTTContainer} onPress={() => {
-				// console.log(scrollRef, '<<<<')
-				scrollRef.current?.scrollTo({
-					y : 0,
-					animated : true
-				});
-			}}>
-				<View style={styles.BTTCircle}>
-					<Ionicons
-						name="arrow-up"
-						size={35}
-						color="black"
-						style={styles.BTTArrow}
-					/>
-				</View>
-			</Pressable>
-		</View>
-			{scrollOffset > scrollOffsetLimit && (
-				<Pressable style={Platform.OS === 'web' ? {...styles.BTTContainer, ...styles.BTTHeight} : styles.BTTContainer} onPress={() => {
-					scrollRef.current?.scrollTo({
-						y : 0,
-						animated : true
-					});
-				}}>
-					<View style={styles.BTTCircle}>
-						<Ionicons
-							name="arrow-up"
-							size={30}
-							color="black"
-							style={styles.BTTArrow}
-						/>
-					</View>
-				</Pressable>
-			)}
+				<BackToTopButton scrollRef={scrollRef} scrollOffset={scrollOffset} scrollOffsetLimit={scrollOffsetLimit} />
+			</View>
 		</View>
 	);
 };
@@ -148,34 +115,6 @@ const styles = StyleSheet.create({
 		color: "white",
     marginBottom: 25,
 	},
-	BTTContainer: {
-		position: 'absolute',
-		bottom: 15,
-		right: 15,
-	},
-	BTTHeight: {
-		bottom: 98,
-	},
-	BTTCircle: {
-		width: 50,
-		height: 50,
-		borderRadius: 25,
-		backgroundColor: 'white',
-		shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 8,
-        },
-        shadowOpacity: 0.45,
-        shadowRadius: 8,
-        elevation: 16,
-		justifyContent: 'center',
-		alignContent: 'center',
-	},
-	BTTArrow: {
-		textAlign: 'center',
-		width: '100%',
-	}
 });
 
 export default HomeScreen;

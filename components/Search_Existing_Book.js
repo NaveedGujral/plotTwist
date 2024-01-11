@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Button,
   View,
@@ -17,6 +17,7 @@ import {
 import { SegmentedButtons } from "react-native-paper";
 import { Searchbar } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
+import BackToTopButton from "./BackToTopButton";
 
 const screenHeight = Dimensions.get("window").height;
 
@@ -34,6 +35,9 @@ const Search_Existing_Book = ({ navigation }) => {
   const [totalItems, setTotalItems] = useState(0);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchType, setSearchType] = useState("title");
+  const scrollRef = useRef();
+	const [scrollOffset, setScrollOffset] = useState(0);
+	const scrollOffsetLimit = 200;
 
   let totalPages = Math.ceil(totalItems / 20);
   const api = process.env.GOOGLE_BOOKS_API_KEY;
@@ -104,152 +108,161 @@ const Search_Existing_Book = ({ navigation }) => {
   }, [title, authors]);
 
   return (
-    <ScrollView style={styles.scrollview}>
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
-          <Text style={styles.header}>Find a Book</Text>
-          <Text style={styles.sortBy}>Sort by</Text>
-          <SegmentedButtons
-            value={searchType}
-            onValueChange={setSearchType}
-            buttons={[
-              { label: "Title", value: "title" },
-              { label: "Author", value: "author" },
-            ]}
-            style={{
-              width: "60%",
-            }}
-          />
-          <Searchbar
-            placeholder="Search for a book here..."
-            onChangeText={setSearchTerm}
-            value={searchTerm}
-            onSubmitEditing={handleSearch}
-            style={styles.searchbar}
-          />
-          <Pressable
-            title="Search"
-            onPress={handleSearch}
-            style={styles.button}
-          >
-            <Text
-              style={{ color: "white", fontFamily: "JosefinSans_400Regular" }}
+    <View style={{flex: 1,}}>
+      <ScrollView style={styles.scrollview}
+      ref={scrollRef}
+      onScroll={event => {
+        setScrollOffset(event.nativeEvent.contentOffset.y);
+      }}
+      scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.container}>
+            <Text style={styles.header}>Find a Book</Text>
+            <Text style={styles.sortBy}>Sort by</Text>
+            <SegmentedButtons
+              value={searchType}
+              onValueChange={setSearchType}
+              buttons={[
+                { label: "Title", value: "title" },
+                { label: "Author", value: "author" },
+              ]}
+              style={{
+                width: "60%",
+              }}
+            />
+            <Searchbar
+              placeholder="Search for a book here..."
+              onChangeText={setSearchTerm}
+              value={searchTerm}
+              onSubmitEditing={handleSearch}
+              style={styles.searchbar}
+            />
+            <Pressable
+              title="Search"
+              onPress={handleSearch}
+              style={styles.button}
             >
-              Search
-            </Text>
-          </Pressable>
-          <Pressable
-            title="Add book manually"
-            onPress={() => navigation.navigate("CreateListing")}
-            style={styles.button}
-          >
-            <Text
-              style={{ color: "white", fontFamily: "JosefinSans_400Regular" }}
+              <Text
+                style={{ color: "white", fontFamily: "JosefinSans_400Regular" }}
+              >
+                Search
+              </Text>
+            </Pressable>
+            <Pressable
+              title="Add book manually"
+              onPress={() => navigation.navigate("CreateListing")}
+              style={styles.button}
             >
-              Add book manually
-            </Text>
-          </Pressable>
-          {hasSearched && totalPages > 1 && (
-            <FlatList
-              data={searchResults}
-              keyExtractor={(item) => item.id}
-              ListFooterComponent={() => (
-                <View style={styles.footerContainer}>
-                  <Pressable
-                    onPress={() => setPage((prevPage) => prevPage - 1)}
-                    disabled={page === 1}
-                    style={styles.paginationButtons}
-                  >
+              <Text
+                style={{ color: "white", fontFamily: "JosefinSans_400Regular" }}
+              >
+                Add book manually
+              </Text>
+            </Pressable>
+            {hasSearched && totalPages > 1 && (
+              <FlatList
+                data={searchResults}
+                keyExtractor={(item) => item.id}
+                ListFooterComponent={() => (
+                  <View style={styles.footerContainer}>
+                    <Pressable
+                      onPress={() => setPage((prevPage) => prevPage - 1)}
+                      disabled={page === 1}
+                      style={styles.paginationButtons}
+                    >
+                      <Text
+                        style={{
+                          color: "white",
+                          fontFamily: "JosefinSans_400Regular",
+                        }}
+                      >
+                        {" "}
+                        Previous{" "}
+                      </Text>
+                    </Pressable>
                     <Text
                       style={{
                         color: "white",
                         fontFamily: "JosefinSans_400Regular",
+                        fontSize: 13,
                       }}
                     >
                       {" "}
-                      Previous{" "}
+                      Page: {page}{" "}
                     </Text>
-                  </Pressable>
-                  <Text
+                    <Pressable
+                      onPress={() => setPage((prevPage) => prevPage + 1)}
+                      disabled={page === totalPages}
+                      style={styles.paginationButtons}
+                    >
+                      <Text
+                        style={{
+                          color: "white",
+                          fontFamily: "JosefinSans_400Regular",
+                        }}
+                      >
+                        {" "}
+                        Next{" "}
+                      </Text>
+                    </Pressable>
+                  </View>
+                )}
+                renderItem={({ item }) => (
+                  <LinearGradient
+                    colors={["#307361", "rgba(169, 169, 169, 0.10)"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
                     style={{
-                      color: "white",
-                      fontFamily: "JosefinSans_400Regular",
-                      fontSize: 13,
+                      alignItems: "center",
+                      backgroundColor: "rgba(169, 169, 169, 0.15)",
+                      padding: 16,
+                      width: Dimensions.get("window").width - 32,
+                      borderRadius: 30,
+                      overflow: "hidden",
+                      marginBottom: 25,
                     }}
                   >
-                    {" "}
-                    Page: {page}{" "}
-                  </Text>
-                  <Pressable
-                    onPress={() => setPage((prevPage) => prevPage + 1)}
-                    disabled={page === totalPages}
-                    style={styles.paginationButtons}
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        fontFamily: "JosefinSans_400Regular",
-                      }}
-                    >
-                      {" "}
-                      Next{" "}
+                    <Text style={styles.titleText}>{item.volumeInfo.title}</Text>
+                    <Text style={styles.authorText}>
+                      Written by{" "}
+                      {item.volumeInfo.authors &&
+                        item.volumeInfo.authors.join(", ")}
                     </Text>
-                  </Pressable>
-                </View>
-              )}
-              renderItem={({ item }) => (
-                <LinearGradient
-                  colors={["#307361", "rgba(169, 169, 169, 0.10)"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={{
-                    alignItems: "center",
-                    backgroundColor: "rgba(169, 169, 169, 0.15)",
-                    padding: 16,
-                    width: Dimensions.get("window").width - 32,
-                    borderRadius: 30,
-                    overflow: "hidden",
-                    marginBottom: 25,
-                  }}
-                >
-                  <Text style={styles.titleText}>{item.volumeInfo.title}</Text>
-                  <Text style={styles.authorText}>
-                    Written by{" "}
-                    {item.volumeInfo.authors &&
-                      item.volumeInfo.authors.join(", ")}
-                  </Text>
-                  <Image
-                    source={
-                      item.volumeInfo.imageLinks !== undefined
-                        ? { uri: item.volumeInfo.imageLinks.smallThumbnail }
-                        : {
-                            uri: "https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-pic-design-profile-vector-png-image_40966566.jpg",
-                          }
-                    }
-                    style={styles.image}
-                  />
-                  <Pressable
-                    onPress={() => handleSelectBook(item)}
-                    style={styles.selectButton}
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        fontFamily: "JosefinSans_400Regular",
-                        fontSize: 18,
-                        marginVertical: 10,
-                      }}
+                    <Image
+                      source={
+                        item.volumeInfo.imageLinks !== undefined
+                          ? { uri: item.volumeInfo.imageLinks.smallThumbnail }
+                          : {
+                              uri: "https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-pic-design-profile-vector-png-image_40966566.jpg",
+                            }
+                      }
+                      style={styles.image}
+                    />
+                    <Pressable
+                      onPress={() => handleSelectBook(item)}
+                      style={styles.selectButton}
                     >
-                      Select Book
-                    </Text>
-                  </Pressable>
-                </LinearGradient>
-              )}
-            />
-          )}
-        </View>
-      </SafeAreaView>
-    </ScrollView>
+                      <Text
+                        style={{
+                          color: "white",
+                          fontFamily: "JosefinSans_400Regular",
+                          fontSize: 18,
+                          marginVertical: 10,
+                        }}
+                      >
+                        Select Book
+                      </Text>
+                    </Pressable>
+                  </LinearGradient>
+                )}
+              />
+            )}
+          </View>
+        </SafeAreaView>
+      </ScrollView>
+      <BackToTopButton scrollRef={scrollRef} scrollOffset={scrollOffset} scrollOffsetLimit={scrollOffsetLimit} />
+    </View>
   );
 };
 
