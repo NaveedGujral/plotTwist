@@ -8,14 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
-const userImageMap = {
-    '2f71dabd-2f9c-48c3-8edd-4ae7495f59ce': require('../assets/ExampleUserProfilePictures/2f71dabd-2f9c-48c3-8edd-4ae7495f59ce.jpg'),
-    'c563d513-b021-42f2-a3b3-77067b8547af': require('../assets/ExampleUserProfilePictures/c563d513-b021-42f2-a3b3-77067b8547af.jpg'),
-    'a4624164-bbbb-4cb6-b199-06b2fdd6f14a': require('../assets/ExampleUserProfilePictures/a4624164-bbbb-4cb6-b199-06b2fdd6f14a.jpg'),
-    '10240ee4-1b43-4749-afbe-1356c83af4da': require('../assets/ExampleUserProfilePictures/10240ee4-1b43-4749-afbe-1356c83af4da.jpg'),
-    'ce083d4c-a1e8-45d0-9f93-6bc092f7155b': require('../assets/ExampleUserProfilePictures/ce083d4c-a1e8-45d0-9f93-6bc092f7155b.jpg'),
-    'b45b3687-4e73-46e2-8474-da10e307691b': require('../assets/ExampleUserProfilePictures/b45b3687-4e73-46e2-8474-da10e307691b.jpg'),
-};
+
 
 export default function UserProfile({ route }) {
     const [id, setId] = useState('');
@@ -26,19 +19,37 @@ export default function UserProfile({ route }) {
     const [editing, setIsEditing] = useState(false);
     const [exists, setExists] = useState(false);
     const [profilePicture, setProfilePicture] = useState();
+    const [user1ProfilePic, setUser1ProfilePic] = useState()
 
     const { session } = route.params;
+
+    useEffect(() => {
+        switch (session.user.id) {
+          case "10240ee4-1b43-4749-afbe-1356c83af4da": 
+            setUser1ProfilePic(require('../assets/ExampleUserProfilePictures/Nav.jpg'));
+            break;
+          case "a4624164-bbbb-4cb6-b199-06b2fdd6f14a": 
+            setUser1ProfilePic(require('../assets/ExampleUserProfilePictures/Jake.jpg'));
+            break;
+          case "c563d513-b021-42f2-a3b3-77067b8547af": 
+            setUser1ProfilePic(require('../assets/ExampleUserProfilePictures/Jay.jpg'));
+            break;
+          case "ce083d4c-a1e8-45d0-9f93-6bc092f7155b": 
+            setUser1ProfilePic(require('../assets/ExampleUserProfilePictures/Ana.jpg'));
+            break;
+          case "2f71dabd-2f9c-48c3-8edd-4ae7495f59ce": 
+            setUser1ProfilePic(require('../assets/ExampleUserProfilePictures/Alicia.jpg'));
+            break;
+          case "b45b3687-4e73-46e2-8474-da10e307691b": 
+            setUser1ProfilePic(require('../assets/ExampleUserProfilePictures/Faith.jpg'));
+            break;
+        }
+      }, [session.user.id]);
 
     useEffect(() => {
         async function compareId(id) {
             const { data, error } = await supabase.from('Users').select('*').match({ user_id: id });
             return data;
-        }
-
-        if (userImageMap.hasOwnProperty(session.user.id)) {
-            setProfilePicture(userImageMap[session.user.id]);
-        } else {
-            console.log('no image found');
         }
 
         async function getData() {
@@ -173,7 +184,7 @@ export default function UserProfile({ route }) {
                             <Text style={styles.username}>{username}</Text>
                         </View>
                         <Image
-                            source={profilePicture}
+                            source={user1ProfilePic}
                             style={styles.profilePicture}
                         />
                         <Text style={styles.contact_info}>Contact Info</Text>

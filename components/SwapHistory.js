@@ -16,7 +16,7 @@ const SwapHistory = ({ session }) => {
         const { data, error } = await supabase.from('Swap_History').select('*').or(`user1_id.eq.${userID},user2_id.eq.${userID}`);
         setUserData(data);
     };
-console.log(userData)
+
 
 async function getBookOwner() {
   const { data, error } = await supabase
