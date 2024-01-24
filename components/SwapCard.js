@@ -1,3 +1,4 @@
+
 import {
   StyleSheet,
   View,
@@ -8,9 +9,7 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-
 const { width, height } = Dimensions.get("screen");
-
 export default function SwapCard({ swap, type, userID, session, navigation }) {
   if (type === "received")
     return (
@@ -35,7 +34,9 @@ export default function SwapCard({ swap, type, userID, session, navigation }) {
             marginBottom: 25,
           }}
         >
-          <View style={styles.card}>
+           <View style={Platform.OS === 'ios'
+            ? styles.cardMobile
+            : styles.card} >
             <Image
               source={{ uri: swap.user1_book_imgurl }}
               style={styles.bookImg}
@@ -94,7 +95,9 @@ export default function SwapCard({ swap, type, userID, session, navigation }) {
             marginBottom: 25,
           }}
         >
-          <View style={styles.cardActive}>
+           <View style={Platform.OS === 'ios'
+            ? styles.cardActiveMobile
+            : styles.cardActive}>
             <View style={styles.textContent}>
               <View style={{ ...styles.header, marginHorizontal: 17 }}>
                 <Text style={styles.headerText}>
@@ -169,7 +172,9 @@ export default function SwapCard({ swap, type, userID, session, navigation }) {
             marginBottom: 25,
           }}
         >
-          <View style={styles.cardActive}>
+           <View style={Platform.OS === 'ios'
+            ? styles.cardActiveMobile
+            : styles.cardActive}>
             <View style={styles.textContent}>
               <View style={{ ...styles.header, marginHorizontal: 17 }}>
                 <Text style={styles.headerText}>
@@ -245,7 +250,9 @@ export default function SwapCard({ swap, type, userID, session, navigation }) {
             marginBottom: 25,
           }}
         >
-          <View style={styles.card}>
+           <View style={Platform.OS === 'ios'
+            ? styles.cardMobile
+            : styles.card}>
             <Image
               source={{ uri: swap.user1_book_imgurl }}
               style={styles.bookImg}
@@ -283,7 +290,6 @@ export default function SwapCard({ swap, type, userID, session, navigation }) {
       </Pressable>
     );
 }
-
 const styles = StyleSheet.create({
   container: {
     width: width,
@@ -297,80 +303,113 @@ const styles = StyleSheet.create({
     width: width * 0.9,
     borderRadius: 20,
     padding: 10,
-    // backgroundColor: "#06A77D",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-  },
-  cardActive: {
-    flex: 1,
-    width: width * 0.9,
-    borderRadius: 20,
-    padding: 10,
-    // backgroundColor: "#06A77D",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-  },
-  bookImg: {
-    height: 120,
-    width: 80,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "white",
-  },
-  textContent: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginHorizontal: 12,
-  },
-  headerText: {
-    textAlign: "right",
-    color: "white",
-    fontSize: 15,
-    fontFamily: 'JosefinSans_400Regular',
-  },
-  message: {
-    flex: 1,
-    fontSize: 15,
-    fontFamily: 'JosefinSans_400Regular',
-    color: "white",
-    textAlign: "justify",
-    marginHorizontal: 10,
-  },
-  messageBorder: {
-    padding: 10,
-    marginHorizontal: 10,
-    borderColor: "white",
-    borderWidth: 1,
-    borderRadius: 10,
-    backgroundColor: "#06A77D",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-  },
-  hr: {
-    borderBottomWidth: 1,
-  },
-  dealGraphic: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+     // height: 200,
+     backgroundColor: "#06A77D",
+     shadowColor: "#000",
+     shadowOffset: {
+       width: 0,
+       height: 5,
+     },
+     shadowOpacity: 0.5,
+     shadowRadius: 5,
+   },
+   cardMobile: {
+     // flex: 1,
+     flexDirection: "row",
+     width: width * 0.9,
+     borderRadius: 20,
+     padding: 10,
+     height: 200,
+     backgroundColor: "#06A77D",
+     shadowColor: "#000",
+     shadowOffset: {
+       width: 0,
+       height: 5,
+     },
+     shadowOpacity: 0.5,
+     shadowRadius: 5,
+   },
+   cardActive: {
+     flex: 1,
+     width: width * 0.9,
+     borderRadius: 20,
+     padding: 10,
+     // height: 200,
+     // backgroundColor: "#06A77D",
+     shadowColor: "#000",
+     shadowOffset: {
+       width: 0,
+       height: 5,
+     },
+     shadowOpacity: 0.5,
+     shadowRadius: 5,
+   },
+   cardActiveMobile: {
+     // flex: 1,
+     width: width * 0.9,
+     borderRadius: 20,
+     padding: 10,
+     height: 300,
+     // backgroundColor: "#06A77D",
+     shadowColor: "#000",
+     shadowOffset: {
+       width: 0,
+       height: 5,
+     },
+     shadowOpacity: 0.5,
+     shadowRadius: 5,
+   },
+   bookImg: {
+     height: 120,
+     width: 80,
+     borderRadius: 10,
+     borderWidth: 1,
+     borderColor: "white",
+   },
+   textContent: {
+     flex: 1,
+   },
+   header: {
+     flexDirection: "row",
+     justifyContent: "space-between",
+     marginHorizontal: 12,
+   },
+   headerText: {
+     textAlign: "right",
+     color: "white",
+     fontSize: 15,
+     fontFamily: 'JosefinSans_400Regular',
+   },
+   message: {
+     flex: 1,
+     fontSize: 15,
+     fontFamily: 'JosefinSans_400Regular',
+     color: "white",
+     textAlign: "justify",
+     marginHorizontal: 10,
+   },
+   messageBorder: {
+     padding: 10,
+     marginHorizontal: 10,
+     borderColor: "white",
+     borderWidth: 1,
+     borderRadius: 10,
+     backgroundColor: "#06A77D",
+     shadowColor: "#000",
+     shadowOffset: {
+       width: 0,
+       height: 3,
+     },
+     shadowOpacity: 0.3,
+     shadowRadius: 3,
+   },
+   hr: {
+     borderBottomWidth: 1,
+   },
+   dealGraphic: {
+     flex: 1,
+     flexDirection: "row",
+     alignItems: "center",
+     justifyContent: "center",
+   },
+ });
