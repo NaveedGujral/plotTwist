@@ -52,24 +52,24 @@ const Search_Existing_Book = ({ navigation }) => {
           page * 20
         }&maxResults=20&key=${api}`;
       }
-    }
-    try {
-      const response = await fetch(apiSearch);
-      const data = await response.json();
-      if (data.items === undefined) {
-        navigation.navigate("CreateListing");
+      try {
+        const response = await fetch(apiSearch);
+        const data = await response.json();
+        if (data.items === undefined) {
+          navigation.navigate("CreateListing");
+        }
+        if (data.totalItems <= page * 20 + 20) {
+          setHasMore(false);
+        }
+        setTotalItems(data.totalItems);
+        const filtered = data.items.filter(
+          (book) => book.volumeInfo.language === "en"
+        );
+        setSearchResults(filtered);
+        setHasSearched(true);
+      } catch (error) {
+        console.error(error);
       }
-      if (data.totalItems <= page * 20 + 20) {
-        setHasMore(false);
-      }
-      setTotalItems(data.totalItems);
-      const filtered = data.items.filter(
-        (book) => book.volumeInfo.language === "en"
-      );
-      setSearchResults(filtered);
-      setHasSearched(true);
-    } catch (error) {
-      console.error(error);
     }
   };
 
