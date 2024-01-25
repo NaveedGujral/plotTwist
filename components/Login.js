@@ -35,6 +35,7 @@ export default function Login({ navigation }) {
 					onChangeText={(text) => {
 						setEmail(text);
 					}}
+					style={styles.inputField}
 				/>
 			</View>
 			<View style={styles.inputContainer}>
@@ -48,6 +49,7 @@ export default function Login({ navigation }) {
 					onChangeText={(text) => {
 						setPassword(text);
 					}}
+					style={styles.inputField}
 				/>
 			</View>
 			<View style={styles.buttonContainer}>
@@ -84,6 +86,9 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		borderRadius: 20,
 	},
+	inputField: {
+		color: "white",
+	}
 });
 
 //placeholder colour matches background - > change so it doesn't 'dissapear'
