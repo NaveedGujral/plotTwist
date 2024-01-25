@@ -7,9 +7,14 @@ import { JosefinSans_400Regular } from "@expo-google-fonts/dev";
 export default function Welcome({ navigation }) {
 	useEffect(() => {
 		const checkUser = async () => {
-			const { data: session } = await supabase.auth.getSession();
-			if (session.session.user) {
-				navigation.navigate("Home");
+			try {
+				const { data: session } = await supabase.auth.getSession();
+				if (session.session.user) {
+					navigation.navigate("Home");
+				}
+			}
+			catch (error) {
+				console.log('An error occured...', error);
 			}
 		};
 
