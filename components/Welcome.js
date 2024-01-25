@@ -10,7 +10,7 @@ export default function Welcome({ navigation }) {
 			try {
 				const { data: session } = await supabase.auth.getSession();
 				if (session.session.user) {
-					navigation.navigate("Home");
+					navigation.navigate("Drawer", { screen: "Home" });
 				}
 			}
 			catch (error) {

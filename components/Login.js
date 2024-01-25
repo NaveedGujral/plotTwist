@@ -19,7 +19,7 @@ export default function Login({ navigation }) {
 		} else {
 			setEmail("");
 			setPassword("");
-			navigation.navigate("Home");
+			navigation.navigate("Drawer", { screen: "Home" });
 		}
 	}
 
