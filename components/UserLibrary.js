@@ -97,6 +97,7 @@ const UserLibrary = ({ session }) => {
 			<Text style={styles.headerText}>User Library</Text>
 			{books.map((book, index) => (
 				<LinearGradient
+					key={index}
 					colors={["#307361", "rgba(169, 169, 169, 0.10)"]}
 					start={{ x: 0, y: 0 }}
 					end={{ x: 1, y: 1 }}

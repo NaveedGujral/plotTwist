@@ -46,6 +46,7 @@ export default function SignUp() {
 					onChangeText={(text) => {
 						setEmail(text);
 					}}
+					style={styles.inputField}
 				/>
 			</View>
 			<View style={styles.inputContainer}>
@@ -58,6 +59,7 @@ export default function SignUp() {
 					onChangeText={(text) => {
 						setUsername(text);
 					}}
+					style={styles.inputField}
 				/>
 			</View>
 			<View style={styles.inputContainer}>
@@ -71,6 +73,7 @@ export default function SignUp() {
 					onChangeText={(text) => {
 						setPassword(text);
 					}}
+					style={styles.inputField}
 				/>
 			</View>
 			<View style={styles.buttonContainer}>
@@ -107,4 +110,7 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
         marginTop: 20,
 	},
+	inputField: {
+		color: 'white',
+	}
 });
