@@ -99,7 +99,6 @@ export default function UserProfile({ route }) {
         return (
             <View>
                 <View>
-                    <Text>Hi!!</Text>
                     <Input
                         title="Username"
                         placeholder="Username"

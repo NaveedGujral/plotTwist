@@ -18,6 +18,7 @@ import {
 	JosefinSans_400Regular,
 } from "@expo-google-fonts/dev";
 
+const { headerSS } = require('../Styling')
 const Drawer = createDrawerNavigator();
 
 function DrawerNavigator() {
@@ -46,19 +47,9 @@ function DrawerNavigator() {
 	return (
 		<Drawer.Navigator
 			screenOptions={{
-				headerStyle: {
-					backgroundColor: "#06A77D",
-				},
-				headerTintColor: "white",
-				headerTitleStyle: {
-					fontWeight: "bold",
-					fontSize: 21,
-					fontFamily: "Bellefair_400Regular",
-				},
-				headerTitleAlign: "center",
+				...headerSS,
 				drawerStyle: {
 					backgroundColor: "#272727",
-					// #307361 - muted green based on accent colour
 				},
 				drawerLabelStyle: {
 					color: "white",

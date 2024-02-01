@@ -19,6 +19,10 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 
+const { PTStyles, PTSwatches } = require('../Styling')
+const { heading, subHeading, body } = PTStyles
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
+
 const screenWidth = Dimensions.get("window").width;
 
 export default function BookList({ categoryName, id }) {
@@ -55,7 +59,7 @@ export default function BookList({ categoryName, id }) {
 
   return (
     <View style={styles.categoryContainer}>
-      <Text style={styles.categoryHeader}>{categoryName}</Text>
+      <Text style={{...subHeading, marginTop: 20}}>{categoryName}</Text>
       <View style={styles.categoryList}>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {bookList.map((listing) => {
@@ -70,7 +74,7 @@ export default function BookList({ categoryName, id }) {
                 navigation.navigate("GenreList", { genre: categoryName })
               }
             >
-              <Ionicons name="arrow-forward" size={30} color="white" />
+              <Ionicons name="arrow-forward" size={30} color={PTG1} style={{ textAlignVertical: "center" ,textAlign: "center"}} />
             </Pressable>
           </View>
         </ScrollView>
@@ -83,18 +87,6 @@ const styles = StyleSheet.create({
 	categoryContainer: {
 		alignItems: "center",
 		flex: 1,
-	},
-	categoryHeader: {
-		flexDirection: "row",
-		flex: 1,
-		width: screenWidth * 0.9,
-		alignItems: "center",
-		justifyContent: "space-between",
-		color: "white",
-		fontSize: 21.5,
-		fontFamily: "JosefinSans_400Regular",
-		fontWeight: 400,
-		marginTop: 20,
 	},
 	categoryList: {
 		width: screenWidth,
@@ -113,7 +105,7 @@ const styles = StyleSheet.create({
 		height: 50,
 		width: 50,
 		borderRadius: 35,
-		backgroundColor: '#06A77D',
+		backgroundColor: PTGreen,
 		justifyContent: 'center',
 		alignItems: 'center',
 	},

@@ -5,7 +5,6 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
-// import { FontAwesome } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import {
 	JosefinSans_400Regular,
@@ -13,6 +12,10 @@ import {
 
 import BookList from "./BookList";
 import TopTenCarousel from "./TopTenCarousel";
+
+const { PTStyles, PTSwatches } = require('../Styling')
+const { heading, subHeading, body } = PTStyles
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
 
 const { height, width } = Dimensions.get("window");
 
@@ -81,7 +84,7 @@ const HomeScreen = ({ navigation }) => {
 	}
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={{ flex: 1, backgroundColor: PTG4}}>
 			<View style={{ flex: 1 }}>
 				<ScrollView
 					showsVerticalScrollIndicator={false}
@@ -98,9 +101,9 @@ const HomeScreen = ({ navigation }) => {
 								: styles.container
 						}
 					>
-						<Text style={styles.spotlight}>Spotlight</Text>
-				<Text style={styles.topTen}>Top 10 Charts</Text>
-						<TopTenCarousel listings={topTen} />
+						<Text style={{...heading, textAlign: "center", marginBottom: 10 }}>Spotlight</Text>
+				<Text style={subHeading}>Top 10 Charts</Text>
+						<TopTenCarousel listings={topTen}/>
 						{categories.map((category) => {
 							return (
 								<BookList categoryName={category} key={category} id={currSession} />
@@ -109,24 +112,6 @@ const HomeScreen = ({ navigation }) => {
 						<StatusBar style="auto" />
 					</View>
 				</ScrollView>
-				<Pressable
-					style={styles.BTTContainer}
-					onPress={() => {
-						scrollRef.current?.scrollTo({
-							y: 0,
-							animated: true,
-						});
-					}}
-				>
-					<View style={styles.BTTCircle}>
-						<Ionicons
-							name="arrow-up"
-							size={35}
-							color="black"
-							style={styles.BTTArrow}
-						/>
-					</View>
-				</Pressable>
 			</View>
 			{scrollOffset > scrollOffsetLimit && (
 				<Pressable
@@ -146,7 +131,7 @@ const HomeScreen = ({ navigation }) => {
 						<Ionicons
 							name="arrow-up"
 							size={30}
-							color="black"
+							color= {PTG4}
 							style={styles.BTTArrow}
 						/>
 					</View>
@@ -162,32 +147,10 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		paddingTop: 20,
 		paddingBottom: 20,
-		backgroundColor: "#272727",
+		backgroundColor: PTG4,
 	},
 	webFix: {
 		marginBottom: height * 0.09,
-	},
-	spotlight: {
-		fontSize: 28,
-		fontWeight: "bold",
-		textAlign: "center",
-		marginBottom: 7,
-		color: "white",
-		fontFamily: "JosefinSans_400Regular",
-	},
-	topTen: {
-		fontSize: 16,
-		marginBottom: 10,
-		textAlign: "center",
-		color: "white",
-		fontFamily: "JosefinSans_400Regular",
-	},
-	header: {
-		fontSize: 29,
-		fontFamily: "JosefinSans_400Regular",
-		fontWeight: 500,
-		color: "white",
-		marginBottom: 25,
 	},
 	BTTContainer: {
 		position: "absolute",
@@ -201,8 +164,8 @@ const styles = StyleSheet.create({
 		width: 50,
 		height: 50,
 		borderRadius: 25,
-		backgroundColor: "white",
-		shadowColor: "#000",
+		backgroundColor: PTG1,
+		shadowColor: PTG4,
 		shadowOffset: {
 			width: 0,
 			height: 8,

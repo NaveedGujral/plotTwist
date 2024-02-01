@@ -4,6 +4,8 @@ import { StyleSheet, View, Text, Dimensions } from 'react-native';
 
 import BookListCard from './BookListCard';
 
+const { PTStyles } = require('../Styling')
+const { heading, subHeading, body } = PTStyles
 const { width } = Dimensions.get('screen');
 
 export default function GenreList({ route }) {
@@ -21,7 +23,7 @@ export default function GenreList({ route }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.headerText}>{genre} Books</Text>
+            <Text style={{...subHeading, textAlign: "center"}}>{genre} Books</Text>
             <View style={styles.bookList}>
                 {genreList.map(listing => {
                     return (

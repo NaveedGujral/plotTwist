@@ -26,6 +26,8 @@ import ReconsiderLibrary from "./components/ReconsiderLibrary";
 import ChatComponent from "./components/Messages";
 import ChatWindow from "./components/ChatWindow";
 
+const { headerSS } = require('./Styling')
+
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -64,124 +66,67 @@ function App() {
 						name="UserProfile"
 						component={UserProfile}
 						initialParams={{ session: session }}
-						options={{
-							headerTitle: "",
-							headerStyle: {
-								backgroundColor: "#06A77D",
-							},
-						}}
-					/>
+						options={headerSS}
+						/>
 					<Stack.Screen
 						name="Messages"
 						component={ChatComponent}
             			initialParams={{ session: session }}
-						options={{
-							headerTitle: "",
-							headerStyle: {
-								backgroundColor: "#06A77D",
-							},
-						}}
-					/>
+						options={headerSS}
+						/>
 					<Stack.Screen
 						name="Notifications"
 						component={Notifications}
 						initialParams={{ session: session, setNewNotif: setNewNotif }}
-						options={{
-							headerTitle: "",
-							headerStyle: {
-								backgroundColor: "#06A77D",
-							},
-						}}
-					/>
+						options={headerSS}
+						/>
 					<Stack.Screen
 						name="CreateListing"
 						component={CreateListing}
 						initialParams={{ session: session }}
-						options={{
-							headerTitle: "",
-							headerStyle: {
-								backgroundColor: "#06A77D",
-							},
-						}}
-					/>
+						options={headerSS}
+						/>
 					<Stack.Screen
 						name="AvailableListings"
 						component={AvailableListings}
 						initialParams={{ session: session }}
-						options={{
-							headerTitle: "",
-							headerStyle: {
-								backgroundColor: "#06A77D",
-							},
-						}}
+						options={headerSS}
 					/>
 					<Stack.Screen
 						name="ListedBook"
 						component={ListedBook}
 						initialParams={{ session: session }}
-						options={{
-							headerTitle: "",
-							headerStyle: {
-								backgroundColor: "#06A77D",
-							},
-						}}
-					/>
+						options={headerSS}
+						/>
 					<Stack.Screen
 						name="SwapNegotiationPage"
 						component={SwapNegotiationPage}
 						initialParams={{ session: session }}
-						options={{
-							headerTitle: "",
-							headerStyle: {
-								backgroundColor: "#06A77D",
-							},
-						}}
-					/>
+						options={headerSS}
+						/>
 					<Stack.Screen
 						name="Search_Existing_Book"
 						component={Search_Existing_Book}
-						options={{
-							headerTitle: "",
-							headerStyle: {
-								backgroundColor: "#06A77D",
-							},
-						}}
-					/>
+						options={headerSS}
+						/>
 					<Stack.Screen name="SwapOffer" component={SwapOffer} initialParams={{ session: session }}/>
 					<Stack.Screen
 						name="User2Library"
 						component={User2LibraryPage}
 						initialParams={{ session: session }}
-						options={{
-							headerTitle: "",
-							headerTintColor: "#000",
-							headerStyle: {
-								backgroundColor: "#06A77D",
-							},
-						}}
-					/>
+						options={headerSS}
+						/>
 					<Stack.Screen
 						name="GenreList"
 						component={GenreList}
-						options={{
-							headerTitle: "",
-							headerStyle: {
-								
-								backgroundColor: "#06A77D",
-							},
-						}}
-					/>
+						options={headerSS}
+						/>
 					<Stack.Screen
 						name="ReconsiderLibrary"
 						component={ReconsiderLibrary}
 						initialParams={{ session: session }}
-						options={{
-							headerTitle: "",
-							headerStyle: {
-								backgroundColor: "#06A77D",
-							},
-						}}
-					/>
+						options={headerSS}
+						/>
 					<Stack.Screen name="ChatWindow" component={ChatWindow} />
 				</Stack.Navigator>
 			) : (
@@ -189,36 +134,18 @@ function App() {
 					<Stack.Screen
 						name="Welcome"
 						component={Welcome}
-						options={{
-							headerTitleAlign: "center",
-							headerStyle: {
-								backgroundColor: "#06A77D",
-							},
-							headerTintColor: "white",
-						}}
-					/>
+						options={headerSS}
+						/>
 					<Stack.Screen
 						name="Login"
 						component={Login}
-						options={{
-							headerTitleAlign: "center",
-							headerStyle: {
-								backgroundColor: "#06A77D",
-							},
-							headerTintColor: "white",
-						}}
-					/>
+						options={headerSS}
+						/>
 					<Stack.Screen
 						name="SignUp"
 						component={SignUp}
-						options={{
-							headerTitleAlign: "center",
-							headerStyle: {
-								backgroundColor: "#06A77D",
-							},
-							headerTintColor: "white",
-						}}
-					/>
+						options={headerSS}
+						/>
 				</Stack.Navigator>
 			)}
 			{session && session.user && <Footer newNotif={newNotif} />}

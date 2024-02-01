@@ -2,6 +2,8 @@ import { View, StyleSheet, Dimensions, Text, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
+const { PTSwatches } = require('../Styling')
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
 
@@ -55,17 +57,17 @@ export default function Footer({ newNotif }) {
 
 const styles = StyleSheet.create({
 	footer: {
-		height: screenHeight * 0.09,
+		height: screenHeight * 0.06,
 		justifyContent: "center",
 		alignItems: "center",
 		position: "fixed",
 		bottom: 0,
 		width: screenWidth,
-		borderTopWidth: 2,
-		backgroundColor: "#06A77D",
+		borderWidth: 0,
+		backgroundColor: PTGreen,
 	},
 	footerContent: {
-		width: screenWidth * 0.8,
+		width: screenWidth * 0.9,
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
