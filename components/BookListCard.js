@@ -10,7 +10,6 @@ import { useState } from "react";
 export default function BookListCard({ listing, id }) {
   const [wishListed, setWishListed] = useState(false);
   const navigation = useNavigation();
-
   function handleWishListButton(listing) {
     async function updateWishList(num) {
       const { data, error } = await supabase
@@ -74,21 +73,21 @@ async function removeItemFromWishList(res) {
       >
         <FontAwesome
           name="circle"
-          size={37}
+          size={32}
           color="white"
-          style={{ opacity: 0.9 }}
+          style={{ opacity: 0.75 }}
         />
         {!wishListed ? (
           <AntDesign
             name="hearto"
-            size={18}
+            size={16}
             color="#C1514B"
             style={styles.heart}
           />
         ) : (
           <AntDesign
             name="heart"
-            size={18}
+            size={16}
             color="#C1514B"
             style={styles.heart}
           />
@@ -100,7 +99,7 @@ async function removeItemFromWishList(res) {
 
 const styles = StyleSheet.create({
   bookCard: {
-    borderRadius: 16,
+    borderRadius: 20,
     height: 180,
     width: 120,
     resizeMode: "cover",
@@ -113,14 +112,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   heartContainer: {
+    padding: 0,
+    margin: 0,
     position: "absolute",
-    top: 8.5,
-    right: 20,
+    width: 40,
+    top: 2.5 + 8,
+    right: 5 + 8,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
   heart: {
+    textAlign: "center",
+    textAlignVertical: "center",
     position: "absolute",
   },
 });
