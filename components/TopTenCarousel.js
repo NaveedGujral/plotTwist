@@ -9,6 +9,7 @@ const screenWidth = Dimensions.get('screen').width
 export default function TopTenCarousel ({listings}) {
     const [index, setIndex] = useState(0);
     const scrollX = useRef(new Animated.Value(0)).current;
+    console.log(listings)
     function handleOnScroll (event) {
         Animated.event([
             {
@@ -24,25 +25,19 @@ export default function TopTenCarousel ({listings}) {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={{width: screenWidth}}>
             <FlatList
                 data={listings}
-                renderItem={({item}) => <CarouselItem item={item}/>}
+                renderItem={({listing}) => <CarouselItem listing={ listing }/>}
                 horizontal
                 pagingEnabled
                 snapToAlignment="center"
                 showsHorizontalScrollIndicator={false}
                 onScroll={handleOnScroll}
-                
             />
-            <Pagination listings={listings} scrollX={scrollX}/>
+            <View style={{alignItems: 'center', paddingBottom: screenHeight*0.03}}>
+                <Pagination listings={listings} scrollX={scrollX}/>
+            </View>
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        height: screenHeight * 0.4,
-        width: screenWidth,
-    }
-})

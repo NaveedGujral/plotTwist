@@ -8,7 +8,8 @@ const { PTStyles, PTSwatches } = require('../Styling')
 const { heading, subHeading, body } = PTStyles
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
 
-export default function CarouselItem({ item }) {
+export default function CarouselItem({ listing }) {
+	console.log(listing)
 	return (
 		<View style={styles.container}>
 			<LinearGradient
@@ -20,9 +21,9 @@ export default function CarouselItem({ item }) {
 					overflow: "hidden",
 				}}
 			>
-				<View style={styles.card}>
-						<Image style={styles.image} source={{ uri: item.img_url }} />
-				</View>
+				{/* <View style={styles.card}>
+						<Image style={styles.image} source={{ uri: listing.img_url }} />
+				</View> */}
 			</LinearGradient>
 		</View>
 	);
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
 		width: screenWidth,
 	},
 	card: {
-		width: screenWidth * 0.8,
+		width: screenWidth * 0.9,
 		height: 400,
 		flex: 1,
 		justifyContent: "center",

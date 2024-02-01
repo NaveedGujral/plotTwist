@@ -8,44 +8,43 @@ const screenWidth = Dimensions.get('screen').width;
 
 export default function Pagination ({listings, scrollX}) {
     return (
-        <View style={styles.container}>
+        <View 
+            style={{
+                flex: 1, 
+                flexDirection: 'row', 
+                width: screenWidth* 0.6, 
+                alignItems: 'center', 
+                justifyContent: 'space-evenly'
+            }}>
             {
                 listings.map((_, idx) => {
                     const color = scrollX.interpolate({
-                        inputRange: [(idx - 1) * screenWidth, idx * screenWidth, (idx + 1) * screenWidth],
-                        outputRange: [PTG1, PTBlue, PTG1], 
-                        extrapolate: 'clamp',
-                    })
+                      inputRange: [
+                        (idx - 1) * screenWidth,
+                        idx * screenWidth,
+                        (idx + 1) * screenWidth,
+                      ],
+                      outputRange: [PTG1, PTBlue, PTG1],
+                      extrapolate: "clamp",
+                    });
 
                     const inputRange = [(idx - 1) * screenWidth, idx * screenWidth, (idx + 1) * screenWidth];
                     const dotWidth = scrollX.interpolate({
                         inputRange,
-                        outputRange: [12, 30, 12],
+                        outputRange: [screenWidth*0.03, screenWidth*0.09, screenWidth*0.03],
                         extrapolate: 'clamp',
                     })
                     return <Animated.View
                         key={idx.toString()}
-                         style={{...styles.dot, width: dotWidth, backgroundColor: color}} />
+                        style={{
+                            height: screenWidth*0.03,
+                            borderRadius: screenWidth*0.015,
+                            margin: 2, 
+                            width: dotWidth, 
+                            backgroundColor: color
+                    }} />
                 })
             }
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    dot: {
-        width: 12,
-        height: 12,
-        borderRadius: 6,
-        // backgroundColor: '#777',
-        backgroundColor: PTG1,
-        margin: 2,
-    },
-    container: {
-        flex: 1,
-        flexDirection: 'row',
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-})

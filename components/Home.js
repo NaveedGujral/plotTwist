@@ -85,7 +85,7 @@ const HomeScreen = ({ navigation }) => {
 
 	return (
 		<View style={{ flex: 1, backgroundColor: PTG4}}>
-			<View style={{ flex: 1 }}>
+			<View style={{ flex: 1}}>
 				<ScrollView
 					showsVerticalScrollIndicator={false}
 					ref={scrollRef}
@@ -102,7 +102,7 @@ const HomeScreen = ({ navigation }) => {
 						}
 					>
 						<Text style={{...heading, textAlign: "center", marginBottom: 10 }}>Spotlight</Text>
-				<Text style={subHeading}>Top 10 Charts</Text>
+						<Text style={subHeading}>Top 10 Charts</Text>
 						<TopTenCarousel listings={topTen}/>
 						{categories.map((category) => {
 							return (
