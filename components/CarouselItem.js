@@ -2,8 +2,8 @@ import { View, StyleSheet, Text, Image, Dimensions, Pressable } from "react-nati
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 
-const screenWidth = Dimensions.get("screen").width;
-const screenHeight = Dimensions.get("screen").height;
+const ScreenWidth = Dimensions.get("screen").width;
+const ScreenHeight = Dimensions.get("screen").height;
 
 const { PTStyles, PTSwatches } = require('../Styling')
 const { heading, subHeading, body } = PTStyles
@@ -12,63 +12,39 @@ const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
 export default function CarouselItem({ item }) {
 	const navigation = useNavigation();
 	return (
-		<View style={styles.container}>
-			<Pressable onPress={() => navigation.navigate("AvailableListings", {listing: item})}>
-				<LinearGradient
-					colors={[PTGreen, PTBlue]}
-					start={{ x: 0, y: 0 }}
-					end={{ x: 1, y: 1 }}
-					style={{
-						borderRadius: 30,
-						overflow: "hidden",
-					}}
-				>
-					<View style={styles.card}>
-							<Image style={styles.image} source={{ uri: item.img_url }} />
-					</View>
-				</LinearGradient>
-			</Pressable>
-		</View>
+		<Pressable onPress={() => navigation.navigate("AvailableListings", {listing: item})} style={styles.container}>
+			<LinearGradient
+				colors={[PTGreen, PTBlue]}
+				start={{ x: 0, y: 0 }}
+				end={{ x: 1, y: 1 }}
+				style={styles.card}
+			>
+						<Image style={styles.image} source={{ uri: item.img_url }} />
+			</LinearGradient>
+		</Pressable>
 	);
 }
 
 const styles = StyleSheet.create({
-	image: {
-		flex: 1,
-        alignItems: "center",
-		height: 180 * 1.5,
-		width: 120 * 1.5,
-		borderRadius: 16,
-		marginBottom: 10,
-		marginTop: 10,
-		resizeMode: "cover",
-	},
 	container: {
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		height: screenHeight * 0.4 * 0.9,
-		width: screenWidth,
+		height: ScreenWidth - 20,
+		width: ScreenWidth,
 	},
 	card: {
-		width: screenWidth * 0.9,
-		height: 400,
+		borderRadius: 30,
+		overflow: "hidden",
+		width: ScreenWidth - 20,
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
 	},
-	title: {
-		textAlign: "center",
-        paddingHorizontal: 10,
-        fontFamily: "JosefinSans_400Regular",
-        fontSize: 14,
-        paddingHorizontal: 10,
-
-	},
-	author: {
-		textAlign: "center",
-        paddingHorizontal: 10,
-        fontFamily: "JosefinSans_400Regular",
-        fontSize: 13,
+	image: {
+		borderRadius: 20,
+		height: ((ScreenWidth - 20)/3)*2,
+		width: ((((ScreenWidth - 20)/3)*2)/3)*2,
+		resizeMode: "cover",
 	},
 });

@@ -17,7 +17,8 @@ const { PTStyles, PTSwatches } = require('../Styling')
 const { heading, subHeading, body } = PTStyles
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
 
-const { height, width } = Dimensions.get("window");
+const screenHeight = Dimensions.get('screen').height
+const screenWidth = Dimensions.get('screen').width
 
 const HomeScreen = ({ navigation }) => {
 	const [categories, setCategories] = useState([]);
@@ -102,7 +103,7 @@ const HomeScreen = ({ navigation }) => {
 						}
 					>
 						<Text style={{...heading, textAlign: "center", marginBottom: 10 }}>Spotlight</Text>
-						<Text style={subHeading}>Top 10 Charts</Text>
+						<Text style={{...subHeading, paddingTop: screenHeight*0.01, paddingBottom: screenHeight*0.02}}>Top 10 Charts</Text>
 						<TopTenCarousel listings={topTen}/>
 						{categories.map((category) => {
 							return (
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
 		backgroundColor: PTG4,
 	},
 	webFix: {
-		marginBottom: height * 0.09,
+		marginBottom: screenHeight * 0.09,
 	},
 	BTTContainer: {
 		position: "absolute",

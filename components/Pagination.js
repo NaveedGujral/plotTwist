@@ -31,14 +31,14 @@ export default function Pagination ({listings, scrollX}) {
                     const inputRange = [(idx - 1) * screenWidth, idx * screenWidth, (idx + 1) * screenWidth];
                     const dotWidth = scrollX.interpolate({
                         inputRange,
-                        outputRange: [screenWidth*0.03, screenWidth*0.09, screenWidth*0.03],
+                        outputRange: [screenWidth*0.02, screenWidth*0.06, screenWidth*0.02],
                         extrapolate: 'clamp',
                     })
                     return <Animated.View
                         key={idx.toString()}
                         style={{
-                            height: screenWidth*0.03,
-                            borderRadius: screenWidth*0.015,
+                            height: screenWidth*0.02,
+                            borderRadius: screenWidth*0.01,
                             margin: 2, 
                             width: dotWidth, 
                             backgroundColor: color
