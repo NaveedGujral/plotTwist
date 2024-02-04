@@ -13,7 +13,7 @@ import {
 import BookList from "./BookList";
 import TopTenCarousel from "./TopTenCarousel";
 
-const { PTStyles, PTSwatches } = require('../Styling')
+const { PTStyles, PTSwatches, importFonts } = require('../Styling')
 const { heading, subHeading, body } = PTStyles
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
 
@@ -27,6 +27,8 @@ const HomeScreen = ({ navigation }) => {
 	const scrollRef = useRef();
 	const [scrollOffset, setScrollOffset] = useState(0);
 	const scrollOffsetLimit = 200;
+
+	importFonts()
 
 	useEffect(() => {
 		async function compareId(id) {
