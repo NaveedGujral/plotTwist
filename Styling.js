@@ -2,11 +2,23 @@ import { useFonts } from "expo-font";
 import { StyleSheet } from "react-native";
 import {
     JosefinSans_400Regular,
+    JosefinSans_300Light
 } from "@expo-google-fonts/dev";
 import { NativeModules } from "react-native";
 import { Dimensions } from "react-native";
 
 const { height, width } = Dimensions.get("window");
+
+function importFonts() {
+    const [fontsLoaded] = useFonts({
+		JosefinSans_400Regular,
+        JosefinSans_300Light
+	});
+
+	if (!fontsLoaded) {
+		return <Text>Loading...</Text>;
+	}
+}
 
 const PTSwatches = {
     PTGreen: "#06A77D",
@@ -29,13 +41,13 @@ const PTStyles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "100",
 		color: PTSwatches.PTG1,
-		fontFamily: "JosefinSans_400Regular",
+		fontFamily: "JosefinSans_300Light",
     },
     body: {
         fontSize: 12,
         fontWeight: "100",
 		color: PTSwatches.PTG1,
-		fontFamily: "JosefinSans_400Regular",
+		fontFamily: "JosefinSans_300Light",
     }
 })
 
@@ -49,4 +61,4 @@ const headerSS = {
     },
 }
 
-module.exports = { PTStyles, PTSwatches, headerSS }
+module.exports = { PTStyles, PTSwatches, headerSS, importFonts }
