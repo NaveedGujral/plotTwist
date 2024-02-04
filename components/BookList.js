@@ -16,8 +16,7 @@ import {
 	Bellefair_400Regular,
 	JosefinSans_400Regular,
 } from "@expo-google-fonts/dev";
-import { Ionicons } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
+import { Ionicons, Entypo } from "@expo/vector-icons";
 
 const { PTStyles, PTSwatches } = require('../Styling')
 const { heading, subHeading, body } = PTStyles
@@ -42,7 +41,7 @@ export default function BookList({ categoryName, id }) {
         new Set(data.map((item) => item.book_title))
       ).map((title) => data.find((item) => item.book_title === title));
 
-      setBookList(uniqueData);
+      setBookList(uniqueData.slice(0, 9));
     }
 
     getBooks(categoryName);
@@ -69,12 +68,12 @@ export default function BookList({ categoryName, id }) {
           })}
           <View style={styles.cardContainer}>
             <Pressable
-              style={styles.linkCard}
+              style={styles.seeAllButton}
               onPress={() =>
                 navigation.navigate("GenreList", { genre: categoryName })
               }
             >
-              <Ionicons name="arrow-forward" size={30} color={PTG1} style={{ textAlignVertical: "center" ,textAlign: "center"}} />
+              <Entypo name="dots-three-horizontal" size={24} color={PTG1} style={{ textAlignVertical: "center" ,textAlign: "center"}} />
             </Pressable>
           </View>
         </ScrollView>
@@ -101,11 +100,11 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: 'center',
 	},
-	linkCard: {
+	seeAllButton: {
 		height: 50,
 		width: 50,
 		borderRadius: 35,
-		backgroundColor: PTBlue,
+		backgroundColor: PTGreen,
 		justifyContent: 'center',
 		alignItems: 'center',
 	},

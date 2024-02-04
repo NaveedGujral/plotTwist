@@ -14,7 +14,7 @@ export default function Pagination ({listings, scrollX}) {
                 flexDirection: 'row', 
                 width: screenWidth* 0.6, 
                 alignItems: 'center', 
-                justifyContent: 'space-evenly'
+                justifyContent: 'space-between'
             }}>
             {
                 listings.map((_, idx) => {

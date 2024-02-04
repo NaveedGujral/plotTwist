@@ -34,7 +34,7 @@ export default function TopTenCarousel ({listings}) {
                 showsHorizontalScrollIndicator={false}
                 onScroll={handleOnScroll}
             />
-            <View style={{alignItems: 'center', paddingVertical: screenHeight*0.03}}>
+            <View style={{alignItems: 'center', paddingTop: screenHeight*0.02, paddingBottom: screenHeight*0.03}}>
                 <Pagination listings={listings} scrollX={scrollX}/>
             </View>
         </View>
