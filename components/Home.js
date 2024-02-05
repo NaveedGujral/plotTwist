@@ -1,4 +1,5 @@
-import { View, Text, Pressable, Dimensions, Platform } from "react-native";
+import { View, Text, Pressable, Dimensions, Platform, Image, Animated } from "react-native";
+import { FadeIn, FadeOut } from    'react-native-reanimated';
 import { useEffect, useState, useRef } from "react";
 import supabase from "../config/supabaseClient";
 import { StatusBar } from "expo-status-bar";
@@ -78,14 +79,6 @@ const HomeScreen = ({ navigation }) => {
 		getCategories();
 	}, []);
 
-	const [fontsLoaded] = useFonts({
-		JosefinSans_400Regular,
-	});
-
-	if (!fontsLoaded) {
-		return <Text>Loading...</Text>;
-	}
-
 	return (
 		<View style={{ flex: 1, backgroundColor: PTG4}}>
 			<View style={{ flex: 1}}>
@@ -105,8 +98,9 @@ const HomeScreen = ({ navigation }) => {
 						}
 					>
 						<Text style={{...heading, textAlign: "center", marginBottom: 10 }}>Spotlight</Text>
-						<Text style={{...subHeading, paddingTop: screenHeight*0.01, paddingBottom: screenHeight*0.02}}>Top 10 Charts</Text>
+						<Text style={{...subHeading, paddingTop: screenHeight*0.01, paddingBottom: screenHeight*0.02}}>Top 10 Most Wishlisted</Text>
 						<TopTenCarousel listings={topTen}/>
+						<Text style={{...heading, textAlign: "center", marginBottom: 10 }}>Categories</Text>
 						{categories.map((category) => {
 							return (
 								<BookList categoryName={category} key={category} id={currSession} />
@@ -116,30 +110,28 @@ const HomeScreen = ({ navigation }) => {
 					</View>
 				</ScrollView>
 			</View>
-			{scrollOffset > scrollOffsetLimit && (
-				<Pressable
+				{scrollOffset > scrollOffsetLimit && (
+					<Pressable
 					style={
-						Platform.OS === "web"
-							? { ...styles.BTTContainer, ...styles.BTTHeight }
-							: styles.BTTContainer
-					}
-					onPress={() => {
-						scrollRef.current?.scrollTo({
-							y: 0,
-							animated: true,
-						});
-					}}
-				>
-					<View style={styles.BTTCircle}>
-						<Ionicons
-							name="arrow-up"
-							size={30}
-							color= {PTG4}
-							style={styles.BTTArrow}
-						/>
-					</View>
-				</Pressable>
-			)}
+							styles.BTTContainer
+						}
+						onPress={() => {
+							scrollRef.current?.scrollTo({
+								y: 0,
+								animated: true,
+							});
+						}}
+					>
+						<View style={styles.BTTCircle}>
+							<Ionicons
+								name="arrow-up"
+								size={30}
+								color= {PTG4}
+								style={styles.BTTArrow}
+							/>
+						</View>
+					</Pressable>
+				)}
 		</View>
 	);
 };
@@ -157,8 +149,8 @@ const styles = StyleSheet.create({
 	},
 	BTTContainer: {
 		position: "absolute",
-		bottom: 15,
-		right: 15,
+		right: screenWidth * 0.5 - 25,
+		top: screenHeight * 0.0125
 	},
 	BTTHeight: {
 		bottom: 98,

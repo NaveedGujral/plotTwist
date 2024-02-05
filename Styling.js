@@ -1,13 +1,24 @@
 import { useFonts } from "expo-font";
-import { StyleSheet } from "react-native";
+import { LogBox, StyleSheet, Image, Pressable, View } from "react-native";
 import {
     JosefinSans_400Regular,
     JosefinSans_300Light
 } from "@expo-google-fonts/dev";
 import { NativeModules } from "react-native";
+import { useState, useEffect, useRef } from "react"
 import { Dimensions } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-const { height, width } = Dimensions.get("window");
+const { screenHeight, width } = Dimensions.get("window");
+
+function LogoW() {
+    const logoW = 576
+    const logoH = 96
+    const resizeVal = 32/96
+    return (
+        <Image source={require('./assets/Logos/Banner2W1X.png')} style={{ resizeMode: 'contain', flex: 1, height: resizeVal*logoH, width: resizeVal*logoW }} />
+    )
+}
 
 function importFonts() {
     const [fontsLoaded] = useFonts({
@@ -33,7 +44,7 @@ const PTSwatches = {
 const PTStyles = StyleSheet.create({
     heading: {
 		fontSize: 27,
-		fontWeight: "500",
+		fontWeight: "400",
 		color: PTSwatches.PTG1,
 		fontFamily: "JosefinSans_400Regular",
 	},
@@ -48,15 +59,16 @@ const PTStyles = StyleSheet.create({
         fontWeight: "100",
 		color: PTSwatches.PTG1,
 		fontFamily: "JosefinSans_300Light",
-    }
+    },
 })
 
 const headerSS = {
-    headerTitle: "",
+    headerTitle: (props) => <LogoW {...props} />,
+    headerTitleAlign: "center",
     headerTintColor: PTSwatches.PTG1,
     headerStyle: {
         borderWidth: 0,
-        height: height * 0.06,
+        screenHeight: screenHeight * 0.06,
         backgroundColor: PTSwatches.PTGreen,
     },
 }

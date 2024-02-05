@@ -59,7 +59,7 @@ function DrawerNavigator() {
 			<Drawer.Screen
 				name="Home"
 				component={HomeScreen}
-				options={{ headerTitle: "", headerTitleAlign: "center" }}
+				options={headerSS}
 				initialParams={{ session: session }}
 			/>
 			<Drawer.Screen
