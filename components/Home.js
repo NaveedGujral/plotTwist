@@ -5,7 +5,7 @@ import supabase from "../config/supabaseClient";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import {
 	JosefinSans_400Regular,
@@ -123,12 +123,7 @@ const HomeScreen = ({ navigation }) => {
 						}}
 					>
 						<View style={styles.BTTCircle}>
-							<Ionicons
-								name="arrow-up"
-								size={30}
-								color= {PTG4}
-								style={styles.BTTArrow}
-							/>
+							<MaterialCommunityIcons name="chevron-double-up" size={30} color={PTG1} style={styles.BTTArrow}/>
 						</View>
 					</Pressable>
 				)}
@@ -159,7 +154,7 @@ const styles = StyleSheet.create({
 		width: 50,
 		height: 50,
 		borderRadius: 25,
-		backgroundColor: PTG1,
+		backgroundColor: PTGreen,
 		shadowColor: PTG4,
 		shadowOffset: {
 			width: 0,
