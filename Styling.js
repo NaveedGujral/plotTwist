@@ -1,15 +1,12 @@
 import { useFonts } from "expo-font";
-import { LogBox, StyleSheet, Image, Pressable, View } from "react-native";
+import { StyleSheet, Image } from "react-native";
 import {
     JosefinSans_400Regular,
     JosefinSans_300Light
 } from "@expo-google-fonts/dev";
-import { NativeModules } from "react-native";
-import { useState, useEffect, useRef } from "react"
 import { Dimensions } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
-const { screenHeight, width } = Dimensions.get("window");
+const { height, width } = Dimensions.get("window");
 
 function LogoW() {
     const logoW = 576
@@ -60,6 +57,14 @@ const PTStyles = StyleSheet.create({
 		color: PTSwatches.PTG1,
 		fontFamily: "JosefinSans_300Light",
     },
+	gradTile: {
+		borderRadius: 30,
+		overflow: "hidden",
+		width: width - 20,
+		flex: 1,
+		justifyContent: "space-between",
+		alignItems: "center",
+	}
 })
 
 const headerSS = {
@@ -68,7 +73,7 @@ const headerSS = {
     headerTintColor: PTSwatches.PTG1,
     headerStyle: {
         borderWidth: 0,
-        screenHeight: screenHeight * 0.06,
+        screenHeight: height * 0.06,
         backgroundColor: PTSwatches.PTGreen,
     },
 }

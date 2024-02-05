@@ -64,19 +64,19 @@ function DrawerNavigator() {
 			/>
 			<Drawer.Screen
 				name="User Library"
-				options={{ headerTitle: "", headerTitleAlign: "center" }}
+				options={headerSS}
 			>
 				{(props) => <UserLibrary {...props} session={session} />}
 			</Drawer.Screen>
 			<Drawer.Screen
 				name="Wishlist"
-				options={{ headerTitle: "", headerTitleAlign: "center"}}
+				options={headerSS}
 			>
 				{(props) => <WishList {...props} session={session} />}
 			</Drawer.Screen>
             <Drawer.Screen
                 name="Active Swaps"
-                options={{ headerTitle: "", headerTitleAlign: 'center' }}
+                options={headerSS}
             >
                 {props => (
                     <ActiveSwaps
@@ -87,7 +87,7 @@ function DrawerNavigator() {
             </Drawer.Screen>
 			<Drawer.Screen
 				name="Swap History"
-				options={{ headerTitleAlign: "center", headerTitle: "" }}
+				options={headerSS}
 			>
 				{(props) => <SwapHistory {...props} session={session} />}
 			</Drawer.Screen>
@@ -95,7 +95,7 @@ function DrawerNavigator() {
 			<Drawer.Screen
 				name="Sign Out"
 				component={SignOutScreen}
-				options={{ headerTitleAlign: "center" }}
+				options={headerSS}
 			/>
 		</Drawer.Navigator>
 	);

@@ -6,7 +6,7 @@ const ScreenWidth = Dimensions.get("screen").width;
 const ScreenHeight = Dimensions.get("screen").height;
 
 const { PTStyles, PTSwatches } = require('../Styling')
-const { heading, subHeading, body } = PTStyles
+const { heading, subHeading, body, gradTile } = PTStyles
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
 
 export default function CarouselItem({ item }) {
@@ -18,7 +18,7 @@ export default function CarouselItem({ item }) {
 				colors={[PTGreen, PTBlue]}
 				start={{ x: 0, y: 0 }}
 				end={{ x: 1, y: 1 }}
-				style={styles.card}
+				style={gradTile}
 			>
 				<View style= {{height: ((ScreenWidth - 20)/6)*1, justifyContent: "center", flex: 1}}>
 					<Text style={styles.headerBox}>
@@ -47,18 +47,9 @@ const styles = StyleSheet.create({
 	headerBox: {
 		...subHeading, 
 		textAlign: "center", 
-		width: ScreenWidth - 35, 
-		fontWeight: "bold", 
+		width: ScreenWidth - 50, 
+		fontWeight: "600", 
 		overflow: "hidden",
-		// height: ((ScreenWidth - 20)/6)*1,
-	},
-	card: {
-		borderRadius: 30,
-		overflow: "hidden",
-		width: ScreenWidth - 20,
-		flex: 1,
-		justifyContent: "space-between",
-		alignItems: "center",
 	},
 	image: {
 		borderRadius: 20,
