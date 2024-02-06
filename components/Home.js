@@ -15,11 +15,10 @@ import BookList from "./BookList";
 import TopTenCarousel from "./TopTenCarousel";
 
 const { PTStyles, PTSwatches, importFonts } = require('../Styling')
-const { heading, subHeading, body } = PTStyles
+const { heading, subHeading, body, page, webFix } = PTStyles
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
 
-const screenHeight = Dimensions.get('screen').height
-const screenWidth = Dimensions.get('screen').width
+const { height, width } = Dimensions.get("window");
 
 const HomeScreen = ({ navigation }) => {
 	const [categories, setCategories] = useState([]);
@@ -93,12 +92,12 @@ const HomeScreen = ({ navigation }) => {
 					<View
 						style={
 							Platform.OS === "web"
-								? { ...styles.container, ...styles.webFix }
-								: styles.container
+								? { ...page, ...webFix }
+								: page
 						}
 					>
 						<Text style={{...heading, textAlign: "center", marginBottom: 10 }}>Spotlight</Text>
-						<Text style={{...subHeading, paddingTop: screenHeight*0.01, paddingBottom: screenHeight*0.02}}>Top 10 Most Wishlisted</Text>
+						<Text style={{...subHeading, paddingTop: height/(3^3), paddingBottom: height/(3^3), height: height/(3^3)}}>Top 10 Most Wishlisted</Text>
 						<TopTenCarousel listings={topTen}/>
 						<Text style={{...heading, textAlign: "center", marginBottom: 10 }}>Categories</Text>
 						{categories.map((category) => {
@@ -132,20 +131,10 @@ const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: "center",
-		paddingTop: 20,
-		paddingBottom: 20,
-		backgroundColor: PTG4,
-	},
-	webFix: {
-		marginBottom: screenHeight * 0.09,
-	},
 	BTTContainer: {
 		position: "absolute",
-		right: screenWidth * 0.5 - 25,
-		top: screenHeight * 0.0125
+		right: width * 0.5 - 25,
+		top: height * 0.0125
 	},
 	BTTHeight: {
 		bottom: 98,

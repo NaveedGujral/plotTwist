@@ -57,14 +57,26 @@ const PTStyles = StyleSheet.create({
 		color: PTSwatches.PTG1,
 		fontFamily: "JosefinSans_300Light",
     },
+    page: {
+        flex: 1,
+		alignItems: "center",
+		paddingTop: 20,
+		paddingBottom: 20,
+		backgroundColor: PTSwatches.PTG4,
+        height: height
+    },
+    webFix: {
+        marginBottom: height * 0.09,
+        backgroundColor: PTSwatches.PTG4,
+	},
 	gradTile: {
 		borderRadius: 30,
 		overflow: "hidden",
 		width: width - 20,
-		flex: 1,
+        height: width - 20,
 		justifyContent: "space-between",
 		alignItems: "center",
-	}
+	},
 })
 
 const headerSS = {

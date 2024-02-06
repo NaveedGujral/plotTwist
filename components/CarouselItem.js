@@ -6,11 +6,10 @@ const ScreenWidth = Dimensions.get("screen").width;
 const ScreenHeight = Dimensions.get("screen").height;
 
 const { PTStyles, PTSwatches } = require('../Styling')
-const { heading, subHeading, body, gradTile } = PTStyles
+const { heading, subHeading, body, gradTile, bookCoverImage } = PTStyles
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
 
 export default function CarouselItem({ item }) {
-	console.log(item)
 	const navigation = useNavigation();
 	return (
 		<Pressable onPress={() => navigation.navigate("AvailableListings", {listing: item})} style={styles.container}>
