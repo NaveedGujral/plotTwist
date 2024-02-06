@@ -7,6 +7,8 @@ const { height, width } = Dimensions.get("window");
 const { PTStyles, PTSwatches } = require('../Styling')
 const { heading, subHeading, body, gradTile, bookCoverImage } = PTStyles
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
+const pageHeight = (height - (height/27)*4)
+const containerHeight = (pageHeight/2) - (pageHeight/8)
 
 export default function CarouselItem({ item }) {
 	const navigation = useNavigation();
@@ -37,13 +39,13 @@ export default function CarouselItem({ item }) {
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: "purple",
-		borderColor: "white",
-		borderWidth: 5,
 		// flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		// height: ,
+		height: containerHeight,
 		width: width,
+		padding: 0,
+		margin: 0,
 	},
 	headerBox: {
 		...subHeading, 

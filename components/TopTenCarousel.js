@@ -38,7 +38,7 @@ export default function TopTenCarousel({ listings }) {
 
   return (
     <View style={{ width: "100%", height: "100%" }}>
-      <View style={{ borderColor: "white", borderWidth: 2, flex: 2,justifyContent: "space-around" }}>
+      <View style={{ flex: 2,justifyContent: "space-around" }}>
         <Text style={{ ...heading, textAlign: "center" }}>
           Spotlight
         </Text>
@@ -52,10 +52,9 @@ export default function TopTenCarousel({ listings }) {
         </Text>
       </View>
 
-      <View style={{ borderColor: "green", borderWidth: 2, flex: 9}}>
+      <View style={{ flex: 9}}>
         <FlatList
           data={listings}
-          contentContainerStyle={{}}
           renderItem={({ item }) => <CarouselItem item={item} />}
           horizontal
           pagingEnabled
@@ -67,11 +66,12 @@ export default function TopTenCarousel({ listings }) {
 
       <View
           style={{
+            justifyContent: "center",
             alignItems: "center",
             flex:1
           }}
         >
-          {/* <Pagination listings={listings} scrollX={scrollX} /> */}
+          <Pagination listings={listings} scrollX={scrollX} />
         </View>
     </View>
   );
