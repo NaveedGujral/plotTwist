@@ -78,56 +78,64 @@ const HomeScreen = ({ navigation }) => {
 		getCategories();
 	}, []);
 
-	return (
-		<View style={{ flex: 1, backgroundColor: PTG4}}>
-			<View style={{ flex: 1}}>
-				<ScrollView
-					showsVerticalScrollIndicator={false}
-					ref={scrollRef}
-					onScroll={(event) => {
-						setScrollOffset(event.nativeEvent.contentOffset.y);
-					}}
-					scrollEventThrottle={16}
-				>
-					<View
-						style={
-							Platform.OS === "web"
-								? { ...page, ...webFix }
-								: page
-						}
-					>
-						<Text style={{...heading, textAlign: "center", marginBottom: 10 }}>Spotlight</Text>
-						<Text style={{...subHeading, paddingTop: height/(3^3), paddingBottom: height/(3^3), height: height/(3^3)}}>Top 10 Most Wishlisted</Text>
-						<TopTenCarousel listings={topTen}/>
-						<Text style={{...heading, textAlign: "center", marginBottom: 10 }}>Categories</Text>
-						{categories.map((category) => {
-							return (
-								<BookList categoryName={category} key={category} id={currSession} />
-							);
-						})}
-						<StatusBar style="auto" />
-					</View>
-				</ScrollView>
-			</View>
-				{scrollOffset > scrollOffsetLimit && (
-					<Pressable
-					style={
-							styles.BTTContainer
-						}
-						onPress={() => {
-							scrollRef.current?.scrollTo({
-								y: 0,
-								animated: true,
-							});
-						}}
-					>
-						<View style={styles.BTTCircle}>
-							<MaterialCommunityIcons name="chevron-double-up" size={30} color={PTG1} style={styles.BTTArrow}/>
-						</View>
-					</Pressable>
-				)}
-		</View>
-	);
+// grid layout experimental code
+
+return (<View style={{ flex: 1, backgroundColor: PTG4}}>
+
+</View>)
+
+
+// code to adapted to grid layout
+	// return (
+	// 	<View style={{ flex: 1, backgroundColor: PTG4}}>
+	// 		<View style={{ flex: 1}}>
+	// 			<ScrollView
+	// 				showsVerticalScrollIndicator={false}
+	// 				ref={scrollRef}
+	// 				onScroll={(event) => {
+	// 					setScrollOffset(event.nativeEvent.contentOffset.y);
+	// 				}}
+	// 				scrollEventThrottle={16}
+	// 			>
+	// 				<View
+	// 					style={
+	// 						Platform.OS === "web"
+	// 							? { ...page, ...webFix }
+	// 							: page
+	// 					}
+	// 				>
+	// 					<Text style={{...heading, textAlign: "center", marginBottom: 10 }}>Spotlight</Text>
+	// 					<Text style={{...subHeading, paddingTop: height/(3^3), paddingBottom: height/(3^3), height: height/(3^3)}}>Top 10 Most Wishlisted</Text>
+	// 					<TopTenCarousel listings={topTen}/>
+	// 					<Text style={{...heading, textAlign: "center", marginBottom: 10 }}>Categories</Text>
+	// 					{categories.map((category) => {
+	// 						return (
+	// 							<BookList categoryName={category} key={category} id={currSession} />
+	// 						);
+	// 					})}
+	// 					<StatusBar style="auto" />
+	// 				</View>
+	// 			</ScrollView>
+	// 		</View>
+	// 			{scrollOffset > scrollOffsetLimit && (
+	// 				<Pressable
+	// 				style={
+	// 						styles.BTTContainer
+	// 					}
+	// 					onPress={() => {
+	// 						scrollRef.current?.scrollTo({
+	// 							y: 0,
+	// 							animated: true,
+	// 						});
+	// 					}}
+	// 				>
+	// 					<View style={styles.BTTCircle}>
+	// 						<MaterialCommunityIcons name="chevron-double-up" size={30} color={PTG1} style={styles.BTTArrow}/>
+	// 					</View>
+	// 				</Pressable>
+	// 			)}
+	// 	</View>
+	// );
 };
 
 const styles = StyleSheet.create({

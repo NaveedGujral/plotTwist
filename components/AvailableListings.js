@@ -125,7 +125,6 @@ export default function AvailableListings({ route }) {
 
                 <Modal isVisible={isModalVisible} backdropOpacity={2}>
                   <View style={styles.modal}>
-                    {/* <ScrollView> */}
                       <View
                         style={{ flexDirection: "column", alignItems: "left" }}
                       >
@@ -139,7 +138,6 @@ export default function AvailableListings({ route }) {
                           </Pressable>
                         </View>
                       </View>
-                    {/* </ScrollView> */}
                   </View>
                 </Modal>
               </View>

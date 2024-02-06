@@ -11,7 +11,8 @@ const { height, width } = Dimensions.get("window");
 function LogoW() {
     const logoW = 576
     const logoH = 96
-    const resizeVal = 32/96
+    const targetBannerHeight = height/27
+    const resizeVal = targetBannerHeight/logoH
     return (
         <Image source={require('./assets/Logos/Banner2W1X.png')} style={{ resizeMode: 'contain', flex: 1, height: resizeVal*logoH, width: resizeVal*logoW }} />
     )
@@ -85,7 +86,7 @@ const headerSS = {
     headerTintColor: PTSwatches.PTG1,
     headerStyle: {
         borderWidth: 0,
-        screenHeight: height * 0.06,
+        height: (height/27)*2,
         backgroundColor: PTSwatches.PTGreen,
     },
 }

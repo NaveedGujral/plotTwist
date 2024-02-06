@@ -4,8 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 const { PTSwatches } = require('../Styling')
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
-const screenHeight = Dimensions.get("window").height;
-const screenWidth = Dimensions.get("window").width;
+const {width, height} = Dimensions.get("window")
 
 export default function Footer({ newNotif }) {
 	const navigation = useNavigation();
@@ -57,17 +56,17 @@ export default function Footer({ newNotif }) {
 
 const styles = StyleSheet.create({
 	footer: {
-		height: screenHeight * 0.06,
+		height: (height/27)*2,
 		justifyContent: "center",
 		alignItems: "center",
 		position: "fixed",
 		bottom: 0,
-		width: screenWidth,
+		width: width,
 		borderWidth: 0,
 		backgroundColor: PTGreen,
 	},
 	footerContent: {
-		width: screenWidth * 0.9,
+		width: width - height/27,
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
