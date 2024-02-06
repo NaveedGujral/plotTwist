@@ -2,8 +2,7 @@ import { View, StyleSheet, Text, Image, Dimensions, Pressable } from "react-nati
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 
-const ScreenWidth = Dimensions.get("screen").width;
-const ScreenHeight = Dimensions.get("screen").height;
+const { height, width } = Dimensions.get("window");
 
 const { PTStyles, PTSwatches } = require('../Styling')
 const { heading, subHeading, body, gradTile, bookCoverImage } = PTStyles
@@ -13,7 +12,7 @@ export default function CarouselItem({ item }) {
 	const navigation = useNavigation();
 	return (
 		<Pressable onPress={() => navigation.navigate("AvailableListings", {listing: item})} style={styles.container}>
-			<LinearGradient
+			{/* <LinearGradient
 				colors={[PTGreen, PTBlue]}
 				start={{ x: 0, y: 0 }}
 				end={{ x: 1, y: 1 }}
@@ -30,30 +29,33 @@ export default function CarouselItem({ item }) {
 						{item.no_of_wishlists} people want this book
 					</Text>
 				</View>
-			</LinearGradient>
+			</LinearGradient> */}
 		</Pressable>
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+		backgroundColor: "purple",
+		borderColor: "white",
+		borderWidth: 5,
+		// flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		height: ScreenWidth - 20,
-		width: ScreenWidth,
+		// height: ,
+		width: width,
 	},
 	headerBox: {
 		...subHeading, 
 		textAlign: "center", 
-		width: ScreenWidth - 50, 
+		width: width - 50, 
 		fontWeight: "600", 
 		overflow: "hidden",
 	},
 	image: {
 		borderRadius: 20,
-		height: ((ScreenWidth - 20)/3)*2,
-		width: ((((ScreenWidth - 20)/3)*2)/3)*2,
+		height: ((width - 20)/3)*2,
+		width: ((((width - 20)/3)*2)/3)*2,
 		resizeMode: "cover",
 	},
 });

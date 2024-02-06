@@ -1,42 +1,78 @@
-import { StyleSheet, FlatList, View, Dimensions, Animated } from "react-native";
+import {
+  StyleSheet,
+  FlatList,
+  View,
+  Dimensions,
+  Animated,
+  Text,
+} from "react-native";
 import CarouselItem from "./CarouselItem";
 import Pagination from "./Pagination";
 import { useRef, useState } from "react";
 
-const screenHeight = Dimensions.get('screen').height
-const screenWidth = Dimensions.get('screen').width
+const { PTStyles, PTSwatches, importFonts } = require("../Styling");
+const { heading, subHeading, body, page, webFix } = PTStyles;
 
-export default function TopTenCarousel ({listings}) {
-    const [index, setIndex] = useState(0);
-    const scrollX = useRef(new Animated.Value(0)).current;
-    function handleOnScroll (event) {
-        Animated.event([
-            {
-                nativeEvent: {
-                    contentOffset: {
-                        x: scrollX,
-                    }
-                }
-            }
-        ], {
-            useNativeDriver: false,
-        })(event)
-    }
+const screenHeight = Dimensions.get("screen").height;
+const screenWidth = Dimensions.get("screen").width;
 
-    return (
-        <View style={{width: screenWidth}}>
-            <FlatList
-                data={listings}
-                renderItem={({item}) => <CarouselItem item={item}/>}
-                horizontal
-                pagingEnabled
-                snapToAlignment="center"
-                showsHorizontalScrollIndicator={false}
-                onScroll={handleOnScroll}
-            />
-            <View style={{alignItems: 'center', paddingTop: screenHeight*0.02, paddingBottom: screenHeight*0.03}}>
-                <Pagination listings={listings} scrollX={scrollX}/>
-            </View>
+export default function TopTenCarousel({ listings }) {
+  const [index, setIndex] = useState(0);
+  const scrollX = useRef(new Animated.Value(0)).current;
+  function handleOnScroll(event) {
+    Animated.event(
+      [
+        {
+          nativeEvent: {
+            contentOffset: {
+              x: scrollX,
+            },
+          },
+        },
+      ],
+      {
+        useNativeDriver: false,
+      }
+    )(event);
+  }
+
+  return (
+    <View style={{ width: "100%", height: "100%" }}>
+      <View style={{ borderColor: "white", borderWidth: 2, flex: 2,justifyContent: "space-around" }}>
+        <Text style={{ ...heading, textAlign: "center" }}>
+          Spotlight
+        </Text>
+        <Text
+          style={{
+            ...subHeading,
+            textAlign: "center",
+          }}
+        >
+          Top 10 Most Wishlisted
+        </Text>
+      </View>
+
+      <View style={{ borderColor: "green", borderWidth: 2, flex: 9}}>
+        <FlatList
+          data={listings}
+          contentContainerStyle={{}}
+          renderItem={({ item }) => <CarouselItem item={item} />}
+          horizontal
+          pagingEnabled
+          snapToAlignment="center"
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleOnScroll}
+        />
+      </View>
+
+      <View
+          style={{
+            alignItems: "center",
+            flex:1
+          }}
+        >
+          {/* <Pagination listings={listings} scrollX={scrollX} /> */}
         </View>
-    )
+    </View>
+  );
 }

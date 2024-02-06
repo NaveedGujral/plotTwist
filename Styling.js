@@ -59,12 +59,10 @@ const PTStyles = StyleSheet.create({
 		fontFamily: "JosefinSans_300Light",
     },
     page: {
-        flex: 1,
-		alignItems: "center",
-		paddingTop: 20,
-		paddingBottom: 20,
 		backgroundColor: PTSwatches.PTG4,
-        height: height
+        height: height - (height/27)*4,
+        width: "100%",
+        // flex: 1
     },
     webFix: {
         marginBottom: height * 0.09,
