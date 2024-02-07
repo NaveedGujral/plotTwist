@@ -64,7 +64,7 @@ export default function BookList({ categoryName, id }) {
       <View style={{ flex: 8 }}>
         <View
           style={{
-            width: width * 0.9,
+            width: width,
             height: "100%",
             backgroundColor: PTBlue,
             // borderWidth: 3,
@@ -82,21 +82,37 @@ export default function BookList({ categoryName, id }) {
             style={{ height: "100%" }}
           >
 
+            {/* Splits the view into 3 equal sections*/}
             <View
               style={{
-                flex: 0.3,
+                flex: 1 / 3,
                 flexDirection: "row",
               }}
-            >
+              >
+
+              {/* Category section*/}
               <View
                 style={{
-                  marginHorizontal: width*0.025,
                   flexDirection: "row",
                   width: "100%",
                   height: "100%",
                   backgroundColor: PTRed,
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
-              ></View>
+                >
+
+                {/* Category Book link needs to have these*/}
+                <View
+                  style={{
+                    width: width/3 - 2*(width*0.0334),
+                    height: "89.99%",
+                    backgroundColor: PTBlue,
+                  }}
+                ></View>
+              
+              </View>
+
             </View>
 
             {/* {bookList.map((listing) => {
@@ -115,7 +131,6 @@ export default function BookList({ categoryName, id }) {
               <Entypo name="dots-three-horizontal" size={24} color={PTG1} style={{ textAlignVertical: "center" ,textAlign: "center"}} />
             </Pressable>
           </View> */}
-          
           </ScrollView>
         </View>
       </View>
