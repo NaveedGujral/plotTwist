@@ -38,8 +38,15 @@ export default function TopTenCarousel({ listings }) {
 
   return (
     <View style={{ width: "100%", height: "100%" }}>
-      <View style={{ flex: 2,justifyContent: "space-around" }}>
-        <Text style={{ ...heading, textAlign: "center" }}>
+      <View style={{ flex: 2, justifyContent: "space-evenly" }}>
+        <Text
+          style={{
+            ...heading,
+            textAlign: "center",
+            paddingBottom: "1.67%",
+            paddingTop: "3.34%",
+          }}
+        >
           Spotlight
         </Text>
         <Text
@@ -65,14 +72,14 @@ export default function TopTenCarousel({ listings }) {
       </View>
 
       <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            flex:1
-          }}
+        style={{
+          justifyContent: "flex-start",
+          alignItems: "center",
+          flex: 1,
+        }}
         >
-          <Pagination listings={listings} scrollX={scrollX} />
-        </View>
+          <Pagination listings={listings} scrollX={scrollX}/>
+      </View>
     </View>
   );
 }

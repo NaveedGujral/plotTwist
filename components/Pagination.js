@@ -3,43 +3,49 @@ import { StyleSheet, View, Dimensions, Animated } from "react-native";
 const { PTSwatches } = require('../Styling')
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
 
-const screenHeight = Dimensions.get('screen').height;
-const screenWidth = Dimensions.get('screen').width;
+const { height, width } = Dimensions.get("window");
 
 export default function Pagination ({listings, scrollX}) {
     return (
         <View 
             style={{
-                flex: 1, 
+                flex: 1/3, 
                 flexDirection: 'row', 
-                width: screenWidth* 0.6, 
-                alignItems: 'center', 
                 justifyContent: 'space-between'
             }}>
             {
                 listings.map((_, idx) => {
+                    const inputRange = [(idx - 1) * width, idx * width, (idx + 1) * width];
+                    const minWidth = width*0.0167
+                    const maxWidth = 1.33*minWidth
+                    const minRad = minWidth/2
+                    const maxRad = maxWidth/2
+                    
                     const color = scrollX.interpolate({
-                      inputRange: [
-                        (idx - 1) * screenWidth,
-                        idx * screenWidth,
-                        (idx + 1) * screenWidth,
-                      ],
-                      outputRange: [PTG1, PTBlue, PTG1],
+                      inputRange,
+                      outputRange: [PTG3, PTG1, PTG3],
                       extrapolate: "clamp",
                     });
 
-                    const inputRange = [(idx - 1) * screenWidth, idx * screenWidth, (idx + 1) * screenWidth];
                     const dotWidth = scrollX.interpolate({
                         inputRange,
-                        outputRange: [screenWidth*0.02, screenWidth*0.06, screenWidth*0.02],
+                        outputRange: [minWidth, maxWidth, minWidth],
                         extrapolate: 'clamp',
                     })
+                    
+                    const dotRad = scrollX.interpolate({
+                        inputRange,
+                        outputRange: [minRad, maxRad, minRad],
+                        extrapolate: 'clamp',
+                    })
+
                     return <Animated.View
                         key={idx.toString()}
                         style={{
-                            height: screenWidth*0.02,
-                            borderRadius: screenWidth*0.01,
-                            margin: 2, 
+                            alignSelf: "center",
+                            borderRadius: dotRad,
+                            margin: dotRad, 
+                            height: dotWidth,
                             width: dotWidth, 
                             backgroundColor: color
                     }} />

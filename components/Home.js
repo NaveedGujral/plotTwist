@@ -92,7 +92,7 @@ const HomeScreen = ({ navigation }) => {
     <View style={page}>
       {/* // Spotlight */}
       
-      <View style={{ flex: 1, backgroundColor: PTG4 }}>
+      <View style={{ flex: 1, backgroundColor: PTG4}}>
         <TopTenCarousel listings={topTen} />
       </View>
 

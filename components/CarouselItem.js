@@ -14,13 +14,13 @@ export default function CarouselItem({ item }) {
 	const navigation = useNavigation();
 	return (
 		<Pressable onPress={() => navigation.navigate("AvailableListings", {listing: item})} style={styles.container}>
-			{/* <LinearGradient
+			<LinearGradient
 				colors={[PTGreen, PTBlue]}
 				start={{ x: 0, y: 0 }}
 				end={{ x: 1, y: 1 }}
 				style={gradTile}
 			>
-				<View style= {{height: ((ScreenWidth - 20)/6)*1, justifyContent: "center", flex: 1}}>
+				{/* <View style= {{height: ((ScreenWidth - 20)/6)*1, justifyContent: "center", flex: 1}}>
 					<Text style={styles.headerBox}>
 						{item.book_title}
 					</Text>
@@ -30,15 +30,15 @@ export default function CarouselItem({ item }) {
 					<Text style={{...subHeading, textAlign: "center"}}>
 						{item.no_of_wishlists} people want this book
 					</Text>
-				</View>
-			</LinearGradient> */}
+				</View> */}
+			</LinearGradient>
 		</Pressable>
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "purple",
+		// backgroundColor: "purple",
 		// flex: 1,
 		justifyContent: "center",
 		alignItems: "center",

@@ -72,7 +72,7 @@ const PTStyles = StyleSheet.create({
 		borderRadius: 30,
 		overflow: "hidden",
 		width: "88.67%",
-        height: "100%",
+        height: "88.67%",
 		justifyContent: "space-between",
 		alignItems: "center",
 	},
