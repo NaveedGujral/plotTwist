@@ -34,8 +34,8 @@ const PTSwatches = {
     PTBlue: "#4B7095",
     PTRed: "#C2524B",
     PTG1: "#E8E5E2",
-    PTG2: "#8C8281",
-    PTG3: "#6E6767",
+    PTG2: "#636363",
+    PTG3: "#444444",
     PTG4: "#262626",
 }
 

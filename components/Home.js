@@ -97,7 +97,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
 
       {/* // Categories */}
-      <View style={{ flex: 1, backgroundColor: PTRed }}>
+      <View style={{ flex: 1, backgroundColor: PTG3 }}>
 
       </View>
     </View>

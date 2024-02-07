@@ -24,7 +24,7 @@ export default function Pagination ({listings, scrollX}) {
                     
                     const color = scrollX.interpolate({
                       inputRange,
-                      outputRange: [PTG3, PTG1, PTG3],
+                      outputRange: [PTG2, PTG1, PTG2],
                       extrapolate: "clamp",
                     });
 
