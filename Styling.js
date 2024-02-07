@@ -68,7 +68,7 @@ const PTStyles = StyleSheet.create({
         backgroundColor: PTSwatches.PTG4,
 	},
 	gradTile: {
-		borderRadius: 30,
+		borderRadius: width/18,
 		overflow: "hidden",
 		width: "93.34%",
         height: "100%",

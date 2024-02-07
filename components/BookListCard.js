@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image, Pressable } from "react-native";
+import { StyleSheet, View, Image, Pressable, Dimensions } from "react-native";
 import { ScreenWidth } from "react-native-elements/dist/helpers";
 import supabase from "../config/supabaseClient";
 import { useNavigation } from "@react-navigation/native";
@@ -10,6 +10,7 @@ import { useState } from "react";
 const { PTStyles, PTSwatches } = require("../Styling");
 const { heading, subHeading, body } = PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
+const { height, width } = Dimensions.get("window");
 
 export default function BookListCard({ listing, id }) {
   const [wishListed, setWishListed] = useState(false);
@@ -30,26 +31,26 @@ export default function BookListCard({ listing, id }) {
     }
 
     async function updateUserWishList(res) {
-        if (res.includes(listing.book_title)) {
-          return;
-        }
-     
-    const updatedWishlist = [...res, listing.book_title];
+      if (res.includes(listing.book_title)) {
+        return;
+      }
 
-    const { data, error } = await supabase
-    .from("Users")
-    .update({ wishlist: updatedWishlist })
-    .eq("user_id", id);
-}
+      const updatedWishlist = [...res, listing.book_title];
 
-async function removeItemFromWishList(res) {
-    const updatedWishlist = res.filter((item) => item !== listing.book_title);
-  
-    const { data, error } = await supabase
-      .from("Users")
-      .update({ wishlist: updatedWishlist })
-      .eq("user_id", id);
-  }
+      const { data, error } = await supabase
+        .from("Users")
+        .update({ wishlist: updatedWishlist })
+        .eq("user_id", id);
+    }
+
+    async function removeItemFromWishList(res) {
+      const updatedWishlist = res.filter((item) => item !== listing.book_title);
+
+      const { data, error } = await supabase
+        .from("Users")
+        .update({ wishlist: updatedWishlist })
+        .eq("user_id", id);
+    }
 
     if (!wishListed) {
       setWishListed(true);
@@ -68,8 +69,12 @@ async function removeItemFromWishList(res) {
 
   return (
     <View style={styles.cardContainer}>
-      {/* <Pressable onPress={() => navigation.navigate("AvailableListings", {listing: listing})}>
-        <Image style={styles.bookCard} source={{ uri: listing.img_url }} />
+      <Pressable style={styles.bookCard}
+        onPress={() =>
+          navigation.navigate("AvailableListings", { listing: listing })
+        }
+      >
+        <Image style={styles.bookImage} source={{ uri: listing.img_url }} />
       </Pressable>
       <Pressable
         style={styles.heartContainer}
@@ -96,36 +101,37 @@ async function removeItemFromWishList(res) {
             style={styles.heart}
           />
         )}
-      </Pressable> */}
+      </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   cardContainer: {
-    // flex: 1,
-    width: 25,
-    height: 25,
-    backgroundColor: PTGreen,
-    // width: ScreenWidth/3,
-    // padding: 5,
+    flexDirection: "row",
+    width: width / 3,
+    height: "100%",
+    // backgroundColor: PTRed,
     justifyContent: "center",
-    alignItems: 'center',
+    alignItems: "center",
   },
   bookCard: {
-    // borderRadius: 20,
-    // height: 180,
-    // width: 120,
-    // resizeMode: "cover",
+    width: width / 3 - 2 * (width * 0.0334),
+    height: "89.99%",
+  },
+  bookImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: width/27,
+    resizeMode: "cover"
   },
   heartContainer: {
     padding: 0,
     margin: 0,
     position: "absolute",
-    width: 40,
-    top: 3 + 8,
-    right: 4 + 8,
-    flex: 1,
+    top: "7.5%",
+    right: "15%",
+    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },

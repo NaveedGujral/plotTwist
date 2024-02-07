@@ -66,7 +66,7 @@ export default function BookList({ categoryName, id }) {
           style={{
             width: width,
             height: "100%",
-            backgroundColor: PTBlue,
+            // backgroundColor: PTBlue,
             // borderWidth: 3,
             // borderColor: PTBlue,
           }}
@@ -77,49 +77,49 @@ export default function BookList({ categoryName, id }) {
             contentContainerStyle={{
               flexGrow: 1,
               flexDirection: "row",
-              justifyContent: "center",
+              justifyContent: "flex-start",
             }}
             style={{ height: "100%" }}
           >
-
             {/* Splits the view into 3 equal sections*/}
             <View
               style={{
                 flex: 1 / 3,
                 flexDirection: "row",
               }}
-              >
+            >
 
+              {/* booklist card Start*/}
               {/* Category section*/}
-              <View
+              {/* <View
                 style={{
                   flexDirection: "row",
-                  width: "100%",
+                  width: width/3,
                   height: "100%",
                   backgroundColor: PTRed,
                   justifyContent: "center",
                   alignItems: "center",
                 }}
-                >
-
+              > */}
                 {/* Category Book link needs to have these*/}
-                <View
+                {/* <View
                   style={{
-                    width: width/3 - 2*(width*0.0334),
+                    width: width / 3 - 2 * (width * 0.0334),
                     height: "89.99%",
                     backgroundColor: PTBlue,
                   }}
                 ></View>
-              
-              </View>
-
-            </View>
-
-            {/* {bookList.map((listing) => {
+              </View> */}
+              {/* booklist card END*/}
+            
+            {bookList.map((listing) => {
               return (
                 <BookListCard listing={listing} key={listing.book_id} id={id} />
               );
-            })} */}
+            })}
+            
+            </View>
+
 
             {/* <View style={styles.cardContainer}>
             <Pressable

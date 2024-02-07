@@ -62,8 +62,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: containerHeight,
     width: width,
-    padding: 0,
-    margin: 0,
   },
   headerBox: {
     ...subHeading,
@@ -71,7 +69,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   image: {
-    borderRadius: 20,
+    borderRadius: width/18,
     flex: 4,
     width: "44%",
     resizeMode: "cover",
