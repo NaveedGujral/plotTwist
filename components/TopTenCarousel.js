@@ -11,6 +11,7 @@ import Pagination from "./Pagination";
 import { useRef, useState } from "react";
 
 const { PTStyles, PTSwatches, importFonts } = require("../Styling");
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { heading, subHeading, body, page, webFix } = PTStyles;
 
 const screenHeight = Dimensions.get("screen").height;
@@ -37,14 +38,13 @@ export default function TopTenCarousel({ listings }) {
   }
 
   return (
-    <View style={{ width: "100%", height: "100%" }}>
+    <View style={{ width: "100%", flex: 1 }}>
       <View style={{ flex: 2, justifyContent: "space-evenly" }}>
         <Text
           style={{
             ...heading,
             textAlign: "center",
-            paddingBottom: "1.67%",
-            paddingTop: "3.34%",
+            paddingVertical: "1.12%",
           }}
         >
           Spotlight
@@ -68,12 +68,14 @@ export default function TopTenCarousel({ listings }) {
           snapToAlignment="center"
           showsHorizontalScrollIndicator={false}
           onScroll={handleOnScroll}
+          contentContainerStyle={{height:"100%", alignSelf: "center"}}
+          style={{flex:1}}
         />
       </View>
 
       <View
         style={{
-          justifyContent: "flex-start",
+          justifyContent: "center",
           alignItems: "center",
           flex: 1,
         }}

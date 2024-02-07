@@ -11,12 +11,13 @@ export default function Pagination ({listings, scrollX}) {
             style={{
                 flex: 1/3, 
                 flexDirection: 'row', 
-                justifyContent: 'space-between'
+                justifyContent: "space-between",
+                width: "33%"
             }}>
             {
                 listings.map((_, idx) => {
                     const inputRange = [(idx - 1) * width, idx * width, (idx + 1) * width];
-                    const minWidth = width*0.0167
+                    const minWidth = width*0.0112
                     const maxWidth = 1.33*minWidth
                     const minRad = minWidth/2
                     const maxRad = maxWidth/2

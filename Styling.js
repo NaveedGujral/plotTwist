@@ -62,7 +62,6 @@ const PTStyles = StyleSheet.create({
 		backgroundColor: PTSwatches.PTG4,
         height: height - (height/27)*4,
         width: "100%",
-        // flex: 1
     },
     webFix: {
         marginBottom: height * 0.09,
@@ -72,7 +71,7 @@ const PTStyles = StyleSheet.create({
 		borderRadius: 30,
 		overflow: "hidden",
 		width: "88.67%",
-        height: "88.67%",
+        height: "100%",
 		justifyContent: "space-between",
 		alignItems: "center",
 	},
