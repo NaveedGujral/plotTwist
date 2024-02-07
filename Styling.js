@@ -70,7 +70,7 @@ const PTStyles = StyleSheet.create({
 	gradTile: {
 		borderRadius: 30,
 		overflow: "hidden",
-		width: "88.67%",
+		width: "90%",
         height: "100%",
 		justifyContent: "space-between",
 		alignItems: "center",

@@ -7,6 +7,10 @@ import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { useState } from "react";
 
+const { PTStyles, PTSwatches } = require("../Styling");
+const { heading, subHeading, body } = PTStyles;
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
+
 export default function BookListCard({ listing, id }) {
   const [wishListed, setWishListed] = useState(false);
   const navigation = useNavigation();
@@ -64,7 +68,7 @@ async function removeItemFromWishList(res) {
 
   return (
     <View style={styles.cardContainer}>
-      <Pressable onPress={() => navigation.navigate("AvailableListings", {listing: listing})}>
+      {/* <Pressable onPress={() => navigation.navigate("AvailableListings", {listing: listing})}>
         <Image style={styles.bookCard} source={{ uri: listing.img_url }} />
       </Pressable>
       <Pressable
@@ -92,24 +96,27 @@ async function removeItemFromWishList(res) {
             style={styles.heart}
           />
         )}
-      </Pressable>
+      </Pressable> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  bookCard: {
-    borderRadius: 20,
-    height: 180,
-    width: 120,
-    resizeMode: "cover",
-  },
   cardContainer: {
-    flex: 1,
-    width: ScreenWidth/3,
-    padding: 5,
+    // flex: 1,
+    width: 25,
+    height: 25,
+    backgroundColor: PTGreen,
+    // width: ScreenWidth/3,
+    // padding: 5,
     justifyContent: "center",
     alignItems: 'center',
+  },
+  bookCard: {
+    // borderRadius: 20,
+    // height: 180,
+    // width: 120,
+    // resizeMode: "cover",
   },
   heartContainer: {
     padding: 0,

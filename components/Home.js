@@ -90,15 +90,62 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={page}>
-      {/* // Spotlight */}
-      
-      <View style={{ flex: 2, backgroundColor: PTG4}}>
-        <TopTenCarousel listings={topTen} />
-      </View>
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          ref={scrollRef}
+          onScroll={(event) => {
+            setScrollOffset(event.nativeEvent.contentOffset.y);
+          }}
+          scrollEventThrottle={16}
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: "space-between",
+          }}
+          style={{ height: "100%" }}
+        >
+          {/* // Spotlight */}
 
-      {/* // Categories */}
-      <View style={{ flex: 1, backgroundColor: PTG3 }}>
+          <View style={{ flex: 2, backgroundColor: PTG4 }}>
+          {/* <View style={{ backgroundColor: PTG1 }}> */}
+            <TopTenCarousel listings={topTen} />
+          </View>
 
+          {/* // Categories */}
+          <View style={{ flex: 1, backgroundColor: PTG4 }}>
+          {/* <View style={{ backgroundColor: PTG4 }}> */}
+            <View style={{ flex: 1 }}>
+              <Text
+                style={{
+                  ...heading,
+                  textAlign: "center",
+                  paddingVertical: "1.12%",
+                }}
+              >
+                Categories
+              </Text>
+            </View>
+
+            {/* <View style={{ flex: 7 }}>
+              <View style={{ width: "100%", height: "100%", backgroundColor: PTRed }}></View>
+              <View style={{ width: "100%", height: "100%", backgroundColor: PTRed }}></View>
+            </View> */}
+
+            <View style={{ flex: 5 }}>
+              {categories.map((category) => {
+                return (
+                  <BookList
+                    categoryName={category}
+                    key={category}
+                    id={currSession}
+                  />
+                );
+              })}
+            </View>
+
+            <StatusBar style="auto" />
+          </View>
+        </ScrollView>
       </View>
     </View>
   );
