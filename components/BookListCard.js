@@ -110,14 +110,13 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: "row",
     width: width / 3,
-    height: "100%",
     // backgroundColor: PTRed,
     justifyContent: "center",
     alignItems: "center",
   },
   bookCard: {
     width: width / 3 - 2 * (width * 0.0334),
-    height: "89.99%",
+    height: "66.67%",
   },
   bookImage: {
     width: "100%",

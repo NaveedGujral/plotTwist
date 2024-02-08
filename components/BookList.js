@@ -19,7 +19,7 @@ import {
 import { Ionicons, Entypo } from "@expo/vector-icons";
 
 const { PTStyles, PTSwatches } = require("../Styling");
-const { heading, subHeading, body } = PTStyles;
+const { heading, subHeading, body, pillButton } = PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 
 const { height, width } = Dimensions.get("window");
@@ -58,10 +58,44 @@ export default function BookList({ categoryName, id }) {
 
   return (
     <View style={styles.categoryContainer}>
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <Text style={{ ...subHeading }}>{categoryName}</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "space-between",
+          flexDirection: "row",
+          width: "93.34%",
+        }}
+      >
+        <View style={{ flex: 1, height: "100%" }}></View>
+        <View style={{ flex: 1, height: "100%", justifyContent: "center" }}>
+          <Text
+            style={{
+              ...subHeading,
+              textAlignVertical: "center",
+              textAlign: "center",
+            }}
+          >
+            {categoryName}
+          </Text>
+        </View>
+        <View style={{ flex: 1, height: "100%", justifyContent: "center"}}>
+          {console.log(categoryName)}
+          <Pressable
+            style={styles.seeAllButton}
+            onPress={() =>
+              navigation.navigate("GenreList", { genre: categoryName })
+            }
+          >
+            <Entypo
+              name="dots-three-horizontal"
+              size={height * 0.0223}
+              color={PTG1}
+              style={{ textAlignVertical: "center", textAlign: "center" }}
+            />
+          </Pressable>
+        </View>
       </View>
-      <View style={{ flex: 8 }}>
+      <View style={{ flex: 7 }}>
         <View
           style={{
             width: width,
@@ -88,7 +122,6 @@ export default function BookList({ categoryName, id }) {
                 flexDirection: "row",
               }}
             >
-
               {/* booklist card Start*/}
               {/* Category section*/}
               {/* <View
@@ -101,8 +134,8 @@ export default function BookList({ categoryName, id }) {
                   alignItems: "center",
                 }}
               > */}
-                {/* Category Book link needs to have these*/}
-                {/* <View
+              {/* Category Book link needs to have these*/}
+              {/* <View
                   style={{
                     width: width / 3 - 2 * (width * 0.0334),
                     height: "89.99%",
@@ -111,15 +144,17 @@ export default function BookList({ categoryName, id }) {
                 ></View>
               </View> */}
               {/* booklist card END*/}
-            
-            {bookList.map((listing) => {
-              return (
-                <BookListCard listing={listing} key={listing.book_id} id={id} />
-              );
-            })}
-            
-            </View>
 
+              {bookList.map((listing) => {
+                return (
+                  <BookListCard
+                    listing={listing}
+                    key={listing.book_id}
+                    id={id}
+                  />
+                );
+              })}
+            </View>
 
             {/* <View style={styles.cardContainer}>
             <Pressable
@@ -144,8 +179,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     height: "100%",
-    // backgroundColor: PTG4,
-    // backgroundColor: PTRed,
   },
   categoryList: {},
   cardContainer: {
@@ -156,11 +189,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   seeAllButton: {
-    height: 50,
-    width: 50,
-    borderRadius: 35,
-    backgroundColor: PTGreen,
+    ...pillButton,
+    // height: "66.67%",
+    // width: "33.34%",
+    // borderRadius: (height/27)*0.6667,
+    backgroundColor: PTG3,
     justifyContent: "center",
     alignItems: "center",
+    alignSelf: "flex-end",
   },
 });

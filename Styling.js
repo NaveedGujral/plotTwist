@@ -75,6 +75,11 @@ const PTStyles = StyleSheet.create({
 		justifyContent: "space-between",
 		alignItems: "center",
 	},
+    pillButton: {
+    height: height/27*0.6667,
+    width: (width/9),
+    borderRadius: ((height/27)*0.6667)/2,
+    }
 })
 
 const headerSS = {
