@@ -72,7 +72,7 @@ const PTStyles = StyleSheet.create({
 		overflow: "hidden",
 		width: "93.34%",
         height: "100%",
-		justifyContent: "space-between",
+		justifyContent: "center",
 		alignItems: "center",
 	},
     pillButton: {

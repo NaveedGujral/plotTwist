@@ -43,6 +43,7 @@ export default function Pagination ({listings, scrollX}) {
                     return <Animated.View
                         key={idx.toString()}
                         style={{
+                            justifyContent:"center",
                             alignSelf: "center",
                             borderRadius: dotRad,
                             margin: dotRad, 

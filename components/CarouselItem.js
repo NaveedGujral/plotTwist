@@ -15,7 +15,7 @@ const { PTStyles, PTSwatches } = require("../Styling");
 const { heading, subHeading, body, gradTile, bookCoverImage } = PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const pageHeight = height - (height / 27) * 4;
-const viewHeight = 5*(pageHeight/9)
+const viewHeight = 2*(pageHeight/3)
 const containerHeight = viewHeight - viewHeight/4
 
 export default function CarouselItem({ item }) {

@@ -106,15 +106,15 @@ const HomeScreen = ({ navigation }) => {
         >
           {/* // Spotlight */}
 
-          <View style={{ flex: 5, backgroundColor: PTG4 }}>
+          <View style={{ flex: 2, backgroundColor: PTG4 }}>
             {/* <View style={{ backgroundColor: PTG1 }}> */}
             <TopTenCarousel listings={topTen} />
           </View>
 
           {/* // Categories */}
-          <View style={{ flex: 4, backgroundColor: PTG4 }}>
+          <View style={{ flex: 1, backgroundColor: PTG4 }}>
             {/* <View style={{ backgroundColor: PTG4 }}> */}
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, justifyContent: "center" }}>
               <Text
                 style={{
                   ...heading,

@@ -79,7 +79,6 @@ export default function BookList({ categoryName, id }) {
           </Text>
         </View>
         <View style={{ flex: 1, height: "100%", justifyContent: "center"}}>
-          {console.log(categoryName)}
           <Pressable
             style={styles.seeAllButton}
             onPress={() =>

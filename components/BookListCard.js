@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
   bookCard: {
     width: width / 3 - 2 * (width * 0.0334),
-    height: "66.67%",
+    height: "77.78%",
   },
   bookImage: {
     width: "100%",
