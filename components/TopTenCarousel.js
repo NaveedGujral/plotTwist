@@ -39,27 +39,35 @@ export default function TopTenCarousel({ listings }) {
 
   return (
     <View style={{ width: "100%", flex: 1 }}>
-      <View style={{ flex: 2, justifyContent: "space-evenly" }}>
-        <Text
-          style={{
-            ...heading,
-            textAlign: "center",
-            paddingVertical: "1.12%",
-          }}
-        >
-          Spotlight
-        </Text>
-        <Text
-          style={{
-            ...subHeading,
-            textAlign: "center",
-          }}
-        >
-          Top 10 Most Wishlisted
-        </Text>
+      <View
+        style={{
+          flex: 2,
+          justifyContent: "space-evenly",
+        }}
+      >
+        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+          <Text
+            style={{
+              ...heading,
+              textAlign: "center",
+            }}
+          >
+            Spotlight
+          </Text>
+        </View>
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text
+            style={{
+              ...subHeading,
+              textAlign: "center",
+            }}
+          >
+            Top 10 Most Wishlisted
+          </Text>
+        </View>
       </View>
 
-      <View style={{ flex: 9}}>
+      <View style={{ flex: 9 }}>
         <FlatList
           data={listings}
           renderItem={({ item }) => <CarouselItem item={item} />}
@@ -68,19 +76,21 @@ export default function TopTenCarousel({ listings }) {
           snapToAlignment="center"
           showsHorizontalScrollIndicator={false}
           onScroll={handleOnScroll}
-          contentContainerStyle={{height:"100%", alignSelf: "center"}}
-          style={{flex:1}}
+          contentContainerStyle={{ height: "100%", alignSelf: "center" }}
+          style={{ flex: 1 }}
         />
       </View>
 
       <View
         style={{
-          justifyContent: "center",
+          justifyContent: "space-between",
           alignItems: "center",
           flex: 1,
         }}
-        >
-          <Pagination listings={listings} scrollX={scrollX}/>
+      >
+        <View style={{ height: "11%", width: "100%", backgroundColor: PTG4 }}></View>
+        <Pagination listings={listings} scrollX={scrollX} />
+        <View style={{ height: "11%", width: "100%", backgroundColor: PTG3 }}></View>
       </View>
     </View>
   );

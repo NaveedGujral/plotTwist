@@ -41,7 +41,7 @@ export default function BookList({ categoryName, id }) {
         new Set(data.map((item) => item.book_title))
       ).map((title) => data.find((item) => item.book_title === title));
 
-      setBookList(uniqueData.slice(0, 9));
+      setBookList(uniqueData);
     }
 
     getBooks(categoryName);
@@ -99,9 +99,6 @@ export default function BookList({ categoryName, id }) {
           style={{
             width: width,
             height: "100%",
-            // backgroundColor: PTBlue,
-            // borderWidth: 3,
-            // borderColor: PTBlue,
           }}
         >
           <ScrollView

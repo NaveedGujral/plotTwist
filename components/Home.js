@@ -86,8 +86,6 @@ const HomeScreen = ({ navigation }) => {
     getCategories();
   }, []);
 
-  // grid layout experimental code
-
   return (
     <View style={page}>
       <View style={{ flex: 1 }}>
@@ -104,16 +102,10 @@ const HomeScreen = ({ navigation }) => {
           }}
           style={{ height: "100%" }}
         >
-          {/* // Spotlight */}
-
           <View style={{ flex: 2, backgroundColor: PTG4 }}>
-            {/* <View style={{ backgroundColor: PTG1 }}> */}
             <TopTenCarousel listings={topTen} />
           </View>
-
-          {/* // Categories */}
-          <View style={{ flex: 1, backgroundColor: PTG4 }}>
-            {/* <View style={{ backgroundColor: PTG4 }}> */}
+          <View style={{ flex: 1, }}>
             <View style={{ flex: 1, justifyContent: "center" }}>
               <Text
                 style={{
@@ -125,12 +117,6 @@ const HomeScreen = ({ navigation }) => {
                 Categories
               </Text>
             </View>
-
-            {/* <View style={{ flex: 7 }}>
-              <View style={{ width: "100%", height: "100%", backgroundColor: PTRed }}></View>
-              <View style={{ width: "100%", height: "100%", backgroundColor: PTRed }}></View>
-            </View> */}
-
             <View style={{ flex: 5 }}>
               {categories.map((category) => {
                 return (
@@ -142,7 +128,6 @@ const HomeScreen = ({ navigation }) => {
                 );
               })}
             </View>
-
             <StatusBar style="auto" />
           </View>
         </ScrollView>
@@ -201,7 +186,6 @@ const HomeScreen = ({ navigation }) => {
   // 			)}
   // 	</View>
   // );
-
 };
 
 const styles = StyleSheet.create({
