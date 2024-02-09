@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   View,
@@ -8,6 +8,8 @@ import {
   Dimensions,
   Image,
   ScrollView,
+  FlatList,
+  Animated
 } from "react-native";
 import supabase from "../config/supabaseClient";
 import BookListCard from "./BookListCard";
@@ -27,7 +29,24 @@ const { height, width } = Dimensions.get("window");
 export default function BookList({ categoryName, id }) {
   const [bookList, setBookList] = useState([]);
   const navigation = useNavigation();
-
+  const scrollX = useRef(new Animated.Value(0)).current;
+  
+  function handleOnScroll(event) {
+    Animated.event(
+      [
+        {
+          nativeEvent: {
+            contentOffset: {
+              x: scrollX,
+            },
+          },
+        },
+      ],
+      {
+        useNativeDriver: false,
+      }
+    )(event);
+  }
   useEffect(() => {
     async function getBooks(categoryName) {
       let { data, error } = await supabase
@@ -78,7 +97,7 @@ export default function BookList({ categoryName, id }) {
             {categoryName}
           </Text>
         </View>
-        <View style={{ flex: 1, height: "100%", justifyContent: "center"}}>
+        <View style={{ flex: 1, height: "100%", justifyContent: "center" }}>
           <Pressable
             style={styles.seeAllButton}
             onPress={() =>
@@ -94,79 +113,57 @@ export default function BookList({ categoryName, id }) {
           </Pressable>
         </View>
       </View>
-      <View style={{ flex: 7 }}>
+      <View
+        style={{
+          flex: 7,
+          width: width,
+          backgroundColor: PTBlue,
+          flexDirection: "row",
+          gap: width / 24,
+        }}
+      >
+
+        <FlatList
+          data={bookList}
+          renderItem={({ item }) => <BookListCard listing={item}
+          key={item.book_id}
+          id={id} />}
+          horizontal
+          pagingEnabled
+          snapToAlignment="center"
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleOnScroll}
+          contentContainerStyle={{ 
+            height: "100%", 
+            alignSelf: "center", 
+            backgroundColor: PTRed }}
+          style={{ 
+            flex: 1, 
+            backgroundColor: PTGreen }}
+        />
+
+        {/* <View
+          style={{
+            height: "100%",
+            width: width / 4,
+            backgroundColor: PTRed,
+          }}
+        ></View>
         <View
           style={{
-            
-            width: width,
-            height: "100%", 
+            height: "100%",
+            width: width / 4,
+            backgroundColor: PTRed,
           }}
-        >
-          <ScrollView
-            showsHorizontalScrollIndicator={false}
-            horizontal={true}
-            contentContainerStyle={{
-              flexGrow: 1,
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              alignContent: "flex-end"
-            }}
-            style={{ height: "100%" }}
-          >
-            {/* Splits the view into 3 equal sections*/}
-            <View
-              style={{
-                flex: 1 / 4,
-                flexDirection: "row",
-                gap: width/24
-              }}
-            >
-              {/* booklist card Start*/}
-              {/* Category section*/}
-              {/* <View
-                style={{
-                  flexDirection: "row",
-                  width: width/3,
-                  height: "100%",
-                  backgroundColor: PTRed,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              > */}
-              {/* Category Book link needs to have these*/}
-              {/* <View
-                  style={{
-                    width: width / 3 - 2 * (width * 0.0334),
-                    height: "89.99%",
-                    backgroundColor: PTBlue,
-                  }}
-                ></View>
-              </View> */}
-              {/* booklist card END*/}
+        ></View>
+        <View
+          style={{
+            height: "100%",
+            width: width / 4,
+            backgroundColor: PTRed,
+          }}
+        ></View> */}
 
-              {bookList.map((listing) => {
-                return (
-                  <BookListCard
-                    listing={listing}
-                    key={listing.book_id}
-                    id={id}
-                  />
-                );
-              })}
-            </View>
-
-            {/* <View style={styles.cardContainer}>
-            <Pressable
-              style={styles.seeAllButton}
-              onPress={() =>
-                navigation.navigate("GenreList", { genre: categoryName })
-              }
-            >
-              <Entypo name="dots-three-horizontal" size={24} color={PTG1} style={{ textAlignVertical: "center" ,textAlign: "center"}} />
-            </Pressable>
-          </View> */}
-          </ScrollView>
-        </View>
       </View>
     </View>
   );
