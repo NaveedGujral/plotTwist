@@ -119,9 +119,8 @@ export default function BookList({ categoryName, id }) {
           width: width,
           backgroundColor: PTBlue,
           flexDirection: "row",
-          gap: width / 24,
         }}
-      >
+        >
 
         <FlatList
           data={bookList}
@@ -135,10 +134,13 @@ export default function BookList({ categoryName, id }) {
           onScroll={handleOnScroll}
           contentContainerStyle={{ 
             height: "100%", 
-            alignSelf: "center", 
-            backgroundColor: PTRed }}
+            // alignSelf: "center", 
+            // backgroundColor: PTRed
+            gap: width/24, 
+            position: "absolute", 
+          }}
           style={{ 
-            flex: 1, 
+            flex: 1,
             backgroundColor: PTGreen }}
         />
 

@@ -12,6 +12,10 @@ const { heading, subHeading, body } = PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { height, width } = Dimensions.get("window");
 
+const pageHeight = height - (height / 27) * 4;
+const viewHeight = 5*(pageHeight/18)
+const containerHeight = 8*viewHeight/9
+
 export default function BookListCard({ listing, id }) {
   const [wishListed, setWishListed] = useState(false);
   const navigation = useNavigation();
@@ -74,7 +78,7 @@ export default function BookListCard({ listing, id }) {
           navigation.navigate("AvailableListings", { listing: listing })
         }
       >
-        <Image style={styles.bookImage} source={{ uri: listing.img_url }} />
+        {/* <Image style={styles.bookImage} source={{ uri: listing.img_url }} />
       </Pressable>
       <Pressable
         style={styles.heartContainer}
@@ -100,7 +104,7 @@ export default function BookListCard({ listing, id }) {
             color="#C1514B"
             style={styles.heart}
           />
-        )}
+        )} */}
       </Pressable>
     </View>
   );
@@ -109,18 +113,22 @@ export default function BookListCard({ listing, id }) {
 const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: "row",
-    // height: 25,
+    height: containerHeight,
     width: width / 4,
+    // marginHorizontal: width/24,
+    // gap: width/24,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: PTRed
   },
   bookCard: {
     // width: width / 3 - 2 * (width * 0.0334),
     width: "100%",
     height: "77.78%",
+    backgroundColor: PTBlue
   },
   bookImage: {
-    width: "100%",
+    width: "10%",
     height: "100%",
     borderRadius: width/27,
     resizeMode: "cover"
