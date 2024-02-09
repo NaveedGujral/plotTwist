@@ -97,8 +97,9 @@ export default function BookList({ categoryName, id }) {
       <View style={{ flex: 7 }}>
         <View
           style={{
+            
             width: width,
-            height: "100%",
+            height: "100%", 
           }}
         >
           <ScrollView
@@ -108,14 +109,16 @@ export default function BookList({ categoryName, id }) {
               flexGrow: 1,
               flexDirection: "row",
               justifyContent: "flex-start",
+              alignContent: "flex-end"
             }}
             style={{ height: "100%" }}
           >
             {/* Splits the view into 3 equal sections*/}
             <View
               style={{
-                flex: 1 / 3,
+                flex: 1 / 4,
                 flexDirection: "row",
+                gap: width/24
               }}
             >
               {/* booklist card Start*/}

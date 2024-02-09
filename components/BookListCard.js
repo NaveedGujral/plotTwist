@@ -109,12 +109,13 @@ export default function BookListCard({ listing, id }) {
 const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: "row",
-    width: width / 3,
+    width: width / 4,
     justifyContent: "center",
     alignItems: "center",
   },
   bookCard: {
-    width: width / 3 - 2 * (width * 0.0334),
+    // width: width / 3 - 2 * (width * 0.0334),
+    width: "100%",
     height: "77.78%",
   },
   bookImage: {
