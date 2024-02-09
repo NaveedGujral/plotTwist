@@ -6,8 +6,6 @@ import {
   Pressable,
   Text,
   Dimensions,
-  Image,
-  ScrollView,
   FlatList,
   Animated
 } from "react-native";
@@ -18,15 +16,16 @@ import {
   Bellefair_400Regular,
   JosefinSans_400Regular,
 } from "@expo-google-fonts/dev";
-import { Ionicons, Entypo } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 
-const { PTStyles, PTSwatches } = require("../Styling");
+const { PTStyles, PTSwatches, importFonts } = require("../Styling");
 const { heading, subHeading, body, pillButton } = PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 
 const { height, width } = Dimensions.get("window");
 
 export default function BookList({ categoryName, id }) {
+  importFonts()
   const [bookList, setBookList] = useState([]);
   const navigation = useNavigation();
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -65,15 +64,6 @@ export default function BookList({ categoryName, id }) {
 
     getBooks(categoryName);
   }, []);
-
-  const [fontsLoaded] = useFonts({
-    Bellefair_400Regular,
-    JosefinSans_400Regular,
-  });
-
-  if (!fontsLoaded) {
-    return <Text>Loading...</Text>;
-  }
 
   return (
     <View style={styles.categoryContainer}>
@@ -117,7 +107,6 @@ export default function BookList({ categoryName, id }) {
         style={{
           flex: 7,
           width: width,
-          backgroundColor: PTBlue,
           flexDirection: "row",
         }}
         >
@@ -133,39 +122,14 @@ export default function BookList({ categoryName, id }) {
           showsHorizontalScrollIndicator={false}
           onScroll={handleOnScroll}
           contentContainerStyle={{ 
-            height: "100%", 
-            // alignSelf: "center", 
-            // backgroundColor: PTRed
+            height: "100%",
             gap: width/24, 
             position: "absolute", 
           }}
           style={{ 
-            flex: 1,
-            backgroundColor: PTGreen }}
+            flex: 1, 
+          }}
         />
-
-        {/* <View
-          style={{
-            height: "100%",
-            width: width / 4,
-            backgroundColor: PTRed,
-          }}
-        ></View>
-        <View
-          style={{
-            height: "100%",
-            width: width / 4,
-            backgroundColor: PTRed,
-          }}
-        ></View>
-        <View
-          style={{
-            height: "100%",
-            width: width / 4,
-            backgroundColor: PTRed,
-          }}
-        ></View> */}
-
       </View>
     </View>
   );
@@ -188,9 +152,6 @@ const styles = StyleSheet.create({
   },
   seeAllButton: {
     ...pillButton,
-    // height: "66.67%",
-    // width: "33.34%",
-    // borderRadius: (height/27)*0.6667,
     backgroundColor: PTG3,
     justifyContent: "center",
     alignItems: "center",

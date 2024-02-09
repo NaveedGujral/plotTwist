@@ -78,7 +78,7 @@ export default function BookListCard({ listing, id }) {
           navigation.navigate("AvailableListings", { listing: listing })
         }
       >
-        {/* <Image style={styles.bookImage} source={{ uri: listing.img_url }} />
+        <Image style={styles.bookImage} source={{ uri: listing.img_url }} />
       </Pressable>
       <Pressable
         style={styles.heartContainer}
@@ -104,7 +104,7 @@ export default function BookListCard({ listing, id }) {
             color="#C1514B"
             style={styles.heart}
           />
-        )} */}
+        )}
       </Pressable>
     </View>
   );
@@ -115,20 +115,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: containerHeight,
     width: width / 4,
-    // marginHorizontal: width/24,
-    // gap: width/24,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: PTRed
   },
   bookCard: {
-    // width: width / 3 - 2 * (width * 0.0334),
     width: "100%",
     height: "77.78%",
-    backgroundColor: PTBlue
   },
   bookImage: {
-    width: "10%",
+    width: "100%",
     height: "100%",
     borderRadius: width/27,
     resizeMode: "cover"
@@ -139,7 +134,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: "7.5%",
     right: "15%",
-    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
