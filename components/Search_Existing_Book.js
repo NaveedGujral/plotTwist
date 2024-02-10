@@ -79,14 +79,15 @@ const Search_Existing_Book = ({ navigation }) => {
   }, [page]);
 
   const handleSelectBook = (book) => {
+    console.log(book)
     setSelectedBook(book);
     setGoogleBookId(book.id);
     setTitle(book.volumeInfo.title);
     setAuthors(book.volumeInfo.authors?.join(", ") || "");
     setDescription(book.volumeInfo.description);
     setImgUrl(
-      book.volumeInfo.imageLinks
-        ? book.volumeInfo.imageLinks.smallThumbnail
+      book.volumeInfo.imageLinks.thumbnail
+        ? book.volumeInfo.imageLinks.thumbnail
         : "https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-pic-design-profile-vector-png-image_40966566.jpg"
     );
   };

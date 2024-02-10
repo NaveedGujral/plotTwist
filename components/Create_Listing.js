@@ -14,6 +14,7 @@ import {
 
 const CreateListing = ({ route, navigation }) => {
   const { currTitle, authors, currDescription, imgUrl, book_id } = route.params;
+  // console.log(route.params)
 
   const [title, setTitle] = useState(currTitle);
   const [googleBookID, setGoogleBookID] = useState(book_id)
