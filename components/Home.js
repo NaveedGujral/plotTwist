@@ -106,12 +106,12 @@ const HomeScreen = ({ navigation }) => {
             <TopTenCarousel listings={topTen} />
           </View>
           <View style={{ flex: 1, }}>
-            <View style={{ flex: 1, justifyContent: "center" }}>
+            <View style={{ flex: 1, justifyContent: "flex-end" }}>
               <Text
                 style={{
                   ...heading,
                   textAlign: "center",
-                  paddingVertical: "1.12%",
+                  // paddingVertical: "1.12%",
                 }}
               >
                 Categories

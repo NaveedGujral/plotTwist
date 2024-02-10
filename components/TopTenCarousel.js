@@ -90,7 +90,7 @@ export default function TopTenCarousel({ listings }) {
       >
         <View style={{ height: "11%", width: "100%", backgroundColor: PTG4 }}></View>
         <Pagination listings={listings} scrollX={scrollX} />
-        <View style={{ height: "11%", width: "100%", backgroundColor: PTG3 }}></View>
+        <View style={{ height: "11%", width: "100%", backgroundColor: PTG2 }}></View>
       </View>
     </View>
   );
