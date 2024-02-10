@@ -156,16 +156,15 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   BTTContainer: {
     position: "absolute",
-    right: width * 0.5 - 25,
-    top: height * 0.0125,
+    right: (width * 0.5) - (width/18),
+    top: height/54,
   },
   BTTHeight: {
-    bottom: 98,
   },
   BTTCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: width/9,
+    height: width/9,
+    borderRadius: width/18,
     backgroundColor: PTGreen,
     shadowColor: PTG4,
     shadowOffset: {
@@ -174,7 +173,8 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.45,
     shadowRadius: 8,
-    elevation: 16,
+    elevation: 1,
+    zIndex: 1,
     justifyContent: "center",
     alignContent: "center",
   },
