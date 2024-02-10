@@ -3,7 +3,7 @@ import supabase from "../config/supabaseClient";
 import { useNavigation } from "@react-navigation/native";
 
 import { AntDesign } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const { PTStyles, PTSwatches } = require("../Styling");
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
@@ -17,19 +17,32 @@ export default function BookListCard({ listing, id }) {
   const [wishListed, setWishListed] = useState(false);
   const navigation = useNavigation();
 
-  function handleWishListButton(listing) {
+  async function getUserWishList() {
+    const { data, error } = await supabase
+    .from("Users")
+      .select("wishlist")
+      .eq("user_id", id);
+    return data[0].wishlist;
+  }
+  
+  useEffect(() => {
+    getUserWishList().then((res) => {
+      if (res && res[0] === listing.book_title) {
+        setWishListed(true);
+      } else {
+        setWishListed(false);
+      }
+    });
+  }, []);
+
+  async function handleWishListButton(listing) {
+    const currentWishListed = wishListed;
+
     async function updateWishList(num) {
       const { data, error } = await supabase
         .from("Listings")
         .update({ no_of_wishlists: listing.no_of_wishlists + num })
         .eq("book_id", listing.book_id);
-    }
-    async function getUserWishList() {
-      const { data, error } = await supabase
-        .from("Users")
-        .select("wishlist")
-        .eq("user_id", id);
-      return data[0].wishlist;
     }
 
     async function updateUserWishList(res) {
@@ -54,18 +67,16 @@ export default function BookListCard({ listing, id }) {
         .eq("user_id", id);
     }
 
-    if (!wishListed) {
+    if (!currentWishListed) {
       setWishListed(true);
-      updateWishList(1);
-      getUserWishList().then((res) => {
-        updateUserWishList(res);
-      });
+      await updateWishList(1);
+      const res = await getUserWishList();
+      await updateUserWishList(res);
     } else {
       setWishListed(false);
-      updateWishList(0);
-      getUserWishList().then((res) => {
-        removeItemFromWishList(res);
-      });
+      await updateWishList(-1);
+      const res = await getUserWishList();
+      await removeItemFromWishList(res);
     }
   }
 
@@ -130,7 +141,6 @@ const styles = StyleSheet.create({
     backgroundColor: PTG1,
     right: width / 81,
     top: containerHeight/9 + width / 81,
-
     justifyContent: "center",
     alignItems: "center",
     opacity: 0.85,

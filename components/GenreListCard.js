@@ -5,29 +5,48 @@ import { useNavigation } from "@react-navigation/native";
 
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const { PTStyles, PTSwatches } = require("../Styling");
-const { heading, subHeading, body } = PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { height, width } = Dimensions.get("window");
 
-export default function BookListCard({ listing, id }) {
-  const [wishListed, setWishListed] = useState(false);
+const pageHeight = height - (height / 27) * 4;
+const viewHeight = 8 * (pageHeight / 9);
+const containerHeight = viewHeight / 3.5;
+
+export default function GenreListCard({ listing, id }) {
+  const [wishListed, setWishListed] = useState();
   const navigation = useNavigation();
-  function handleWishListButton(listing) {
+
+  
+  async function getUserWishList() {
+    const { data, error } = await supabase
+    .from("Users")
+      .select("wishlist")
+      .eq("user_id", id);
+    return data[0].wishlist;
+  }
+  
+  useEffect(() => {
+    getUserWishList().then((res) => {
+      if (res && res[0] === listing.book_title) {
+        setWishListed(true);
+      } else {
+        setWishListed(false);
+      }
+      console.log(listing);
+    });
+  }, []);
+
+  async function handleWishListButton(listing) {
+    const currentWishListed = wishListed;
+
     async function updateWishList(num) {
       const { data, error } = await supabase
         .from("Listings")
         .update({ no_of_wishlists: listing.no_of_wishlists + num })
         .eq("book_id", listing.book_id);
-    }
-    async function getUserWishList() {
-      const { data, error } = await supabase
-        .from("Users")
-        .select("wishlist")
-        .eq("user_id", id);
-      return data[0].wishlist;
     }
 
     async function updateUserWishList(res) {
@@ -52,24 +71,23 @@ export default function BookListCard({ listing, id }) {
         .eq("user_id", id);
     }
 
-    if (!wishListed) {
+    if (!currentWishListed) {
       setWishListed(true);
-      updateWishList(1);
-      getUserWishList().then((res) => {
-        updateUserWishList(res);
-      });
+      await updateWishList(1);
+      const res = await getUserWishList();
+      await updateUserWishList(res);
     } else {
       setWishListed(false);
-      updateWishList(0);
-      getUserWishList().then((res) => {
-        removeItemFromWishList(res);
-      });
+      await updateWishList(-1);
+      const res = await getUserWishList();
+      await removeItemFromWishList(res);
     }
   }
 
   return (
     <View style={styles.cardContainer}>
-      <Pressable style={styles.bookCard}
+      <Pressable
+        style={styles.bookCard}
         onPress={() =>
           navigation.navigate("AvailableListings", { listing: listing })
         }
@@ -80,12 +98,6 @@ export default function BookListCard({ listing, id }) {
         style={styles.heartContainer}
         onPress={() => handleWishListButton(listing)}
       >
-        <FontAwesome
-          name="circle"
-          size={32}
-          color="white"
-          style={{ opacity: 0.75 }}
-        />
         {!wishListed ? (
           <AntDesign
             name="hearto"
@@ -114,24 +126,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   bookCard: {
-    width: width / 3 - 2 * (width * 0.0334),
-    height: "88.89%",
+    width: (7 * width) / 27,
+    height: (7 * containerHeight) / 9,
   },
   bookImage: {
     width: "100%",
     height: "100%",
-    borderRadius: width/18,
-    resizeMode: "cover"
+    borderRadius: (4 * width) / 81,
+    resizeMode: "cover",
   },
   heartContainer: {
-    padding: 0,
-    margin: 0,
     position: "absolute",
-    top: "7.5%",
-    right: "15%",
-    // flex: 1,
+    width: (2 * width) / 27,
+    height: (2 * width) / 27,
+    borderRadius: width / 27,
+    backgroundColor: PTG1,
+    right: width / 27 + width / 81,
+    top: containerHeight / 9 + width / 81,
     justifyContent: "center",
     alignItems: "center",
+    opacity: 0.85,
   },
   heart: {
     textAlign: "center",

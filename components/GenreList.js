@@ -20,7 +20,7 @@ const pageHeight = height - (height / 27) * 4;
 const viewHeight = (8 * pageHeight) / 9;
 
 export default function GenreList({ route }) {
-  const { genre } = route.params;
+  const { genre, key, id } = route.params;
   const [genreList, setGenreList] = useState([]);
 
   function handleOnScroll(event) {
@@ -95,7 +95,7 @@ export default function GenreList({ route }) {
           data={genreList}
           renderItem={({ item }) => (
             <View style={styles.bookContainer}>
-              <GenreListCard listing={item} />
+              <GenreListCard listing={item} key={item.book_id} id={id} />
             </View>
           )}
           pagingEnabled
@@ -106,7 +106,7 @@ export default function GenreList({ route }) {
           numColumns={3}
           onScroll={handleOnScroll}
           contentContainerStyle={{
-            flex: 1/3,
+            flex: 1 / 3,
             flexDirection: "row",
             justifyContent: "flex-start",
             alignContent: "flex-start",

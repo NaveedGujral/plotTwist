@@ -86,7 +86,7 @@ export default function BookList({ categoryName, id }) {
           <Pressable
             style={styles.seeAllButton}
             onPress={() =>
-              navigation.navigate("GenreList", { genre: categoryName })
+              navigation.navigate("GenreList", { genre: categoryName, key: categoryName, id: id})
             }
           >
             <Entypo
