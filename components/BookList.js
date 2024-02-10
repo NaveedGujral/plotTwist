@@ -11,11 +11,6 @@ import {
 } from "react-native";
 import supabase from "../config/supabaseClient";
 import BookListCard from "./BookListCard";
-import { useFonts } from "expo-font";
-import {
-  Bellefair_400Regular,
-  JosefinSans_400Regular,
-} from "@expo-google-fonts/dev";
 import { Entypo } from "@expo/vector-icons";
 
 const { PTStyles, PTSwatches, importFonts } = require("../Styling");
