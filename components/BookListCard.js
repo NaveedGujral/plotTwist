@@ -27,13 +27,10 @@ export default function BookListCard({ listing, id }) {
   
   useEffect(() => {
     getUserWishList().then((res) => {
-      if (res && res[0] === listing.book_title) {
-        setWishListed(true);
-      } else {
-        setWishListed(false);
-      }
+      const isWishListed = res.some(bookTitle => bookTitle === listing.book_title);
+      setWishListed(isWishListed);
     });
-  }, []);
+  }, [listing.book_title]);
 
   async function handleWishListButton(listing) {
     const currentWishListed = wishListed;
