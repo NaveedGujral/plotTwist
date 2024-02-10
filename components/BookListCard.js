@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
   bookCard: {
     width: "100%",
     height: "77.78%",
+    alignSelf: "center"
   },
   bookImage: {
     width: "100%",
@@ -128,7 +129,8 @@ const styles = StyleSheet.create({
     borderRadius: width / 27,
     backgroundColor: PTG1,
     right: width / 81,
-    top: width / 81,
+    top: containerHeight/9 + width / 81,
+
     justifyContent: "center",
     alignItems: "center",
     opacity: 0.85,
