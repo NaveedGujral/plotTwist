@@ -63,7 +63,6 @@ export default function GenreList({ route }) {
         style={{
           flex: 1,
           shadowOpacity: 1,
-          shadowColor: PTRed,
           shadowRadius: 8,
           shadowOffset: 8,
         }}

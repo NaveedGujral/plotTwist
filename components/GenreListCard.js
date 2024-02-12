@@ -30,10 +30,10 @@ export default function GenreListCard({ listing, id }) {
   
   useEffect(() => {
     getUserWishList().then((res) => {
-      const isWishListed = res.some(bookTitle => bookTitle === listing.book_title);
+      const isWishListed = res.some(bookID => bookID === listing.book_id);
       setWishListed(isWishListed);
     });
-  }, [listing.book_title]);
+  }, [listing.book_id]);
 
   async function handleWishListButton(listing) {
     const currentWishListed = wishListed;
@@ -46,11 +46,11 @@ export default function GenreListCard({ listing, id }) {
     }
 
     async function updateUserWishList(res) {
-      if (res.includes(listing.book_title)) {
+      if (res.includes(listing.book_id)) {
         return;
       }
 
-      const updatedWishlist = [...res, listing.book_title];
+      const updatedWishlist = [...res, listing.book_id];
 
       const { data, error } = await supabase
         .from("Users")
@@ -59,7 +59,7 @@ export default function GenreListCard({ listing, id }) {
     }
 
     async function removeItemFromWishList(res) {
-      const updatedWishlist = res.filter((item) => item !== listing.book_title);
+      const updatedWishlist = res.filter((item) => item !== listing.book_id);
 
       const { data, error } = await supabase
         .from("Users")

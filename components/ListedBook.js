@@ -9,10 +9,6 @@ export default function ListedBook({ route, username }) {
   const { session, listing } = route;
   const [swapState, setSwapState] = useState(false);
   const [swapRequestMade, setSwapRequestMade] = useState(false);
-  console.log(username)
-  
-
-
 
   async function checkSwapExists() {
     const { data, error } = await supabase
@@ -73,20 +69,26 @@ export default function ListedBook({ route, username }) {
 
   return (
     <View>
-      <Pressable 
+      <Pressable
         onPress={() => {
           Promise.all([checkSwapExists(), reqSwap()]).then(
             ([checkResults, reqResults]) => {
               sendNotification(reqResults);
             }
           );
-          setSwapRequestMade(true)
+          setSwapRequestMade(true);
         }}
         style={styles.descriptionButton}
-       
       >
-        <View >
-          <Text  style={swapRequestMade ? styles.requestSwapButtonPressed : styles.text}> {swapRequestMade? "Request Made": "Request swap"}</Text>
+        <View>
+          <Text
+            style={
+              swapRequestMade ? styles.requestSwapButtonPressed : styles.text
+            }
+          >
+            {" "}
+            {swapRequestMade ? "Request Made" : "Request swap"}
+          </Text>
         </View>
       </Pressable>
     </View>
@@ -123,5 +125,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 10,
   },
-  
 });
