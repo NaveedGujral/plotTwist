@@ -26,6 +26,9 @@ const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 
 const { height, width } = Dimensions.get("window");
 
+const pageHeight = height - (height / 27) * 4;
+const catViewHeight = pageHeight / 3;
+
 const HomeScreen = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
   const [currSession, setCurrSession] = useState();
@@ -106,18 +109,18 @@ const HomeScreen = ({ navigation }) => {
             <TopTenCarousel listings={topTen} />
           </View>
           <View style={{ flex: 1, }}>
-            <View style={{ flex: 1, justifyContent: "flex-end" }}>
+            <View style={{ flex: 1, justifyContent: "center", backgroundColor: PTG3 }}>
               <Text
                 style={{
                   ...heading,
                   textAlign: "center",
-                  // paddingVertical: "1.12%",
+                  paddingTop: catViewHeight/18,
                 }}
               >
                 Categories
               </Text>
             </View>
-            <View style={{ flex: 5 }}>
+            <View style={{ flex: 5, backgroundColor: PTG3 }}>
               {categories.map((category) => {
                 return (
                   <BookList

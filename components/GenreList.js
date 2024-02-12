@@ -67,7 +67,10 @@ export default function GenreList({ route }) {
           shadowOffset: 8,
         }}
       >
-        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+        <View style={{ flex: 1 }}>
+          <View style={{ height: "11%", width: "100%" }}></View>
+        </View>
+        <View style={{ flex: 1, justifyContent: "center" }}>
           <Text
             style={{
               ...heading,

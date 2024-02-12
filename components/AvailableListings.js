@@ -89,107 +89,136 @@ export default function AvailableListings({ route }) {
     newBlurb = blurb.replace(regex, "");
   }
 
-  // return (
-  //   <View style={page}>
-  //     <View
-  //       style={{
-  //         flex: 1,
-  //       }}
-  //     ></View>
-  //   </View>
-  // );
-
-    return (
+  return (
+    <View style={page}>
       <View
-        style={
-          Platform.OS === "web"
-            ? { ...styles.container, ...styles.webFix }
-            : styles.container
-        }
+        style={{
+          flex: 1,
+          shadowOpacity: 1,
+          shadowRadius: 8,
+          shadowOffset: 8,
+        }}
       >
-        <View style={styles.halfPage}>
-          <View style={styles.bookInfoBox}>
-            <LinearGradient
-              colors={["#307361", "rgba(169, 169, 169, 0.10)"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{
-                borderRadius: 30,
-                overflow: "hidden",
-                height: "100%",
-                marginBottom: 25,
-              }}
-            >
-              <Text style={styles.title}> {bookInfo.title}</Text>
-              <View style={styles.bookCardContainer}>
-                <Image
-                  style={styles.bookCard}
-                  source={{ uri: listing.img_url }}
-                />
-              </View>
-              {Object.keys(bookInfo).length > 0 ? (
-                <View>
-                  <Text style={styles.author}> {bookInfo.authors}</Text>
-                  <Text style={styles.text}>
-                    Released on {bookInfo.publishedDate}
-                  </Text>
-                  <Pressable
-                    onPress={() => setIsModalVisible(true)}
-                    style={styles.descriptionButton}
-                  >
-                    <Text style={styles.text}>About</Text>
-                  </Pressable>
-  
-                  <Modal isVisible={isModalVisible} backdropOpacity={2}>
-                    <View style={styles.modal}>
-                        <View
-                          style={{ flexDirection: "column", alignItems: "left" }}
-                        >
-                          <Text style={styles.text}>{newBlurb}</Text>
-                          <View>
-                            <Pressable
-                              onPress={() => setIsModalVisible(false)}
-                              style={styles.closeButton}
-                            >
-                              <Text style={styles.text}>Close</Text>
-                            </Pressable>
-                          </View>
-                        </View>
-                    </View>
-                  </Modal>
-                </View>
-              ) : (
-                <Text style={styles.text}> No information available </Text>
-              )}
-            </LinearGradient>
-          </View>
+        <View style={{ flex: 1 }}>
+          <View style={{ height: "11%", width: "100%" }}></View>
         </View>
-  
-        <View style={[styles.halfPage, {marginTop: 30}]}>
-          <Text style={styles.title}>Books listed by users:</Text>
-          <FlatList
-            data={listings}
-            keyExtractor={(item) => item.book_id}
-            renderItem={({ item }) => (
-              <View style={styles.listItem}>
-                <Text style={styles.text}>
-                  {" "}
-                  Posted by {userName} on{" "}
-                  {new Date(item.date_posted).toLocaleDateString()}{" "}
-                </Text>
-                <Text style={styles.text}> Condition is {item.condition} </Text>
-                <Pressable style={styles.descriptionButton}>
-                  <ListedBook
-                    username={userName}
-                    route={{ session: session, listing: item }}
-                  />
-                </Pressable>
-              </View>
-            )}
-          />
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text
+            style={{
+              ...heading,
+              textAlign: "center",
+            }}
+          >
+            Listings & Wishlists
+          </Text>
+        </View>
+        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+          <View
+            style={{ height: "11%", width: "100%", backgroundColor: PTG2 }}
+          ></View>
         </View>
       </View>
-    );
+
+      <View
+        style={{
+          flex: 8,
+          backgroundColor: PTG3,
+        }}
+      ></View>
+    </View>
+  );
+
+    // return (
+    //   <View
+    //     style={
+    //       Platform.OS === "web"
+    //         ? { ...styles.container, ...styles.webFix }
+    //         : styles.container
+    //     }
+    //   >
+    //     <View style={styles.halfPage}>
+    //       <View style={styles.bookInfoBox}>
+    //         <LinearGradient
+    //           colors={["#307361", "rgba(169, 169, 169, 0.10)"]}
+    //           start={{ x: 0, y: 0 }}
+    //           end={{ x: 1, y: 1 }}
+    //           style={{
+    //             borderRadius: 30,
+    //             overflow: "hidden",
+    //             height: "100%",
+    //             marginBottom: 25,
+    //           }}
+    //         >
+    //           <Text style={styles.title}> {bookInfo.title}</Text>
+    //           <View style={styles.bookCardContainer}>
+    //             <Image
+    //               style={styles.bookCard}
+    //               source={{ uri: listing.img_url }}
+    //             />
+    //           </View>
+    //           {Object.keys(bookInfo).length > 0 ? (
+    //             <View>
+    //               <Text style={styles.author}> {bookInfo.authors}</Text>
+    //               <Text style={styles.text}>
+    //                 Released on {bookInfo.publishedDate}
+    //               </Text>
+    //               <Pressable
+    //                 onPress={() => setIsModalVisible(true)}
+    //                 style={styles.descriptionButton}
+    //               >
+    //                 <Text style={styles.text}>About</Text>
+    //               </Pressable>
+  
+    //               <Modal isVisible={isModalVisible} backdropOpacity={2}>
+    //                 <View style={styles.modal}>
+    //                     <View
+    //                       style={{ flexDirection: "column", alignItems: "left" }}
+    //                     >
+    //                       <Text style={styles.text}>{newBlurb}</Text>
+    //                       <View>
+    //                         <Pressable
+    //                           onPress={() => setIsModalVisible(false)}
+    //                           style={styles.closeButton}
+    //                         >
+    //                           <Text style={styles.text}>Close</Text>
+    //                         </Pressable>
+    //                       </View>
+    //                     </View>
+    //                 </View>
+    //               </Modal>
+    //             </View>
+    //           ) : (
+    //             <Text style={styles.text}> No information available </Text>
+    //           )}
+    //         </LinearGradient>
+    //       </View>
+    //     </View>
+  
+    //     <View style={[styles.halfPage, {marginTop: 30}]}>
+    //       <Text style={styles.title}>Books listed by users:</Text>
+    //       <FlatList
+    //         data={listings}
+    //         keyExtractor={(item) => item.book_id}
+    //         renderItem={({ item }) => (
+    //           <View style={styles.listItem}>
+    //             <Text style={styles.text}>
+    //               {" "}
+    //               Posted by {userName} on{" "}
+    //               {new Date(item.date_posted).toLocaleDateString()}{" "}
+    //             </Text>
+    //             <Text style={styles.text}> Condition is {item.condition} </Text>
+    //             <Pressable style={styles.descriptionButton}>
+    //               <ListedBook
+    //                 username={userName}
+    //                 route={{ session: session, listing: item }}
+    //               />
+    //             </Pressable>
+    //           </View>
+    //         )}
+    //       />
+    //     </View>
+    //   </View>
+    // );
 
 
 }

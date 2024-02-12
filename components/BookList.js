@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     height: "100%",
+    backgroundColor: PTG3
   },
   categoryList: {},
   cardContainer: {

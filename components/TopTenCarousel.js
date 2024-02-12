@@ -43,28 +43,17 @@ export default function TopTenCarousel({ listings }) {
         style={{
           flex: 2,
           justifyContent: "space-evenly",
+          backgroundColor: PTG3
         }}
       >
-        <View style={{ flex: 1, justifyContent: "flex-end" }}>
           <Text
             style={{
               ...heading,
               textAlign: "center",
             }}
           >
-            Spotlight
+            Top 10 Wishlisted
           </Text>
-        </View>
-        <View style={{ flex: 1, justifyContent: "center" }}>
-          <Text
-            style={{
-              ...subHeading,
-              textAlign: "center",
-            }}
-          >
-            Top 10 Most Wishlisted
-          </Text>
-        </View>
       </View>
 
       <View style={{ flex: 9 }}>
@@ -90,7 +79,7 @@ export default function TopTenCarousel({ listings }) {
       >
         <View style={{ height: "11%", width: "100%", backgroundColor: PTG4 }}></View>
         <Pagination listings={listings} scrollX={scrollX} />
-        <View style={{ height: "11%", width: "100%", backgroundColor: PTG2 }}></View>
+        <View style={{ height: "11%", width: "100%", backgroundColor: PTG4 }}></View>
       </View>
     </View>
   );
