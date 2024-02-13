@@ -105,7 +105,6 @@ export default function BookList({ categoryName, id }) {
           flexDirection: "row",
         }}
         >
-
         <FlatList
           data={bookList}
           renderItem={({ item }) => <BookListCard listing={item}
@@ -136,7 +135,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     height: "100%",
-    backgroundColor: PTG3
+    backgroundColor: PTG4
   },
   categoryList: {},
   cardContainer: {
@@ -147,8 +146,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   seeAllButton: {
-    ...pillButton,
-    backgroundColor: PTG3,
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "flex-end",

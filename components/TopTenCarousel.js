@@ -43,7 +43,7 @@ export default function TopTenCarousel({ listings }) {
         style={{
           flex: 2,
           justifyContent: "space-evenly",
-          backgroundColor: PTG3
+          backgroundColor: PTG4
         }}
       >
           <Text

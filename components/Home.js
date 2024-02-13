@@ -109,18 +109,18 @@ const HomeScreen = ({ navigation }) => {
             <TopTenCarousel listings={topTen} />
           </View>
           <View style={{ flex: 1, }}>
-            <View style={{ flex: 1, justifyContent: "center", backgroundColor: PTG3 }}>
+            <View style={{ flex: 1, justifyContent: "center", backgroundColor: PTG4 }}>
               <Text
                 style={{
                   ...heading,
                   textAlign: "center",
-                  paddingTop: catViewHeight/18,
+                  paddingTop: catViewHeight/54,
                 }}
               >
                 Categories
               </Text>
             </View>
-            <View style={{ flex: 5, backgroundColor: PTG3 }}>
+            <View style={{ flex: 5, backgroundColor: PTG4 }}>
               {categories.map((category) => {
                 return (
                   <BookList

@@ -12,7 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 const { height, width } = Dimensions.get("window");
 
 const { PTStyles, PTSwatches } = require("../Styling");
-const { heading, subHeading, body, gradTile, bookCoverImage } = PTStyles;
+const { heading, subHeading, body, gradTile, tileHeaderBox, tileImage } = PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const pageHeight = height - (height / 27) * 4;
 const viewHeight = 2*(pageHeight/3)
@@ -41,11 +41,11 @@ export default function CarouselItem({ item }) {
             width: "89.78%",
           }}
         >
-          <Text adjustsFontSizeToFit numberOfLines={2} style={styles.headerBox}>
+          <Text adjustsFontSizeToFit numberOfLines={2} style={ tileHeaderBox}>
             {item.book_title}
           </Text>
         </View>
-        <Image style={styles.image} source={{ uri: item.img_url }} />
+        <Image style={tileImage} source={{ uri: item.img_url }} />
         <View style={{ justifyContent: "center", flex: 1 }}>
           <Text style={{ ...subHeading, textAlign: "center" }}>
             {item.no_of_wishlists} people want this book
@@ -62,16 +62,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: containerHeight,
     width: width,
-  },
-  headerBox: {
-    ...subHeading,
-    textAlign: "center",
-    fontWeight: "600",
-  },
-  image: {
-    borderRadius: width/18,
-    flex: 4,
-    width: "44%",
-    resizeMode: "cover",
   },
 });
