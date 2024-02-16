@@ -117,7 +117,7 @@ const HomeScreen = ({ navigation }) => {
                   paddingTop: catViewHeight/54,
                 }}
               >
-                Categories
+                Genre
               </Text>
             </View>
             <View style={{ flex: 5, backgroundColor: PTG4 }}>

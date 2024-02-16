@@ -49,8 +49,7 @@ const PTSwatches = {
 
 const PTStyles = StyleSheet.create({
   heading: {
-    fontSize: 27,
-    fontWeight: "400",
+    fontSize: 24,
     color: PTSwatches.PTG1,
     fontFamily: "JosefinSans_400Regular",
   },

@@ -26,6 +26,8 @@ import {
   Lora_400Regular,
   JosefinSans_400Regular,
 } from "@expo-google-fonts/dev";
+import { Subheading } from "react-native-paper";
+
 const screenHeight = Dimensions.get("window").height;
 const api = process.env.GOOGLE_BOOKS_API_KEY;
 
@@ -187,12 +189,18 @@ export default function AvailableListings({ route }) {
                   />
                 </Pressable>
 
-                <Modal transparent={true} isVisible={isModalVisible}>
+                
+
+                <Modal transparent={true} isVisible={isModalVisible} >
                   <View style={styles.modal}>
                     <View
-                      style={{ flexDirection: "column", alignItems: "left" }}
+                      style={{ flexDirection: "column", alignItems: "left", width: width* 0.9334, height: height }}
                     >
-                      <Text style={styles.text}>{newBlurb}</Text>
+                      <Text style={{...tileHeaderBox, textAlign:"left"}}>{listing.book_title}</Text>
+                      <Text style={subHeading}> </Text>
+                      <Text style={subHeading}>{listing.author}</Text>
+                      <Text style={subHeading}> </Text>
+                      <Text style={subHeading}>{newBlurb}</Text>
                       <View>
                         <Pressable
                           onPress={() => setIsModalVisible(false)}
@@ -333,11 +341,13 @@ const styles = StyleSheet.create({
   },
   modal: {
     flex: 1,
-    width: "100%",
-    height: "100%",
+    width: width ,
+    height: height,
+    alignSelf:"center",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.05'
   },
   title: {
     fontSize: 18,
