@@ -79,7 +79,6 @@ const Search_Existing_Book = ({ navigation }) => {
   }, [page]);
 
   const handleSelectBook = (book) => {
-    console.log(book)
     setSelectedBook(book);
     setGoogleBookId(book.id);
     setTitle(book.volumeInfo.title);
@@ -226,7 +225,7 @@ const Search_Existing_Book = ({ navigation }) => {
             <Image
               source={
                 item.volumeInfo.imageLinks !== undefined
-                  ? { uri: item.volumeInfo.imageLinks.smallThumbnail }
+                  ? { uri: item.volumeInfo.imageLinks.thumbnail }
                   : {
                       uri: "https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-pic-design-profile-vector-png-image_40966566.jpg",
                     }

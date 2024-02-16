@@ -1,22 +1,22 @@
-import {
-  Text,
-  StyleSheet,
-  Pressable,
-  View,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-  Platform,
-} from "react-native";
+import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
+import { useEffect, useState } from "react";
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import Modal from "react-native-modal";
 import supabase from "../config/supabaseClient";
 import ListedBook from "./ListedBook";
-import { Entypo } from "@expo/vector-icons";
-import Modal from "react-native-modal";
-import { Dimensions } from "react-native";
+import WishListButton from "./WishListButton";
 
 const screenHeight = Dimensions.get("window").height;
 const api = process.env.GOOGLE_BOOKS_API_KEY;
@@ -33,6 +33,7 @@ const bookImageWidth = width * 0.4445 * 0.9334;
 export default function AvailableListings({ route }) {
   const navigation = useNavigation();
   const { session, listing } = route.params;
+  const id = session.user.id;
   const [listings, setListings] = useState([]);
   const [userName, setUserName] = useState("");
   const [bookInfo, setBookInfo] = useState({});
@@ -40,26 +41,9 @@ export default function AvailableListings({ route }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [swapRequestMade, setSwapRequestMade] = useState(false);
   const [showCloseButton, setShowCloseButton] = useState(false);
-
-  const googleID = route.params.listing.google_book_id;
-
-  // Heading block is 1/6 of 2/3 = 2/18 = 1/9
-  // Linear Square is 9/12 of 2/3 = 18/36 = 1/2
+  const [wishListed, setWishListed] = useState(false);
 
   useEffect(() => {
-    // async function getBookInfo() {
-    //   if (googleID) {
-    //     try {
-    //       const response = await fetch(
-    //         `https://www.googleapis.com/books/v1/volumes/${googleID}?key=${api}`
-    //       );
-    //       const data = await response.json();
-    //       setBookInfo(data.volumeInfo);
-    //     } catch (error) {
-    //       console.error(error);
-    //     }
-    //   }
-    // }
     async function getAllListings() {
       const { data, error } = await supabase
         .from("Listings")
@@ -74,7 +58,6 @@ export default function AvailableListings({ route }) {
         .eq("user_id", listing.user_id);
       setUserName(data[0].username);
     }
-    // getBookInfo();
     getAllListings();
     getBookOwner();
   }, []);
@@ -84,8 +67,6 @@ export default function AvailableListings({ route }) {
     const regex = /<\/?[^>]+>/g;
     newBlurb = blurb.replace(regex, "");
   }
-
-  console.log(listing);
 
   return (
     <View style={page}>
@@ -149,17 +130,28 @@ export default function AvailableListings({ route }) {
                   height: bookImageWidth / 5,
                   width: bookImageWidth / 5,
                   borderRadius: bookImageWidth / 10,
-                  backgroundColor: PTG1,
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
-              ></View>
-              <View
-                style={{
-                  height: bookImageWidth / 5,
-                  width: bookImageWidth / 5,
-                  borderRadius: bookImageWidth / 10,
-                  backgroundColor: PTG1,
-                }}
-              ></View>
+              >
+                <View style={{justifyContent:"flex-start"}}>
+                  <Ionicons
+                    name="add-outline"
+                    size={36}
+                    style={{ color: PTG1, alignSelf: "stretch",width:"100%", height:"100%" }}
+                    onPress={() =>
+                      navigation.navigate("CreateListing", {
+                        currTitle: listing.book_title,
+                        authors: listing.author,
+                        currDescription: listing.description,
+                        imgUrl: listing.img_url,
+                        navigation: navigation,
+                        book_id: listing.google_book_id,
+                      })
+                    }
+                  />
+                </View>
+              </View>
               <View
                 style={{
                   height: bookImageWidth / 5,
@@ -167,10 +159,26 @@ export default function AvailableListings({ route }) {
                   justifyContent: "center",
                 }}
               >
-                <Pressable
-                  style={styles.seeAllButton}
-                  onPress={() => setIsModalVisible(true)}
-                >
+                <WishListButton
+                  listing={listing}
+                  id={id}
+                  wishListed={wishListed}
+                  setWishListed={setWishListed}
+                  iconSize={24}
+                  styles={{
+                    heartContainer: styles.heartContainer,
+                    heart: styles.heart,
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  height: bookImageWidth / 5,
+                  width: bookImageWidth / 5,
+                  justifyContent: "center",
+                }}
+              >
+                <Pressable onPress={() => setIsModalVisible(true)}>
                   <Entypo
                     name="dots-three-horizontal"
                     size={height * 0.0223}
@@ -204,7 +212,7 @@ export default function AvailableListings({ route }) {
                           name="cross"
                           size={30}
                           color={PTG1}
-                          style={{alignSelf:"center"}}
+                          style={{ alignSelf: "center" }}
                           onPress={() => setIsModalVisible(false)}
                         />
                       </View>
@@ -344,6 +352,19 @@ export default function AvailableListings({ route }) {
 }
 
 const styles = StyleSheet.create({
+  heartContainer: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  heart: {
+    textAlign: "center",
+    textAlignVertical: "center",
+    position: "absolute",
+    color: PTG1,
+  },
   container: {
     backgroundColor: "#272727",
     flex: 1,

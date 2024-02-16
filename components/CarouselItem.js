@@ -1,25 +1,27 @@
+import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 import {
-  View,
+  Dimensions,
+  Image,
+  Pressable,
   StyleSheet,
   Text,
-  Image,
-  Dimensions,
-  Pressable,
+  View,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
 
 const { height, width } = Dimensions.get("window");
 
 const { PTStyles, PTSwatches } = require("../Styling");
-const { heading, subHeading, body, gradTile, tileHeaderBox, tileImage } = PTStyles;
+const { heading, subHeading, body, gradTile, tileHeaderBox, tileImage } =
+  PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const pageHeight = height - (height / 27) * 4;
-const viewHeight = 2*(pageHeight/3)
-const containerHeight = viewHeight - viewHeight/4
+const viewHeight = 2 * (pageHeight / 3);
+const containerHeight = viewHeight - viewHeight / 4;
 
 export default function CarouselItem({ item }) {
   const navigation = useNavigation();
+  console.log(item)
   return (
     <Pressable
       onPress={() =>
@@ -41,7 +43,7 @@ export default function CarouselItem({ item }) {
             width: "89.78%",
           }}
         >
-          <Text adjustsFontSizeToFit numberOfLines={2} style={ tileHeaderBox}>
+          <Text adjustsFontSizeToFit numberOfLines={2} style={tileHeaderBox}>
             {item.book_title}
           </Text>
         </View>

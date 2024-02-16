@@ -11,7 +11,7 @@ const pageHeight = height - (height / 27) * 4;
 const viewHeight = 5 * (pageHeight / 18);
 const containerHeight = (8 * viewHeight) / 9;
 
-export default function WishListButton({ listing, id, wishListed, setWishListed, styles }) {
+export default function WishListButton({ listing, id, wishListed, setWishListed, styles, iconSize }) {
   async function getUserWishList() {
     const { data, error } = await supabase
       .from("Users")
@@ -81,15 +81,13 @@ export default function WishListButton({ listing, id, wishListed, setWishListed,
       {!wishListed ? (
         <AntDesign
           name="hearto"
-          size={18}
-          color="#C1514B"
+          size={iconSize}
           style={styles.heart}
         />
       ) : (
         <AntDesign
           name="heart"
-          size={18}
-          color="#C1514B"
+          size={iconSize}
           style={styles.heart}
         />
       )}

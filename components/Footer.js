@@ -1,6 +1,6 @@
-import { View, StyleSheet, Dimensions, Text, Platform } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { Dimensions, Platform, StyleSheet, View } from "react-native";
 
 const { PTSwatches } = require('../Styling')
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	icon: {
-		color: "white",
+		color: PTG1,
 	},
 	iosfix: {
 		marginBottom: 20,

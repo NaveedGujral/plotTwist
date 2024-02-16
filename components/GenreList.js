@@ -1,13 +1,12 @@
-import supabase from "../config/supabaseClient";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
-  StyleSheet,
-  View,
-  Text,
   Dimensions,
-  ScrollView,
   FlatList,
+  StyleSheet,
+  Text,
+  View
 } from "react-native";
+import supabase from "../config/supabaseClient";
 
 import GenreListCard from "./GenreListCard";
 

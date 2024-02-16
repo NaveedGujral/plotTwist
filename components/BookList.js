@@ -1,17 +1,17 @@
-import { useEffect, useState, useRef } from "react";
+import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useEffect, useRef, useState } from "react";
 import {
-  View,
-  StyleSheet,
-  Pressable,
-  Text,
+  Animated,
   Dimensions,
   FlatList,
-  Animated
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import supabase from "../config/supabaseClient";
 import BookListCard from "./BookListCard";
-import { Entypo } from "@expo/vector-icons";
 
 const { PTStyles, PTSwatches, importFonts } = require("../Styling");
 const { heading, subHeading, body, pillButton } = PTStyles;
@@ -20,11 +20,11 @@ const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { height, width } = Dimensions.get("window");
 
 export default function BookList({ categoryName, id }) {
-  importFonts()
+  importFonts();
   const [bookList, setBookList] = useState([]);
   const navigation = useNavigation();
   const scrollX = useRef(new Animated.Value(0)).current;
-  
+
   function handleOnScroll(event) {
     Animated.event(
       [
@@ -86,7 +86,11 @@ export default function BookList({ categoryName, id }) {
           <Pressable
             style={styles.seeAllButton}
             onPress={() =>
-              navigation.navigate("GenreList", { genre: categoryName, key: categoryName, id: id})
+              navigation.navigate("GenreList", {
+                genre: categoryName,
+                key: categoryName,
+                id: id,
+              })
             }
           >
             <Entypo
@@ -104,24 +108,24 @@ export default function BookList({ categoryName, id }) {
           width: width,
           flexDirection: "row",
         }}
-        >
+      >
         <FlatList
           data={bookList}
-          renderItem={({ item }) => <BookListCard listing={item}
-          key={item.book_id}
-          id={id} />}
+          renderItem={({ item }) => (
+            <BookListCard listing={item} key={item.book_id} id={id} />
+          )}
           horizontal
           pagingEnabled
           snapToAlignment="center"
           showsHorizontalScrollIndicator={false}
           onScroll={handleOnScroll}
-          contentContainerStyle={{ 
+          contentContainerStyle={{
             height: "100%",
-            gap: width/24, 
-            position: "absolute", 
+            gap: width / 24,
+            position: "absolute",
           }}
-          style={{ 
-            flex: 1, 
+          style={{
+            flex: 1,
           }}
         />
       </View>
@@ -135,7 +139,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     height: "100%",
-    backgroundColor: PTG4
+    backgroundColor: PTG4,
   },
   categoryList: {},
   cardContainer: {

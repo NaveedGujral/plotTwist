@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import supabase from "../config/supabaseClient";
 
@@ -90,7 +90,6 @@ export default function ChatWindow({ route }) {
             <View style={styles.receiverMessage}>
               {/* {username}: {message.message} */}
               <Text>{message.message}</Text>
-
             </View>
           );
         })}
@@ -112,17 +111,17 @@ export default function ChatWindow({ route }) {
         </KeyboardAvoidingView>
       )}
       {Platform.OS === "web" && (
-       <View style={styles.footer}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="Send a message ..."
-            onChangeText={setText}
-            value={text}
-            onSubmitEditing={sendMessage}
-            style={styles.input}
-          />
-        </View> 
-      </View> 
+        <View style={styles.footer}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              placeholder="Send a message ..."
+              onChangeText={setText}
+              value={text}
+              onSubmitEditing={sendMessage}
+              style={styles.input}
+            />
+          </View>
+        </View>
       )}
     </View>
   );
@@ -132,7 +131,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#272727",
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   text: {
     fontFamily: "CormorantGaramond_400Regular",
@@ -164,8 +163,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
     marginRight: 5,
-    maxWidth: '70%',
-    backgroundColor: "#2b88cf"
+    maxWidth: "70%",
+    backgroundColor: "#2b88cf",
   },
   receiverMessage: {
     backgroundColor: "#dadfe3",
@@ -180,7 +179,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
     marginLeft: 5,
-    maxWidth: '70%',
+    maxWidth: "70%",
   },
   input: {
     height: 40,

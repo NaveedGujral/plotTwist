@@ -1,9 +1,7 @@
-import { StyleSheet, View, Image, Pressable, Dimensions } from "react-native";
-import supabase from "../config/supabaseClient";
 import { useNavigation } from "@react-navigation/native";
+import { Dimensions, Image, Pressable, StyleSheet, View } from "react-native";
 
-import { AntDesign } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import WishListButton from "./WishListButton";
 
 const { PTStyles, PTSwatches } = require("../Styling");
@@ -34,34 +32,12 @@ export default function BookListCard({ listing, id }) {
           id={id}
           wishListed={wishListed}
           setWishListed={setWishListed}
+          iconSize={18}
           styles={{
             heartContainer: styles.heartContainer,
-            heart: {
-              position: "absolute",
-            },
+            heart: styles.heart,
           }}
         />
-
-        {/* <Pressable
-          style={styles.heartContainer}
-          onPress={() => handleWishListButton(listing)}
-        >
-          {!wishListed ? (
-            <AntDesign
-              name="hearto"
-              size={18}
-              color="#C1514B"
-              style={styles.heart}
-            />
-          ) : (
-            <AntDesign
-              name="heart"
-              size={18}
-              color="#C1514B"
-              style={styles.heart}
-            />
-          )}
-        </Pressable> */}
       </View>
     </View>
   );
@@ -98,5 +74,6 @@ const styles = StyleSheet.create({
   },
   heart: {
     position: "absolute",
+    color: PTRed,
   },
 });

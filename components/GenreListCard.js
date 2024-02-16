@@ -1,11 +1,6 @@
-import { StyleSheet, View, Image, Pressable, Dimensions } from "react-native";
-import { ScreenWidth } from "react-native-elements/dist/helpers";
-import supabase from "../config/supabaseClient";
 import { useNavigation } from "@react-navigation/native";
-
-import { AntDesign } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
+import { Dimensions, Image, Pressable, StyleSheet, View } from "react-native";
+import { useState } from "react";
 import WishListButton from "./WishListButton";
 
 const { PTStyles, PTSwatches } = require("../Styling");
@@ -31,17 +26,16 @@ export default function GenreListCard({ listing, id }) {
         <Image style={styles.bookImage} source={{ uri: listing.img_url }} />
       </Pressable>
       <WishListButton
-          listing={listing}
-          id={id}
-          wishListed={wishListed}
-          setWishListed={setWishListed}
-          styles={{
-            heartContainer: styles.heartContainer,
-            heart: 
-              styles.heart
-            ,
-          }}
-        />
+        listing={listing}
+        id={id}
+        wishListed={wishListed}
+        setWishListed={setWishListed}
+        iconSize={18}
+        styles={{
+          heartContainer: styles.heartContainer,
+          heart: styles.heart,
+        }}
+      />
     </View>
   );
 }
@@ -79,5 +73,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textAlignVertical: "center",
     position: "absolute",
+    color: PTRed
   },
 });
