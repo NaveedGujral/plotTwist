@@ -11,22 +11,12 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
 import supabase from "../config/supabaseClient";
 import ListedBook from "./ListedBook";
-import Collapsible from "react-native-collapsible";
 import { Entypo } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import { useFonts } from "expo-font";
 import Modal from "react-native-modal";
 import { Dimensions } from "react-native";
-import {
-  VollkornSC_400Regular,
-  Bellefair_400Regular,
-  CormorantGaramond_400Regular,
-  Lora_400Regular,
-  JosefinSans_400Regular,
-} from "@expo-google-fonts/dev";
-import { Subheading } from "react-native-paper";
 
 const screenHeight = Dimensions.get("window").height;
 const api = process.env.GOOGLE_BOOKS_API_KEY;
@@ -174,7 +164,7 @@ export default function AvailableListings({ route }) {
                 style={{
                   height: bookImageWidth / 5,
                   width: bookImageWidth / 5,
-                  justifyContent: "center"
+                  justifyContent: "center",
                 }}
               >
                 <Pressable
@@ -189,30 +179,55 @@ export default function AvailableListings({ route }) {
                   />
                 </Pressable>
 
-                
-
-                <Modal transparent={true} isVisible={isModalVisible} >
+                <Modal isVisible={isModalVisible}>
                   <View style={styles.modal}>
-                    <View
-                      style={{ flexDirection: "column", alignItems: "left", width: width* 0.9334, height: height }}
+                    <LinearGradient
+                      colors={[PTGreen, PTBlue]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                      }}
                     >
-                      <Text style={{...tileHeaderBox, textAlign:"left"}}>{listing.book_title}</Text>
-                      <Text style={subHeading}> </Text>
-                      <Text style={subHeading}>{listing.author}</Text>
-                      <Text style={subHeading}> </Text>
-                      <Text style={subHeading}>{newBlurb}</Text>
-                      <View>
-                        <Pressable
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "flex-end",
+                          width: width * 0.9334,
+                          height: (height / 27) * 2,
+                        }}
+                      >
+                        <Entypo
+                          name="cross"
+                          size={30}
+                          color={PTG1}
+                          style={{alignSelf:"center"}}
                           onPress={() => setIsModalVisible(false)}
-                          style={styles.closeButton}
-                        >
-                          <Text style={styles.text}>Close</Text>
-                        </Pressable>
+                        />
                       </View>
-                    </View>
+                      <View
+                        style={{
+                          flexDirection: "column",
+                          alignItems: "left",
+                          width: width * 0.9334,
+                          height: height - (height / 27) * 2,
+                        }}
+                      >
+                        <Text style={subHeading}> </Text>
+                        <Text style={{ ...tileHeaderBox, textAlign: "left" }}>
+                          {listing.book_title}
+                        </Text>
+                        <Text style={subHeading}> </Text>
+                        <Text style={subHeading}>{listing.author}</Text>
+                        <Text style={subHeading}> </Text>
+                        <Text style={subHeading}>{newBlurb}</Text>
+                      </View>
+                    </LinearGradient>
                   </View>
                 </Modal>
-                
               </View>
             </View>
           </View>
@@ -340,14 +355,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   modal: {
-    flex: 1,
-    width: width ,
+    width: width,
     height: height,
-    alignSelf:"center",
+    alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.05'
+    backgroundColor: PTG4,
   },
   title: {
     fontSize: 18,
