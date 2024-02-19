@@ -106,7 +106,7 @@ const HomeScreen = ({ navigation }) => {
           style={{ height: "100%" }}
         >
           <View style={{ flex: 2, backgroundColor: PTG4 }}>
-            <TopTenCarousel listings={topTen} />
+            <TopTenCarousel listings={topTen} id={currSession} />
           </View>
           <View style={{ flex: 1, }}>
             <View style={{ flex: 1, justifyContent: "center", backgroundColor: PTG4 }}>

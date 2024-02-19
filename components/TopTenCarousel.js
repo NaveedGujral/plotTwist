@@ -17,7 +17,7 @@ const { heading, subHeading, body, page, webFix } = PTStyles;
 const screenHeight = Dimensions.get("screen").height;
 const screenWidth = Dimensions.get("screen").width;
 
-export default function TopTenCarousel({ listings }) {
+export default function TopTenCarousel({ listings, id }) {
   const [index, setIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   function handleOnScroll(event) {
@@ -59,7 +59,7 @@ export default function TopTenCarousel({ listings }) {
       <View style={{ flex: 9 }}>
         <FlatList
           data={listings}
-          renderItem={({ item }) => <CarouselItem item={item} />}
+          renderItem={({ item }) => <CarouselItem item={item} id={id} />}
           horizontal
           pagingEnabled
           snapToAlignment="center"

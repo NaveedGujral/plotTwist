@@ -84,6 +84,7 @@ const PTStyles = StyleSheet.create({
     fontFamily: "JosefinSans_300Light",
     textAlign: "center",
     fontWeight: "600",
+    lineHeight: 20,
   },
   tileImage: {
     borderRadius: width / 18,

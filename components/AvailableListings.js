@@ -29,6 +29,8 @@ const { height, width } = Dimensions.get("screen");
 
 const pageHeight = height - (height / 27) * 4;
 const bookImageWidth = width * 0.4445 * 0.9334;
+const viewHeight = 2 * (pageHeight / 3);
+const containerHeight = viewHeight - viewHeight / 4;
 
 export default function AvailableListings({ route }) {
   const navigation = useNavigation();
@@ -61,6 +63,7 @@ export default function AvailableListings({ route }) {
     getAllListings();
     getBookOwner();
   }, []);
+  
   const blurb = listing.description;
   let newBlurb;
   if (blurb) {
@@ -94,7 +97,7 @@ export default function AvailableListings({ route }) {
           flex: 9,
           justifyContent: "center",
           alignItems: "center",
-          height: "100%",
+          height: containerHeight,
           width: width,
         }}
       >
@@ -112,7 +115,7 @@ export default function AvailableListings({ route }) {
               width: "89.78%",
             }}
           >
-            <Text adjustsFontSizeToFit numberOfLines={2} style={tileHeaderBox}>
+            <Text numberOfLines={2} style={tileHeaderBox}>
               {listing.book_title}
             </Text>
           </View>
