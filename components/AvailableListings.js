@@ -29,8 +29,11 @@ const { height, width } = Dimensions.get("screen");
 
 const pageHeight = height - (height / 27) * 4;
 const bookImageWidth = width * 0.4445 * 0.9334;
-const viewHeight = 2 * (pageHeight / 3);
-const containerHeight = viewHeight - viewHeight / 4;
+const view1Height = pageHeight / 2;
+const container1Height = view1Height - view1Height / 4;
+const view2Height = 7 *pageHeight / 18;
+const container2Height = 9*view2Height/10
+const cardContainerHeight = container2Height/1.5
 
 export default function AvailableListings({ route }) {
   const navigation = useNavigation();
@@ -63,7 +66,7 @@ export default function AvailableListings({ route }) {
     getAllListings();
     getBookOwner();
   }, []);
-  
+
   const blurb = listing.description;
   let newBlurb;
   if (blurb) {
@@ -88,7 +91,7 @@ export default function AvailableListings({ route }) {
               textAlign: "center",
             }}
           >
-            Listings & Wishlists
+            Listings
           </Text>
         </View>
       </View>
@@ -97,7 +100,7 @@ export default function AvailableListings({ route }) {
           flex: 9,
           justifyContent: "center",
           alignItems: "center",
-          height: containerHeight,
+          height: container1Height,
           width: width,
         }}
       >
@@ -137,11 +140,16 @@ export default function AvailableListings({ route }) {
                   alignItems: "center",
                 }}
               >
-                <View style={{justifyContent:"flex-start"}}>
+                <View style={{ justifyContent: "flex-start" }}>
                   <Ionicons
                     name="add-outline"
                     size={36}
-                    style={{ color: PTG1, alignSelf: "stretch",width:"100%", height:"100%" }}
+                    style={{
+                      color: PTG1,
+                      alignSelf: "stretch",
+                      width: "100%",
+                      height: "100%",
+                    }}
                     onPress={() =>
                       navigation.navigate("CreateListing", {
                         currTitle: listing.book_title,
@@ -248,113 +256,49 @@ export default function AvailableListings({ route }) {
         style={{
           flex: 7,
         }}
-      ></View>
-    </View>
-  );
-
-  return (
-    <View
-      style={
-        Platform.OS === "web"
-          ? { ...styles.container, ...styles.webFix }
-          : styles.container
-      }
-    >
-      <View style={{ flex: 1 }}>
-        <Pressable
-          // onPress={() => setIsModalVisible(true)}
-          style={styles.descriptionButton}
-        >
-          <Text style={{ ...subHeading, textAlign: "center" }}>About</Text>
-        </Pressable>
-      </View>
-
-      <View style={styles.halfPage}>
-        <View style={styles.bookInfoBox}>
-          <LinearGradient
-            colors={["#307361", "rgba(169, 169, 169, 0.10)"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
+      >
+        <View style={{ flex: 1, justifyContent:"flex-end" }}>
+          <View
             style={{
-              borderRadius: 30,
-              overflow: "hidden",
-              height: "100%",
-              marginBottom: 25,
+              height: height / 729,
+              width: "100%",
+              backgroundColor: PTG1,
             }}
-          >
-            <Text style={styles.title}> {bookInfo.title}</Text>
-            <View style={styles.bookCardContainer}>
-              <Image
-                style={styles.bookCard}
-                source={{ uri: listing.img_url }}
-              />
-            </View>
-            {Object.keys(bookInfo).length > 0 ? (
-              <View>
-                <Text style={styles.author}> {bookInfo.authors}</Text>
-                <Text style={styles.text}>
-                  Released on {bookInfo.publishedDate}
-                </Text>
-                <Pressable
-                  onPress={() => setIsModalVisible(true)}
-                  style={styles.descriptionButton}
-                >
-                  <Text style={styles.text}>About</Text>
-                </Pressable>
-
-                <Modal isVisible={isModalVisible} backdropOpacity={2}>
-                  <View style={styles.modal}>
-                    <View
-                      style={{ flexDirection: "column", alignItems: "left" }}
-                    >
-                      <Text style={styles.text}>{newBlurb}</Text>
-                      <View>
-                        <Pressable
-                          onPress={() => setIsModalVisible(false)}
-                          style={styles.closeButton}
-                        >
-                          <Text style={styles.text}>Close</Text>
-                        </Pressable>
-                      </View>
-                    </View>
-                  </View>
-                </Modal>
-              </View>
-            ) : (
-              <Text style={styles.text}> No information available </Text>
-            )}
-          </LinearGradient>
+          ></View>
         </View>
-      </View>
 
-      <View style={[styles.halfPage, { marginTop: 30 }]}>
-        <Text style={styles.title}>Books listed by users:</Text>
-        <FlatList
-          data={listings}
-          keyExtractor={(item) => item.book_id}
-          renderItem={({ item }) => (
-            <View style={styles.listItem}>
-              <Text style={styles.text}>
-                {" "}
-                Posted by {userName} on{" "}
-                {new Date(item.date_posted).toLocaleDateString()}{" "}
-              </Text>
-              <Text style={styles.text}> Condition is {item.condition} </Text>
-              <Pressable style={styles.descriptionButton}>
+        <View
+          style={{
+            flex: 9,
+          }}
+        >
+          <FlatList
+            data={listings}
+            keyExtractor={(item) => item.book_id}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <View style={styles.listingContainer}>
                 <ListedBook
-                  username={userName}
+                  userName={userName}
                   route={{ session: session, listing: item }}
                 />
-              </Pressable>
-            </View>
-          )}
-        />
+              </View>
+            )}
+            contentContainerStyle={{ flex: 1 }}
+          />
+        </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  listingContainer: {
+    height: cardContainerHeight,
+    width: width,
+    justifyContent:"center",
+    alignContent:"center"
+  },
   heartContainer: {
     position: "absolute",
     width: "100%",
@@ -408,7 +352,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   closeButton: {
-    // position: "absolute",
     top: 60,
     right: 10,
     borderRadius: 50,

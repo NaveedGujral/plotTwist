@@ -73,6 +73,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textAlignVertical: "center",
     position: "absolute",
-    color: PTRed
+    color: PTRed,
   },
 });

@@ -11,8 +11,6 @@ export default function SwapOffer({ route }) {
   const [user1ProfilePic, setUser1ProfilePic] = useState()
   const [user2ProfilePic, setUser2ProfilePic] = useState()
 
-  console.log(info, notification)
-
   // MVP ONLY - NEEDS REFACTORING TO BE SCALABLE! 
   useEffect(() => {
     switch (session.user.id) {
@@ -176,8 +174,6 @@ const styles = StyleSheet.create({
     margin: "auto",
     display: "flex",
     justifyContent: "space-between",
-    // borderColor: "gray",
-    // borderWidth: 5,
     width: ScreenWidth*0.9,
     height: 600,
   },
