@@ -97,10 +97,26 @@ const PTStyles = StyleSheet.create({
     backgroundColor: PTSwatches.PTG4,
   },
   pillButton: {
-    height: (height / 27) * 0.6667,
-    width: width / 9,
-    borderRadius: ((height / 27) * 0.6667) / 2,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: PTSwatches.PTGreen
   },
+  roundButton: {
+    width: width/9,
+    height: width/9,
+    borderRadius: width/18,
+    backgroundColor: PTSwatches.PTGreen,
+    justifyContent: "center",
+    alignContent: "center",
+  },
+  roundButtonPressed: {
+    width: width/9,
+    height: width/9,
+    borderRadius: width/18,
+    backgroundColor: PTSwatches.PTG1,
+    justifyContent: "center",
+    alignContent: "center",
+  }
 });
 
 const headerSS = {

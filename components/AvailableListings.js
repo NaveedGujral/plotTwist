@@ -31,9 +31,9 @@ const pageHeight = height - (height / 27) * 4;
 const bookImageWidth = width * 0.4445 * 0.9334;
 const view1Height = pageHeight / 2;
 const container1Height = view1Height - view1Height / 4;
-const view2Height = 7 *pageHeight / 18;
-const container2Height = 9*view2Height/10
-const cardContainerHeight = container2Height/1.5
+const view2Height = (7 * pageHeight) / 18;
+const container2Height = (9 * view2Height) / 10;
+const cardContainerHeight = container2Height / 1.5;
 
 export default function AvailableListings({ route }) {
   const navigation = useNavigation();
@@ -56,15 +56,7 @@ export default function AvailableListings({ route }) {
         .eq("book_title", listing.book_title);
       setListings(data);
     }
-    async function getBookOwner() {
-      const { data, error } = await supabase
-        .from("Users")
-        .select("username")
-        .eq("user_id", listing.user_id);
-      setUserName(data[0].username);
-    }
     getAllListings();
-    getBookOwner();
   }, []);
 
   const blurb = listing.description;
@@ -257,7 +249,7 @@ export default function AvailableListings({ route }) {
           flex: 7,
         }}
       >
-        <View style={{ flex: 1, justifyContent:"flex-end" }}>
+        <View style={{ flex: 1, justifyContent: "flex-end" }}>
           <View
             style={{
               height: height / 729,
@@ -296,8 +288,8 @@ const styles = StyleSheet.create({
   listingContainer: {
     height: cardContainerHeight,
     width: width,
-    justifyContent:"center",
-    alignContent:"center"
+    justifyContent: "center",
+    alignContent: "center",
   },
   heartContainer: {
     position: "absolute",

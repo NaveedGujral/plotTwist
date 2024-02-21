@@ -3,9 +3,18 @@ import supabase from "../config/supabaseClient";
 import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Dimensions } from "react-native";
+import { Octicons } from "@expo/vector-icons";
 
 const { PTStyles, PTSwatches } = require("../Styling");
-const { heading, subHeading, body, page } = PTStyles;
+const {
+  heading,
+  subHeading,
+  body,
+  page,
+  pillButton,
+  roundButton,
+  roundButtonPressed,
+} = PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { height, width } = Dimensions.get("screen");
 
@@ -16,14 +25,24 @@ const cardContainerHeight = containerHeight / 1.5;
 const containerWidth = width - (2 * width) / 27;
 const profilePicDims = cardContainerHeight - (2 * cardContainerHeight) / 9;
 
-export default function ListedBook({ route, userName }) {
+export default function ListedBook({ route }) {
   const navigation = useNavigation();
   const { session, listing } = route;
   const [swapState, setSwapState] = useState(false);
   const [swapRequestMade, setSwapRequestMade] = useState(false);
   const [userProfilePic, setUserProfilePic] = useState();
+  const [userName, setUserName] = useState("");
 
-  console.log(listing);
+  useEffect(() => {
+    async function getBookOwner() {
+      const { data, error } = await supabase
+        .from("Users")
+        .select("username")
+        .eq("user_id", listing.user_id);
+      setUserName(data[0].username);
+    }
+    getBookOwner();
+  }, []);
 
   useEffect(() => {
     switch (listing.user_id) {
@@ -70,10 +89,12 @@ export default function ListedBook({ route, userName }) {
 
     if (data.length > 0) {
       setSwapState(true);
+      setSwapRequestMade(true)
     } else {
       setSwapState(false);
     }
   }
+  checkSwapExists()
 
   // inserts info into pending swaps
   const reqSwap = async () => {
@@ -127,28 +148,20 @@ export default function ListedBook({ route, userName }) {
           justifyContent: "space-between",
         }}
       >
-        {/* <View
+        <Image
+          source={userProfilePic}
           style={{
             width: profilePicDims,
             height: profilePicDims,
-            backgroundColor: PTBlue,
             borderRadius: profilePicDims / 2,
+            resizeMode: "cover",
           }}
-        > */}
-          <Image
-            source={userProfilePic}
-            style={{
-              width: profilePicDims,
-              height: profilePicDims,
-              borderRadius: profilePicDims / 2,
-              resizeMode: "cover",
-            }}
-          />
-        {/* </View> */}
+        />
         <View
           style={{
             width: containerWidth - (profilePicDims + width / 27),
             height: profilePicDims,
+            justifyContent: "space-between",
           }}
         >
           <View
@@ -159,8 +172,41 @@ export default function ListedBook({ route, userName }) {
               {new Date(listing.date_posted).toLocaleDateString()}{" "}
             </Text>
           </View>
-          <Text style={subHeading}> </Text>
-          <Text style={subHeading}>Condition: {listing.condition} </Text>
+          <View>
+            <Text style={subHeading}>Condition: {listing.condition} </Text>
+          </View>
+
+          <View>
+            {swapRequestMade ?
+            <View style={roundButtonPressed}>
+              <Octicons
+                name="arrow-switch"
+                size={24}
+                color={PTG4}
+                style={{ textAlign: "center", width: "100%" }}
+              />
+            </View>
+            :
+            <Pressable
+              onPress={() => {
+                Promise.all([checkSwapExists(), reqSwap()]).then(
+                  ([checkResults, reqResults]) => {
+                    sendNotification(reqResults);
+                  }
+                );
+                setSwapRequestMade(true);
+              }}
+              style={roundButton}
+            >
+              <Octicons
+                name="arrow-switch"
+                size={24}
+                color={PTG1}
+                style={{ textAlign: "center", width: "100%" }}
+              />
+            </Pressable>}
+          </View>
+
         </View>
       </View>
       <View style={{ flex: 1, justifyContent: "flex-end" }}>
@@ -226,12 +272,12 @@ const styles = StyleSheet.create({
   descriptionButton: {
     backgroundColor: "#3B8D77",
     fontSize: 10,
-    alignSelf: "center",
     width: Dimensions.get("window").width * 0.33,
     borderRadius: 15,
     marginTop: 10,
     textAlign: "center",
     justifyContent: "center",
+    alignSelf: "center",
     marginBottom: 10,
   },
   requestSwapButtonPressed: {

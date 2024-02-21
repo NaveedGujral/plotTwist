@@ -21,7 +21,7 @@ import BookList from "./BookList";
 import TopTenCarousel from "./TopTenCarousel";
 
 const { PTStyles, PTSwatches, importFonts } = require("../Styling");
-const { heading, subHeading, body, page, webFix } = PTStyles;
+const { heading, subHeading, body, page, webFix, roundButton } = PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 
 const { height, width } = Dimensions.get("window");
@@ -108,13 +108,19 @@ const HomeScreen = ({ navigation }) => {
           <View style={{ flex: 2, backgroundColor: PTG4 }}>
             <TopTenCarousel listings={topTen} id={currSession} />
           </View>
-          <View style={{ flex: 1, }}>
-            <View style={{ flex: 1, justifyContent: "center", backgroundColor: PTG4 }}>
+          <View style={{ flex: 1 }}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                backgroundColor: PTG4,
+              }}
+            >
               <Text
                 style={{
                   ...heading,
                   textAlign: "center",
-                  paddingTop: catViewHeight/54,
+                  paddingTop: catViewHeight / 54,
                 }}
               >
                 Genre
@@ -124,12 +130,12 @@ const HomeScreen = ({ navigation }) => {
               {categories.map((category) => {
                 return (
                   <BookList
-                  categoryName={category}
-                  key={category}
-                  id={currSession}
+                    categoryName={category}
+                    key={category}
+                    id={currSession}
                   />
-                  );
-                })}
+                );
+              })}
             </View>
             <StatusBar style="auto" />
           </View>
@@ -137,9 +143,11 @@ const HomeScreen = ({ navigation }) => {
       </View>
       {scrollOffset > scrollOffsetLimit && (
         <Pressable
-        style={
-            styles.BTTContainer
-          }
+          style={{
+            position: "absolute",
+            right: width * 0.5 - width / 18,
+            top: height / 54,
+          }}
           onPress={() => {
             scrollRef.current?.scrollTo({
               y: 0,
@@ -147,44 +155,31 @@ const HomeScreen = ({ navigation }) => {
             });
           }}
         >
-          <View style={styles.BTTCircle}>
-            <MaterialCommunityIcons name="chevron-double-up" size={30} color={PTG1} style={styles.BTTArrow}/>
+          <View
+            style={{
+              ...roundButton,
+              shadowColor: PTG4,
+              shadowOffset: {
+                width: 0,
+                height: 8,
+              },
+              shadowOpacity: 0.45,
+              shadowRadius: 8,
+              elevation: 1,
+              zIndex: 1,
+            }}
+          >
+            <MaterialCommunityIcons
+              name="chevron-double-up"
+              size={30}
+              color={PTG1}
+              style={{ textAlign: "center", width: "100%" }}
+            />
           </View>
         </Pressable>
       )}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  BTTContainer: {
-    position: "absolute",
-    right: (width * 0.5) - (width/18),
-    top: height/54,
-  },
-  BTTHeight: {
-  },
-  BTTCircle: {
-    width: width/9,
-    height: width/9,
-    borderRadius: width/18,
-    backgroundColor: PTGreen,
-    shadowColor: PTG4,
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-    shadowOpacity: 0.45,
-    shadowRadius: 8,
-    elevation: 1,
-    zIndex: 1,
-    justifyContent: "center",
-    alignContent: "center",
-  },
-  BTTArrow: {
-    textAlign: "center",
-    width: "100%",
-  },
-});
 
 export default HomeScreen;
