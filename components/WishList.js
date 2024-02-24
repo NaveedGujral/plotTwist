@@ -32,7 +32,7 @@ const WishList = ({ session }) => {
 
         const wishlist = data?.wishlist || [];
         const promises = wishlist.map(async book => {
-            const { data, error } = await supabase.from('Listings').select('img_url').eq('book_title', book).limit(1).single();
+            const { data, error } = await supabase.from('Listings').select('img_url').eq('book_id', book).limit(1).single();
 
             if (error) {
                 console.log(error);

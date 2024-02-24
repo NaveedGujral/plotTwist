@@ -113,7 +113,7 @@ const PTStyles = StyleSheet.create({
     width: width/9,
     height: width/9,
     borderRadius: width/18,
-    backgroundColor: PTSwatches.PTG1,
+    backgroundColor: PTSwatches.PTG2,
     justifyContent: "center",
     alignContent: "center",
   }
