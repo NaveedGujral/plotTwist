@@ -220,42 +220,6 @@ export default function ListedBook({ route }) {
       </View>
     </View>
   );
-
-  return (
-    <View style={styles.container}>
-      <Text style={subHeading}>
-        {" "}
-        Posted by {userName} on{" "}
-        {new Date(listing.date_posted).toLocaleDateString()}{" "}
-      </Text>
-      <Text style={subHeading}> Condition is {listing.condition} </Text>
-      <Pressable
-        onPress={() => {
-          Promise.all([checkSwapExists(), reqSwap()]).then(
-            ([checkResults, reqResults]) => {
-              sendNotification(reqResults);
-            }
-          );
-          setSwapRequestMade(true);
-        }}
-        style={styles.descriptionButton}
-      >
-        <View>
-          <Text
-            style={
-              swapRequestMade ? styles.requestSwapButtonPressed : styles.text
-            }
-          >
-            {" "}
-            {swapRequestMade ? "Request Made" : "Request swap"}
-          </Text>
-        </View>
-      </Pressable>
-      <View
-        style={{ height: height / 729, width: "100%", backgroundColor: PTG2 }}
-      ></View>
-    </View>
-  );
 }
 
 const styles = StyleSheet.create({

@@ -1,4 +1,4 @@
-import { Entypo } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
@@ -12,7 +12,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Entypo } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 import supabase from "../config/supabaseClient";
 import ListedBook from "./ListedBook";
@@ -89,7 +89,7 @@ export default function AvailableListings({ route }) {
       </View>
       <View
         style={{
-          flex: 9,
+          flex: 10,
           justifyContent: "center",
           alignItems: "center",
           height: container1Height,
@@ -211,9 +211,9 @@ export default function AvailableListings({ route }) {
                           height: (height / 27) * 2,
                         }}
                       >
-                        <Entypo
-                          name="cross"
-                          size={30}
+                        <Feather
+                          name="x"
+                          size={24}
                           color={PTG1}
                           style={{ alignSelf: "center" }}
                           onPress={() => setIsModalVisible(false)}
@@ -246,7 +246,7 @@ export default function AvailableListings({ route }) {
       </View>
       <View
         style={{
-          flex: 7,
+          flex: 8,
         }}
       >
         <View style={{ flex: 1, justifyContent: "flex-end" }}>

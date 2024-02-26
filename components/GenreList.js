@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Dimensions,
-  FlatList,
-  StyleSheet,
-  Text,
-  View
-} from "react-native";
+import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
 import supabase from "../config/supabaseClient";
 
 import GenreListCard from "./GenreListCard";
@@ -16,7 +10,7 @@ const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { height, width } = Dimensions.get("screen");
 
 const pageHeight = height - (height / 27) * 4;
-const viewHeight = (8 * pageHeight) / 9;
+const viewHeight = (9 * pageHeight) / 10;
 
 export default function GenreList({ route }) {
   const { genre, key, id } = route.params;
@@ -77,16 +71,22 @@ export default function GenreList({ route }) {
             {genre}
           </Text>
         </View>
-        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+        <View style={{ flex: 1, 
+          justifyContent: "flex-end" 
+          }}>
           <View
-            style={{ height: height/729, width: "100%", backgroundColor: PTG1 }}
+            style={{
+              height: height / 729,
+              width: "100%",
+              backgroundColor: PTG1,
+            }}
           ></View>
         </View>
       </View>
 
       <View
         style={{
-          flex: 8,
+          flex: 9,
           backgroundColor: PTG4,
         }}
       >

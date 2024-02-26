@@ -12,7 +12,7 @@ import {
 import Modal from "react-native-modal";
 import WishListButton from "./WishListButton";
 import { Ionicons } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, Feather } from "@expo/vector-icons";
 
 const { height, width } = Dimensions.get("window");
 
@@ -165,9 +165,9 @@ export default function CarouselItem({ item, id }) {
                           height: (height / 27) * 2,
                         }}
                       >
-                        <Entypo
-                          name="cross"
-                          size={30}
+                       <Feather
+                          name="x"
+                          size={24}
                           color={PTG1}
                           style={{ alignSelf: "center" }}
                           onPress={() => setIsModalVisible(false)}
