@@ -89,12 +89,9 @@ const WishList = ({ session }) => {
     booksWithImages = booksWithImages.map((book) => book.book_id)
     setUserWishlist(booksWithImages)
 
-    // const booksWithImages = await Promise.all(promises);
-    // setUserWishlist(booksWithImages.filter((item) => item !== null));
 };
 
 const removeFromWishList = async (book_id) => {
-    console.log(book_id)
     const { data, error } = await supabase
       .from("Users")
       .update({ wishlist: userWishlist.filter((book) => book !== book_id) })
@@ -236,35 +233,6 @@ const removeFromWishList = async (book_id) => {
         </ScrollView>
       </View>
     </View>
-  );
-
-  return (
-    <ScrollView
-      style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      <View>
-        <Text style={heading}>Wishlist</Text>
-        {books.map(({ book_id, img_url }) => (
-          <View key={book_id} style={styles.listContainer}>
-            <Entypo
-              name="circle-with-cross"
-              size={20}
-              style={styles.icon}
-              onPress={() => removeFromWishList(book_id)}
-            />
-            <View style={styles.itemContainer}>
-              {img_url && (
-                <Image source={{ uri: img_url }} style={styles.bookImage} />
-              )}
-              <Text style={[styles.textStyling]}>{book_id}</Text>
-            </View>
-          </View>
-        ))}
-      </View>
-    </ScrollView>
   );
 };
 
