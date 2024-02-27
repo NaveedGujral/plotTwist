@@ -21,15 +21,9 @@ export default function WishListButton({
 }) {
   const [userWishlist, setUserWishlist] = useState([]);
 
-  // useEffect(() => {
-  //   getUserWishList().then((res) => {
-  //     const isWishListed = res.some((bookID) => bookID === listing.book_id);
-  //     setWishListed(isWishListed);
-  //   });
-  // }, [userWishlist]);
-
   useEffect(() => {
-    getUserWishList().then((res) => {
+    getUserWishList()
+    .then((res) => {
       setUserWishlist(res);
       const isWishListed = res.some((bookID) => bookID === listing.book_id);
       setWishListed(isWishListed);
@@ -54,12 +48,13 @@ export default function WishListButton({
         .eq("book_id", listing.book_id);
     }
 
-    async function updateUserWishList(res) {
-      if (res.includes(listing.book_id)) {
+    async function updateUserWishList(userWishlist) {
+      setWishListed(true);
+      if (userWishlist.includes(listing.book_id)) {
         return;
       }
 
-      const updatedWishlist = [...res, listing.book_id];
+      const updatedWishlist = [...userWishlist, listing.book_id];
 
       const { data, error } = await supabase
         .from("Users")
@@ -67,8 +62,9 @@ export default function WishListButton({
         .eq("user_id", id);
     }
 
-    async function removeItemFromWishList(res) {
-      const updatedWishlist = res.filter((item) => item !== listing.book_id);
+    async function removeItemFromWishList(userWishlist) {
+      setWishListed(false);
+      const updatedWishlist = userWishlist.filter((item) => item !== listing.book_id);
 
       const { data, error } = await supabase
         .from("Users")
@@ -77,15 +73,11 @@ export default function WishListButton({
     }
 
     if (!currentWishListed) {
+      await updateUserWishList(userWishlist);
       await updateWishList(1);
-      const res = await getUserWishList();
-      await updateUserWishList(res);
-      setWishListed(true);
     } else {
+      await removeItemFromWishList(userWishlist);
       await updateWishList(-1);
-      const res = await getUserWishList();
-      await removeItemFromWishList(res);
-      setWishListed(false);
     }
   }
 

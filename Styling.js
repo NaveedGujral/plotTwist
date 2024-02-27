@@ -1,5 +1,5 @@
 import { useFonts } from "expo-font";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, Image, Text } from "react-native";
 import {
   JosefinSans_400Regular,
   JosefinSans_300Light,
