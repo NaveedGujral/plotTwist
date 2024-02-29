@@ -116,7 +116,7 @@ const PTStyles = StyleSheet.create({
     backgroundColor: PTSwatches.PTG2,
     justifyContent: "center",
     alignContent: "center",
-  }
+  },
 });
 
 const headerSS = {

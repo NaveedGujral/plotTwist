@@ -1,15 +1,15 @@
+import { Feather } from "@expo/vector-icons";
 import { React, useCallback, useEffect, useState } from "react";
-import supabase from "../config/supabaseClient";
 import {
+  Dimensions,
+  Image,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
   Text,
   View,
-  Image,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-  Dimensions,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import supabase from "../config/supabaseClient";
 
 const { PTStyles, PTSwatches } = require("../Styling");
 const {
@@ -29,7 +29,7 @@ const containerHeight = viewHeight / 3.5;
 
 const WishList = ({ session }) => {
   const [userWishlist, setUserWishlist] = useState([]);
-  const [bookObjects, setBookObjects] = useState([])
+  const [bookObjects, setBookObjects] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [username, setUsername] = useState("");
 
@@ -85,13 +85,12 @@ const WishList = ({ session }) => {
 
     let booksWithImages = await Promise.all(promises);
     booksWithImages = booksWithImages.filter((item) => item !== null);
-    setBookObjects(booksWithImages)
-    booksWithImages = booksWithImages.map((book) => book.book_id)
-    setUserWishlist(booksWithImages)
+    setBookObjects(booksWithImages);
+    booksWithImages = booksWithImages.map((book) => book.book_id);
+    setUserWishlist(booksWithImages);
+  };
 
-};
-
-const removeFromWishList = async (book_id) => {
+  const removeFromWishList = async (book_id) => {
     const { data, error } = await supabase
       .from("Users")
       .update({ wishlist: userWishlist.filter((book) => book !== book_id) })
@@ -191,7 +190,7 @@ const removeFromWishList = async (book_id) => {
                       >
                         <Text
                           style={{
-                            ...subHeading
+                            ...subHeading,
                           }}
                         >
                           {author}
