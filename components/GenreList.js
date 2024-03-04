@@ -76,7 +76,7 @@ export default function GenreList({ route }) {
           }}>
           <View
             style={{
-              height: height / 729,
+              height: 2,
               width: "100%",
               backgroundColor: PTG1,
             }}

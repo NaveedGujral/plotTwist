@@ -252,7 +252,7 @@ export default function AvailableListings({ route }) {
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
           <View
             style={{
-              height: height / 729,
+              height: 2,
               width: "100%",
               backgroundColor: PTG1,
             }}
