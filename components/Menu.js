@@ -12,8 +12,9 @@ import ActiveSwaps from "./ActiveSwaps";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
 
-const { headerSS, importFonts, PTSwatches } = require("../Styling");
+const { headerSS, importFonts, PTSwatches, PTStyles } = require("../Styling");
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
+const { heading, subHeading, body, page, roundButton } = PTStyles;
 const { height, width } = Dimensions.get("window");
 const Drawer = createDrawerNavigator();
 
@@ -64,7 +65,7 @@ function DrawerNavigator() {
       <Drawer.Screen name="Wishlist" options={headerSS}>
         {(props) => <WishList {...props} session={session} />}
       </Drawer.Screen>
-      <Drawer.Screen name="Active Swaps" options={headerSS}>
+      <Drawer.Screen name="Pending Swaps" options={headerSS}>
         {(props) => <ActiveSwaps {...props} session={session} />}
       </Drawer.Screen>
       <Drawer.Screen name="Swap History" options={headerSS}>

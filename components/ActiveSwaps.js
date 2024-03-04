@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { React, useEffect, useState } from "react";
+
 import {
   Dimensions,
   Platform,
@@ -7,11 +8,15 @@ import {
   StyleSheet,
   Text,
   View,
+  SafeAreaView,
 } from "react-native";
 import supabase from "../config/supabaseClient";
 import SwapCard from "./SwapCard";
 
 const { height, width } = Dimensions.get("screen");
+const { PTStyles, PTSwatches, importFonts } = require("../Styling");
+const { heading, subHeading, body, page, roundButton } = PTStyles;
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 
 const ActiveSwaps = ({ session }) => {
   const navigation = useNavigation();
@@ -50,6 +55,11 @@ const ActiveSwaps = ({ session }) => {
       getSwapInfo();
     }
   }, [userID]);
+
+  return (
+    <SafeAreaView style={page}>
+    </SafeAreaView>
+  );
 
   return (
     <ScrollView
