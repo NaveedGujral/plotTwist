@@ -60,10 +60,11 @@ const PTStyles = StyleSheet.create({
     fontFamily: "JosefinSans_300Light",
   },
   body: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: "100",
     color: PTSwatches.PTG1,
     fontFamily: "JosefinSans_300Light",
+    lineHeight: 18
   },
   page: {
     backgroundColor: PTSwatches.PTG4,
