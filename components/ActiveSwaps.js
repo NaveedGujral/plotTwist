@@ -42,59 +42,7 @@ const ActiveSwaps = ({ session }) => {
   const [receivedSwaps, setReceivedSwaps] = useState([]);
   const [activeSwaps, setActiveSwaps] = useState([]);
 
-  function handleOnScroll(event) {
-    Animated.event(
-      [
-        {
-          nativeEvent: {
-            contentOffset: {
-              x: scrollX,
-            },
-          },
-        },
-      ],
-      {
-        useNativeDriver: false,
-      }
-    )(event);
-  }
-
-  // experimental
-
-  // Default active selector
   const [activeSections, setActiveSections] = useState([]);
-  // Collapsed condition for the single collapsible
-  const [collapsed, setCollapsed] = useState(true);
-  // MultipleSelect is for the Multiple Expand allowed
-  // True: Expand multiple at a time
-  // False: One can be expand at a time
-  // const [multipleSelect, setMultipleSelect] = useState(true);
-
-  // const toggleExpanded = () => {
-  //   // Toggling the state of single Collapsible
-  //   setCollapsed(!collapsed);
-  // };
-
-  // Dummy content to show
-  // You can also use dynamic data by calling web service
-  // const content = [
-  //   {
-  //     title: "Incoming Requests",
-  //     content:
-  //       "The following terms and conditions, togethe with any referenced documents form a legal agreement between you and your employer, employees, agents, contractors and any other entity on whose behalf you accept these terms",
-  //   },
-  //   {
-  //     title: "Outgoing Requests",
-  //     content:
-  //       "A Privacy Policy agreement is the agreement where you specify if you collect personal data from your users,  what kind of personal data you collect and what you do with that data.",
-  //   },
-  //   {
-  //     title: "Pending Requests",
-  //     content:
-  //       "Our Return & Refund Policy template lets you get started with a Return and Refund Policy agreement. This template is free to download and use. According to TrueShip study, over 60% of customers review a Return/Refund Policy before they make a purchasing decision.",
-  //   },
-  // ];
-
   const content = [
     {
       title: "Incoming Requests",
@@ -178,12 +126,10 @@ const ActiveSwaps = ({ session }) => {
   ];
 
   const setSections = (sections) => {
-    // Setting up a active section state
     setActiveSections(sections.includes(undefined) ? [] : sections);
   };
 
   const renderHeader = (section, _, isActive) => {
-    // Accordion header view
     return (
       <Animatable.View
         duration={400}
@@ -218,7 +164,6 @@ const ActiveSwaps = ({ session }) => {
               size={30}
               color={PTG1}
               style={{
-                // Rotate the icon by 180 degrees when isActive is true
                 transform: isActive ? [{ rotate: "180deg" }] : [],
               }}
             />
@@ -236,19 +181,13 @@ const ActiveSwaps = ({ session }) => {
   };
 
   const renderContent = (section, _, isActive) => {
-    // Accordion Content view
     return (
       <Animatable.View
         duration={400}
         style={styles.activeContent}
-        // style={[
-        //   styles.content,
-        //   isActive ? styles.active : styles.inactive
-        // ]}
         transition="backgroundColor"
       >
         <Animatable.Text
-          // animation={isActive ? 'bounceIn' : undefined}
           style={{ textAlign: "center" }}
         >
           {section.content}
@@ -256,8 +195,6 @@ const ActiveSwaps = ({ session }) => {
       </Animatable.View>
     );
   };
-
-  // experimental
 
   useEffect(() => {
     if (session) {
@@ -304,96 +241,17 @@ const ActiveSwaps = ({ session }) => {
         <View style={{ flex: 9 }}>
           <Accordion
             activeSections={activeSections}
-            // For any default active section
             sections={content}
-            // Title and content of accordion
             touchableComponent={TouchableWithoutFeedback}
-            // Which type of touchable component you want
-            // It can be the following Touchables
-            // TouchableHighlight, TouchableNativeFeedback
-            // TouchableOpacity , TouchableWithoutFeedback
             expandMultiple={false}
-            // If you want to expand multiple at a time
             renderHeader={renderHeader}
-            // Header Component(View) to render
             renderContent={renderContent}
-            // Content Component(View) to render
             duration={500}
-            // Duration for Collapse and expand
             onChange={setSections}
-            // Setting the state of active sections
           />
         </View>
       </View>
     </SafeAreaView>
-  );
-
-  return (
-    <ScrollView
-      style={
-        Platform.OS === "ios"
-          ? styles.pageContainer
-          : { ...styles.pageContainer, ...styles.webFix }
-      }
-    >
-      <Text style={styles.title}>Active Swaps</Text>
-      <View style={styles.hr} />
-
-      <View style={styles.section}>
-        <Text style={styles.heading}>New Swap Requests</Text>
-        {receivedSwaps.length ? (
-          receivedSwaps.map((swap) => {
-            return (
-              <SwapCard
-                swap={swap}
-                type={"received"}
-                session={session}
-                navigation={navigation}
-              />
-            );
-          })
-        ) : (
-          <Text style={styles.antiText}>You have no new swap requests!</Text>
-        )}
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.heading}>Active Swaps</Text>
-        {activeSwaps.length ? (
-          activeSwaps.map((swap) => (
-            <SwapCard
-              swap={swap}
-              type={swap.user1_id === userID ? "activeReceived" : "activeSent"}
-              userID={userID}
-              session={session}
-              navigation={navigation}
-            />
-          ))
-        ) : (
-          <Text style={styles.antiText}>
-            You have no active swap negotiations!
-          </Text>
-        )}
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.heading}>Sent Swap Requests</Text>
-        {sentSwaps.length ? (
-          sentSwaps.map((swap) => (
-            <SwapCard
-              swap={swap}
-              type={"sent"}
-              session={session}
-              navigation={navigation}
-            />
-          ))
-        ) : (
-          <Text style={styles.antiText}>
-            You have no sent swap requests pending!
-          </Text>
-        )}
-      </View>
-    </ScrollView>
   );
 };
 
