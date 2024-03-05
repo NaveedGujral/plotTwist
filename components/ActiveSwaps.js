@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { React, useEffect, useState } from "react";
+import { React, useEffect, useState, useRef } from "react";
 
 import {
   Dimensions,
@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   TouchableNativeFeedback,
+  FlatList,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import supabase from "../config/supabaseClient";
@@ -44,6 +45,23 @@ const ActiveSwaps = ({ session }) => {
   const [receivedSwaps, setReceivedSwaps] = useState([]);
   const [activeSwaps, setActiveSwaps] = useState([]);
 
+  function handleOnScroll(event) {
+    Animated.event(
+      [
+        {
+          nativeEvent: {
+            contentOffset: {
+              x: scrollX,
+            },
+          },
+        },
+      ],
+      {
+        useNativeDriver: false,
+      }
+    )(event);
+  }
+
   // experimental
 
   // Default active selector
@@ -74,20 +92,20 @@ const ActiveSwaps = ({ session }) => {
   //       "A Privacy Policy agreement is the agreement where you specify if you collect personal data from your users,  what kind of personal data you collect and what you do with that data.",
   //   },
   //   {
-  //     title: "Pending Requests",
-  //     content:
+    //     title: "Pending Requests",
+    //     content:
   //       "Our Return & Refund Policy template lets you get started with a Return and Refund Policy agreement. This template is free to download and use. According to TrueShip study, over 60% of customers review a Return/Refund Policy before they make a purchasing decision.",
   //   },
   // ];
   const content = [
     {
       title: "Incoming Requests",
-      content: 
-      receivedSwaps.length ? (
+      content: receivedSwaps.length ? (
         receivedSwaps.map((swap) => {
           return (
             <SwapCard
               swap={swap}
+              key={swap.pending_swap_id}
               type={"received"}
               session={session}
               navigation={navigation}
@@ -96,12 +114,14 @@ const ActiveSwaps = ({ session }) => {
         })
       ) : (
         <Text style={styles.antiText}>You have no new swap requests!</Text>
-      )},
+      ),
+    },
     {
       title: "Outgoing Requests",
       content: sentSwaps.length ? (
         sentSwaps.map((swap) => (
           <SwapCard
+            key={swap.pending_swap_id}
             swap={swap}
             type={"sent"}
             session={session}
@@ -112,15 +132,15 @@ const ActiveSwaps = ({ session }) => {
         <Text style={styles.antiText}>
           You have no sent swap requests pending!
         </Text>
-      )
+      ),
     },
     {
       title: "Pending Requests",
-      content: 
-      activeSwaps.length ? (
+      content: activeSwaps.length ? (
         activeSwaps.map((swap) => (
           <SwapCard
             swap={swap}
+            key={swap.pending_swap_id}
             type={swap.user1_id === userID ? "activeReceived" : "activeSent"}
             userID={userID}
             session={session}
@@ -131,7 +151,7 @@ const ActiveSwaps = ({ session }) => {
         <Text style={styles.antiText}>
           You have no active swap negotiations!
         </Text>
-      )
+      ),
     },
   ];
 
@@ -161,16 +181,24 @@ const ActiveSwaps = ({ session }) => {
         <View
           style={{ width: width - (2 * width) / 27, justifyContent: "center" }}
         >
-          <View style={{width:"100%", justifyContent: "space-between", flexDirection:"row"}}>
-            <Text style={{...subHeading, alignSelf:"center"}}>{section.title}</Text>
+          <View
+            style={{
+              width: "100%",
+              justifyContent: "space-between",
+              flexDirection: "row",
+            }}
+          >
+            <Text style={{ ...subHeading, alignSelf: "center" }}>
+              {section.title}
+            </Text>
             <MaterialCommunityIcons
               name="chevron-down"
               size={30}
               color={PTG1}
               style={{
-              // Rotate the icon by 180 degrees when isActive is true
-              transform: isActive ? [{ rotate: '180deg' }] : []
-            }}
+                // Rotate the icon by 180 degrees when isActive is true
+                transform: isActive ? [{ rotate: "180deg" }] : [],
+              }}
             />
           </View>
         </View>
@@ -359,7 +387,8 @@ const styles = StyleSheet.create({
   },
   activeContent: {
     backgroundColor: PTG4,
-    height: renderContentHeight,
+    height: 200,
+    // height: renderContentHeight,
   },
   pageContainer: {
     backgroundColor: "#272727",
