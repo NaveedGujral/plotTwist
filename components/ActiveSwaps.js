@@ -27,10 +27,7 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 const { height, width } = Dimensions.get("screen");
 const pageHeight = height - (height / 27) * 4;
 const renderHeaderHeight = (6 * height) / 81;
-const renderHeaderGap = height / 243;
 const renderContentHeight = (9 * pageHeight) / 10 - 3 * renderHeaderHeight;
-// const renderContentHeight =
-//   (9 * pageHeight) / 10 - (3 * renderHeaderHeight + 2 * renderHeaderGap);
 
 const { PTStyles, PTSwatches, importFonts } = require("../Styling");
 const { heading, subHeading, body, page, roundButton } = PTStyles;
@@ -92,65 +89,90 @@ const ActiveSwaps = ({ session }) => {
   //       "A Privacy Policy agreement is the agreement where you specify if you collect personal data from your users,  what kind of personal data you collect and what you do with that data.",
   //   },
   //   {
-    //     title: "Pending Requests",
-    //     content:
+  //     title: "Pending Requests",
+  //     content:
   //       "Our Return & Refund Policy template lets you get started with a Return and Refund Policy agreement. This template is free to download and use. According to TrueShip study, over 60% of customers review a Return/Refund Policy before they make a purchasing decision.",
   //   },
   // ];
+
   const content = [
     {
       title: "Incoming Requests",
-      content: receivedSwaps.length ? (
-        receivedSwaps.map((swap) => {
-          return (
-            <SwapCard
-              swap={swap}
-              key={swap.pending_swap_id}
-              type={"received"}
-              session={session}
-              navigation={navigation}
-            />
-          );
-        })
-      ) : (
-        <Text style={styles.antiText}>You have no new swap requests!</Text>
+
+      content: (
+        <ScrollView
+          style={{ height: renderContentHeight, width: "100%" }}
+          showsVerticalScrollIndicator={false}
+        >
+          {receivedSwaps.length ? (
+            receivedSwaps.map((swap) => {
+              return (
+                <SwapCard
+                  swap={swap}
+                  key={swap.pending_swap_id}
+                  type={"received"}
+                  session={session}
+                  navigation={navigation}
+                />
+              );
+            })
+          ) : (
+            <Text style={styles.antiText}>You have no new swap requests!</Text>
+          )}
+        </ScrollView>
       ),
     },
     {
       title: "Outgoing Requests",
-      content: sentSwaps.length ? (
-        sentSwaps.map((swap) => (
-          <SwapCard
-            key={swap.pending_swap_id}
-            swap={swap}
-            type={"sent"}
-            session={session}
-            navigation={navigation}
-          />
-        ))
-      ) : (
-        <Text style={styles.antiText}>
-          You have no sent swap requests pending!
-        </Text>
+      content: (
+        <ScrollView
+          style={{ height: renderContentHeight, width: "100%" }}
+          showsVerticalScrollIndicator={false}
+        >
+          {sentSwaps.length ? (
+            sentSwaps.map((swap) => (
+              <SwapCard
+                key={swap.pending_swap_id}
+                swap={swap}
+                type={"sent"}
+                session={session}
+                navigation={navigation}
+              />
+            ))
+          ) : (
+            <Text style={styles.antiText}>
+              You have no sent swap requests pending!
+            </Text>
+          )}
+        </ScrollView>
       ),
     },
     {
       title: "Pending Requests",
-      content: activeSwaps.length ? (
-        activeSwaps.map((swap) => (
-          <SwapCard
-            swap={swap}
-            key={swap.pending_swap_id}
-            type={swap.user1_id === userID ? "activeReceived" : "activeSent"}
-            userID={userID}
-            session={session}
-            navigation={navigation}
-          />
-        ))
-      ) : (
-        <Text style={styles.antiText}>
-          You have no active swap negotiations!
-        </Text>
+      content: (
+        <ScrollView
+          style={{ height: renderContentHeight, width: "100%" }}
+          showsVerticalScrollIndicator={false}
+        >
+          {activeSwaps.length ? (
+            activeSwaps.map((swap) => (
+              <SwapCard
+                swap={swap}
+                key={swap.pending_swap_id}
+                type={
+                  swap.user1_id === userID ? "activeReceived" : "activeSent"
+                }
+                userID={userID}
+                session={session}
+                navigation={navigation}
+              />
+            ))
+          ) : (
+            <Text style={styles.antiText}>
+              You have no active swap negotiations!
+            </Text>
+          )}
+        </ScrollView>
       ),
     },
   ];
@@ -387,8 +409,7 @@ const styles = StyleSheet.create({
   },
   activeContent: {
     backgroundColor: PTG4,
-    height: 200,
-    // height: renderContentHeight,
+    height: renderContentHeight,
   },
   pageContainer: {
     backgroundColor: "#272727",
