@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
 import supabase from "../config/supabaseClient";
-
 import GenreListCard from "./GenreListCard";
 
 const { PTStyles, PTSwatches } = require("../Styling");
@@ -86,7 +85,7 @@ export default function GenreList({ route }) {
 
       <View
         style={{
-          flex: 9,
+          flex: 8,
           backgroundColor: PTG4,
         }}
       >

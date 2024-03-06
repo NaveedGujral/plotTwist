@@ -129,7 +129,7 @@ const WishList = ({ session }) => {
         </View>
       </View>
 
-      <View style={{ flex: 9, justifyContent: "center", alignItems: "center" }}>
+      <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           refreshControl={

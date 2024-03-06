@@ -70,7 +70,7 @@ export default function AvailableListings({ route }) {
     <View style={page}>
       <View
         style={{
-          flex: 2,
+          flex: 6,
           shadowOpacity: 1,
           shadowRadius: 8,
           shadowOffset: 8,
@@ -89,7 +89,7 @@ export default function AvailableListings({ route }) {
       </View>
       <View
         style={{
-          flex: 10,
+          flex: 27,
           justifyContent: "center",
           alignItems: "center",
           height: container1Height,
@@ -246,7 +246,7 @@ export default function AvailableListings({ route }) {
       </View>
       <View
         style={{
-          flex: 8,
+          flex: 21,
         }}
       >
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
@@ -261,7 +261,7 @@ export default function AvailableListings({ route }) {
 
         <View
           style={{
-            flex: 9,
+            flex: 8,
           }}
         >
           <FlatList

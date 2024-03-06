@@ -3,6 +3,10 @@ import { Text, View, Pressable, StyleSheet } from "react-native";
 import supabase from "../config/supabaseClient";
 import { useNavigation } from "@react-navigation/native";
 
+const { PTStyles, PTSwatches } = require("../Styling");
+const { heading, subHeading, body, page } = PTStyles;
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
+
 function getChatKey(chat) {
   const ids = [chat.sender_id, chat.receiver_id].sort();
   return ids.join("-");
@@ -12,8 +16,6 @@ export default function ChatComponent({ navigation, route }) {
   const [uniqueChats, setUniqueChats] = useState([]);
   const { session } = route.params;
   const [usernames, setUsernames] = useState([]);
-
-  
 
   useEffect(() => {
     fetchChats().then(setChats);
@@ -85,41 +87,72 @@ export default function ChatComponent({ navigation, route }) {
   }, [uniqueChats]);
 
   return (
-    <View style={styles.container}>
-      {usernames.map((username) => {
-        return (
-          <Pressable
-            onPress={() => {
-              navigation.navigate("ChatWindow", {
-                sender: username[0].sender,
-                receiver: username[1].receiver,
-                username: username[2],
-                session: session
-              });
+    <View style={page}>
+      <View
+        style={{
+          flex: 1,
+          shadowOpacity: 1,
+          shadowRadius: 8,
+          shadowOffset: 8,
+        }}
+      >
+        <View style={{ flex: 1 }}></View>
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text
+            style={{
+              ...heading,
+              textAlign: "center",
             }}
-            key={username[2]}
-            style={styles.listItem}
           >
-            <Text style={styles.text} key={username[2]}>{username[2]}</Text>
-          </Pressable>
-        );
-      })}
+            Messages
+          </Text>
+        </View>
+        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+          <View
+            style={{
+              height: 2,
+              width: "100%",
+              backgroundColor: PTG1,
+            }}
+          ></View>
+        </View>
+      </View>
+      <View style={{ backgroundColor: PTG4, flex: 9}}>
+
+        {usernames.map((username) => {
+          return (
+            <Pressable
+              onPress={() => {
+                navigation.navigate("ChatWindow", {
+                  sender: username[0].sender,
+                  receiver: username[1].receiver,
+                  username: username[2],
+                  session: session,
+                });
+              }}
+              key={username[2]}
+              style={styles.listItem}
+            >
+              <Text style={styles.text} key={username[2]}>
+                {username[2]}
+              </Text>
+            </Pressable>
+          );
+        })}
+
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#272727",
+    backgroundColor: PTG4,
     flex: 1,
   },
   listItem: {
-    borderTopColor: "white",
-    borderTopWidth: 1,
-    borderBottomColor: "white",
+    borderBottomColor: PTG2,
     borderBottomWidth: 1,
-    padding:20,
-    margin: 3,
   },
   text: {
     fontFamily: "CormorantGaramond_400Regular",
@@ -127,4 +160,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "left",
   },
-})
+});

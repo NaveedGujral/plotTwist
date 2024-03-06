@@ -26,8 +26,8 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const { height, width } = Dimensions.get("screen");
 const pageHeight = height - (height / 27) * 4;
-const renderHeaderHeight = (6 * height) / 81;
-const renderContentHeight = (9 * pageHeight) / 10 - 3 * renderHeaderHeight;
+const renderHeaderHeight = 2*height/27;
+const renderContentHeight = 8*pageHeight/9 - 3*renderHeaderHeight
 
 const { PTStyles, PTSwatches, importFonts } = require("../Styling");
 const { heading, subHeading, body, page, roundButton } = PTStyles;
@@ -65,7 +65,7 @@ const ActiveSwaps = ({ session }) => {
               );
             })
           ) : (
-            <Text style={styles.antiText}>You have no new swap requests!</Text>
+            <Text style={subHeading}>You have no new swap requests!</Text>
           )}
         </ScrollView>
       ),
@@ -238,7 +238,7 @@ const ActiveSwaps = ({ session }) => {
             Pending Swaps
           </Text>
         </View>
-        <View style={{ flex: 9 }}>
+        <View style={{ flex: 8 }}>
           <Accordion
             activeSections={activeSections}
             sections={content}

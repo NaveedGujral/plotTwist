@@ -56,7 +56,7 @@ export default function TopTenCarousel({ listings, id }) {
           </Text>
       </View>
 
-      <View style={{ flex: 15 }}>
+      <View style={{ flex: 14 }}>
         <FlatList
           data={listings}
           renderItem={({ item }) => <CarouselItem item={item} id={id} />}
@@ -74,7 +74,7 @@ export default function TopTenCarousel({ listings, id }) {
         style={{
           justifyContent: "space-between",
           alignItems: "center",
-          flex: 2,
+          flex: 1,
         }}
       >
         <View style={{ height: "11%", width: "100%", backgroundColor: PTG4 }}></View>

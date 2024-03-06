@@ -23,7 +23,6 @@ import TopTenCarousel from "./TopTenCarousel";
 const { PTStyles, PTSwatches, importFonts } = require("../Styling");
 const { heading, subHeading, body, page, roundButton } = PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
-
 const { height, width } = Dimensions.get("window");
 
 const pageHeight = height - (height / 27) * 4;

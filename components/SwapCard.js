@@ -22,12 +22,14 @@ const {
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { width, height } = Dimensions.get("screen");
 const pageHeight = height - (height / 27) * 4;
-const renderHeaderHeight = (6 * height) / 81;
-const renderContentHeight = (9 * pageHeight) / 10 - 3 * renderHeaderHeight;
+const renderHeaderHeight = (2 * height) / 27;
+const renderContentHeight = (8 * pageHeight) / 9 - 3 * renderHeaderHeight;
 const cardHeight = renderContentHeight / 3.5;
 const cardWidth = width - (2 * width) / 27;
 
-export default function SwapCard({ swap, type, userID, session, navigation }) {
+export default function SwapCard({ swap, type, session, navigation }) {
+  const sessionUserId = session.user.id;
+
   function renderContent(type, swap) {
     switch (type) {
       case "received":
@@ -63,7 +65,10 @@ export default function SwapCard({ swap, type, userID, session, navigation }) {
                   textAlign: "left",
                 }}
               >
-                {swap.user2_username} wants <Text style={{fontStyle:'italic'}}>{swap.user1_book_title}</Text>
+                {swap.user2_username} wants{" "}
+                <Text style={{ fontStyle: "italic" }}>
+                  {swap.user1_book_title}
+                </Text>
               </Text>
             </View>
           </>
@@ -101,7 +106,10 @@ export default function SwapCard({ swap, type, userID, session, navigation }) {
                   textAlign: "left",
                 }}
               >
-                You want {swap.user1_username}'s <Text style={{fontStyle:'italic'}}>{swap.user1_book_title}</Text>
+                You want {swap.user1_username}'s{" "}
+                <Text style={{ fontStyle: "italic" }}>
+                  {swap.user1_book_title}
+                </Text>
               </Text>
             </View>
           </>
@@ -132,7 +140,14 @@ export default function SwapCard({ swap, type, userID, session, navigation }) {
                   textAlign: "left",
                 }}
               >
-                You want to swap <Text style={{fontStyle:'italic'}}>{swap.user1_book_title}</Text> for {swap.user2_username}'s <Text style={{fontStyle:'italic'}}>{swap.user2_book_title}</Text>
+                You want to swap{" "}
+                <Text style={{ fontStyle: "italic" }}>
+                  {swap.user1_book_title}
+                </Text>{" "}
+                for {swap.user2_username}'s{" "}
+                <Text style={{ fontStyle: "italic" }}>
+                  {swap.user2_book_title}
+                </Text>
               </Text>
             </View>
           </>
@@ -157,13 +172,77 @@ export default function SwapCard({ swap, type, userID, session, navigation }) {
               style={styles.bookImg}
             />
             <View style={{ width: (4 * cardWidth) / 9 }}>
-            <Text
+              <Text
                 style={{
                   ...body,
                   textAlign: "left",
                 }}
               >
-                 You want to swap <Text style={{fontStyle:'italic'}}>{swap.user2_book_title}</Text> for {swap.user1_username}'s <Text style={{fontStyle:'italic'}}>{swap.user1_book_title}</Text>
+                You want to swap{" "}
+                <Text style={{ fontStyle: "italic" }}>
+                  {swap.user2_book_title}
+                </Text>{" "}
+                for {swap.user1_username}'s{" "}
+                <Text style={{ fontStyle: "italic" }}>
+                  {swap.user1_book_title}
+                </Text>
+              </Text>
+            </View>
+          </>
+        );
+      case "completed":
+        return (
+          <>
+            <Image
+              source={{
+                uri:
+                  sessionUserId === swap.user1_id
+                    ? swap.user1_book_imgurl
+                    : swap.user2_book_imgurl,
+              }}
+              style={styles.bookImg}
+            />
+            <View style={{ justifyContent: "center" }}>
+              <Octicons
+                name="arrow-switch"
+                size={24}
+                color={PTG1}
+                style={{ textAlign: "center", width: "100%" }}
+              />
+            </View>
+            <Image
+              source={{
+                uri:
+                  sessionUserId === swap.user1_id
+                    ? swap.user2_book_imgurl
+                    : swap.user1_book_imgurl,
+              }}
+              style={styles.bookImg}
+            />
+            <View style={{ width: (4 * cardWidth) / 9 }}>
+              <Text
+                style={{
+                  ...body,
+                  textAlign: "left",
+                }}
+              >
+                You swapped{" "}
+                <Text style={{ fontStyle: "italic" }}>
+                  {sessionUserId === swap.user1_id
+                    ? swap.user1_book_title
+                    : swap.user2_book_title}
+                </Text>{" "}
+                for{" "}
+                {sessionUserId === swap.user1_id
+                  ? swap.user2_username
+                  : swap.user1_username}
+                's{" "}
+                <Text style={{ fontStyle: "italic" }}>
+                  {" "}
+                  {sessionUserId === swap.user1_id
+                    ? swap.user2_book_title
+                    : swap.user1_book_title}
+                </Text>
               </Text>
             </View>
           </>
@@ -177,12 +256,14 @@ export default function SwapCard({ swap, type, userID, session, navigation }) {
     <Pressable
       style={styles.container}
       onPress={() => {
-        navigation.navigate("SwapNegotiationPage", {
-          user1_book: swap,
-          user2_book: swap,
-          info: swap,
-          session: session,
-        });
+        if (type !== "completed") {
+          navigation.navigate("SwapNegotiationPage", {
+            user1_book: swap,
+            user2_book: swap,
+            info: swap,
+            session: session,
+          });
+        }
       }}
     >
       <View
@@ -213,7 +294,7 @@ export default function SwapCard({ swap, type, userID, session, navigation }) {
         <View
           style={{
             height: 2,
-            width: "100%",
+            width: width - (2 * width) / 27,
             backgroundColor: PTG2,
           }}
         ></View>

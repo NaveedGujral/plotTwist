@@ -118,7 +118,7 @@ const UserLibrary = ({ session }) => {
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
           <View
             style={{
-              height: height / 729,
+              height: 2,
               width: "100%",
               backgroundColor: PTG1,
             }}
@@ -126,7 +126,7 @@ const UserLibrary = ({ session }) => {
         </View>
       </View>
 
-      <View style={{ flex: 9, justifyContent: "center", alignItems: "center" }}>
+      <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           refreshControl={
@@ -224,7 +224,7 @@ const UserLibrary = ({ session }) => {
                 >
                   <View
                     style={{
-                      height: height / 729,
+                      height: 2,
                       width: "100%",
                       backgroundColor: PTG2,
                     }}
