@@ -182,7 +182,7 @@ export default function SwapCard({ swap, type, session, navigation }) {
                 <Text style={{ fontStyle: "italic" }}>
                   {swap.user2_book_title}
                 </Text>{" "}
-                for {swap.user1_username}'s{" "}
+                for {swap.user1_username}{"'s "}
                 <Text style={{ fontStyle: "italic" }}>
                   {swap.user1_book_title}
                 </Text>
@@ -226,17 +226,17 @@ export default function SwapCard({ swap, type, session, navigation }) {
                   textAlign: "left",
                 }}
               >
-                You swapped{" "}
+                {"You swapped "}
                 <Text style={{ fontStyle: "italic" }}>
                   {sessionUserId === swap.user1_id
                     ? swap.user1_book_title
                     : swap.user2_book_title}
-                </Text>{" "}
-                for{" "}
+                </Text>
+                {" for "}
                 {sessionUserId === swap.user1_id
                   ? swap.user2_username
                   : swap.user1_username}
-                's{" "}
+                's
                 <Text style={{ fontStyle: "italic" }}>
                   {" "}
                   {sessionUserId === swap.user1_id

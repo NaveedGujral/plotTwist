@@ -24,7 +24,7 @@ const {
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { height, width } = Dimensions.get("screen");
 const pageHeight = height - (height / 27) * 4;
-const viewHeight = (9 * pageHeight) / 10;
+const viewHeight = (8 * pageHeight) / 9;
 const containerHeight = viewHeight / 3.5;
 
 const WishList = ({ session }) => {
