@@ -258,11 +258,18 @@ export default function SwapCard({ swap, type, session, navigation }) {
       onPress={() => {
         if (type !== "completed") {
           navigation.navigate("SwapNegotiationPage", {
-            user1_book: swap,
-            user2_book: swap,
             info: swap,
             session: session,
+            type: type
           });
+      // onPress={() => {
+      //   if (type !== "completed") {
+      //     navigation.navigate("SwapNegotiationPage", {
+      //       user1_book: swap,
+      //       user2_book: swap,
+      //       info: swap,
+      //       session: session,
+      //     });
         }
       }}
     >

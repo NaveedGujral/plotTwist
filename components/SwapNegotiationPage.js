@@ -26,28 +26,11 @@ export default function SwapNegotiationPage({ route }) {
   const [user2ProfilePic, setUser2ProfilePic] = useState();
   const [user2BookUrl, setUser2BookUrl] = useState("");
   const [reconsidered, setReconsidered] = useState(false);
-  const [key, setKey] = useState(Date.now());
-
-  const {
-    user1_book,
-    user2_book,
-    info,
-    session,
-    user2_book_url,
-    user2_book_info,
-  } = route.params;
-
-  useEffect(() => {
-    if (reconsidered) {
-      let newUser2BookInfo = { ...user2_book_info };
-      setUser2BookUrl(newUser2BookInfo.img_url);
-    }
-    setReconsidered(false);
-  }, [reconsidered, user2_book_info, key]);
-
+  const [timeKey, setTimeKey] = useState(Date.now());
+  
   // MVP ONLY - NEEDS REFACTORING TO BE SCALABLE!
   useEffect(() => {
-    switch (session.user.id) {
+    switch (info.user1_id) {
       case "10240ee4-1b43-4749-afbe-1356c83af4da":
         setUser1ProfilePic(
           require("../assets/ExampleUserProfilePictures/Nav.jpg")
@@ -80,7 +63,6 @@ export default function SwapNegotiationPage({ route }) {
         break;
     }
   }, []);
-
   useEffect(() => {
     switch (info.user2_id) {
       case "10240ee4-1b43-4749-afbe-1356c83af4da":
@@ -116,24 +98,55 @@ export default function SwapNegotiationPage({ route }) {
     }
   }, []);
 
+const activeUser = session.user.id
+
+  // const {
+  //   user1_book,
+  //   user2_book,
+  //   info,
+  //   session,
+  //   user2_book_url,
+  //   user2_book_info,
+  // } = route.params;
+
+  // Passed down props from swap card or notifications
+  const {
+    info,
+    session,
+    type
+  } = route.params;
+
+  // console.log(info)
+  // console.log(session)
+  // console.log(type)
+
+  // when reconsider
+  // useEffect(() => {
+  //   if (reconsidered) {
+  //     let newUser2BookInfo = { ...user2_book_info };
+  //     setUser2BookUrl(newUser2BookInfo.img_url);
+  //   }
+  //   setReconsidered(false);
+  // }, [reconsidered, user2_book_info, timeKey]);
+
+
   useEffect(() => {
     getTransferData().then((res) => {
       setTitle([`${res.user1_book_title}`, `${res.user2_book_title}`]);
     });
   }, []);
 
-  useEffect(() => {
-    if (user2_book && user2BookUrl !== user2_book.user2_book_imgurl) {
-      setUser2BookUrl(user2_book.user2_book_imgurl);
-    }
-  }, [user2_book, user2BookUrl]);
+  // useEffect(() => {
+  //   if (user2_book && user2BookUrl !== user2_book.user2_book_imgurl) {
+  //     setUser2BookUrl(user2_book.user2_book_imgurl);
+  //   }
+  // }, [user2_book, user2BookUrl]);
 
     async function getTransferData() {
         const { data, error } = await supabase
             .from('Pending_Swaps')
             .select()
-            .eq('pending_swap_id', user1_book ? user1_book.pending_swap_id : info.swap_offer_id);
-
+            .eq('pending_swap_id', info.pending_swap_id );
         return data[0];
     }
 
@@ -172,17 +185,21 @@ export default function SwapNegotiationPage({ route }) {
             <Image source={user1ProfilePic} style={styles.user1Profile} />
             <Text style={styles.body}>{info.user1_username}</Text>
           </View>
+
+          {/* <Text style={{backgroundColor:"white"}}>{info.user1_username}{"user 1"}</Text>
+          <Text style={{backgroundColor:"white"}}>{info.user2_username}{"user 2"}</Text> */}
+
           <Ionicons
             name="chatbubbles-outline"
             size={60}
             style={styles.icon}
             onPress={() => {
               navigation.navigate("ChatWindow", {
-                sender: user1_book
-                  ? user1_book.user1_id
+                sender: info
+                  ? info.user1_id
                   : info.swapData.user_id,
                 receiver: user1_book ? user1_book.user2_id : info.user_id,
-                username: user1_book
+                username: info
                   ? user1_book.user2_username
                   : info.username,
                 session: session,
@@ -194,7 +211,8 @@ export default function SwapNegotiationPage({ route }) {
             <Text style={styles.body}>{info.user2_username}</Text>
           </View>
         </View>
-        <View style={styles.booksAndArrows}>
+        
+        {/* <View style={styles.booksAndArrows}>
           <Image
             source={{ uri: info.user1_book_imgurl }}
             style={styles.bookCard}
@@ -206,12 +224,17 @@ export default function SwapNegotiationPage({ route }) {
           <Image
             source={{
               uri:
-                user2BookUrl || user2_book_url 
+                user2BookUrl 
             }}
+            // source={{
+            //   uri:
+            //     user2BookUrl || user2_book_url 
+            // }}
             style={styles.bookCard}
           />
-        </View>
-        <View style={styles.buttons}>
+        </View> */}
+        
+        {/* <View style={styles.buttons}>
           <Pressable
             style={styles.accept}
             onPress={() => {
@@ -237,7 +260,7 @@ export default function SwapNegotiationPage({ route }) {
                 navigation.navigate("ReconsiderLibrary", {
                   info: res,
                   setReconsidered: setReconsidered,
-                  setKey: setKey,
+                  setTimeKey: setTimeKey,
                 });
               });
             }}
@@ -247,14 +270,16 @@ export default function SwapNegotiationPage({ route }) {
           <Pressable
             style={styles.reject}
             onPress={() => {
-              getTransferData().then((res) => {
+              getTransferData()
+              .then((res) => {
                 rejectBook(res);
               });
             }}
           >
             <Text style={styles.body}>Reject Offer</Text>
           </Pressable>
-        </View>
+        </View> */}
+      
       </View>
     </View>
   );
