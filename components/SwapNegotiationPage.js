@@ -1,4 +1,6 @@
 // Complete Requests lead here
+// sender is the other user
+// reciever is you
 
 import {
   Text,
@@ -16,8 +18,21 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import supabase from "../config/supabaseClient";
 import { useEffect, useState } from "react";
-import { Entypo, Ionicons } from "@expo/vector-icons";
+import { Entypo, Ionicons, Octicons } from "@expo/vector-icons";
 import { JosefinSans_400Regular } from "@expo-google-fonts/dev";
+
+const { PTStyles, PTSwatches } = require("../Styling");
+const {
+  heading,
+  subHeading,
+  body,
+  page,
+  pillButton,
+  roundButton,
+  roundButtonPressed,
+} = PTStyles;
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
+const { width, height } = Dimensions.get("screen");
 
 export default function SwapNegotiationPage({ route }) {
   const [title, setTitle] = useState([]);
@@ -27,7 +42,7 @@ export default function SwapNegotiationPage({ route }) {
   const [user2BookUrl, setUser2BookUrl] = useState("");
   const [reconsidered, setReconsidered] = useState(false);
   const [timeKey, setTimeKey] = useState(Date.now());
-  
+
   // MVP ONLY - NEEDS REFACTORING TO BE SCALABLE!
   useEffect(() => {
     switch (info.user1_id) {
@@ -98,7 +113,14 @@ export default function SwapNegotiationPage({ route }) {
     }
   }, []);
 
-const activeUser = session.user.id
+  // Passed down props from swap card or notifications
+  const { info, session, type } = route.params;
+  const [currType, setCurrType] = useState(type);
+
+  const activeUserID =
+    session.user.id === info.user1_id ? info.user1_id : info.user2_id;
+  const nonActiveUserID =
+    session.user.id === info.user1_id ? info.user2_id : info.user1_id;
 
   // const {
   //   user1_book,
@@ -109,14 +131,134 @@ const activeUser = session.user.id
   //   user2_book_info,
   // } = route.params;
 
-  // Passed down props from swap card or notifications
-  const {
-    info,
-    session,
-    type
-  } = route.params;
+  function renderContent(currType, info) {
+    switch (currType) {
+      case "received":
+        return (
+          <View style={{justifyContent:"space-between"}}>
+            <View style={styles.booksAndArrows}>
+              <Image
+                source={{
+                  uri: info.user1_book_imgurl,
+                }}
+                style={styles.bookCard}
+              />
 
-  // console.log(info)
+              <View style={{ justifyContent: "center" }}>
+                <Octicons
+                  name="arrow-switch"
+                  size={36}
+                  color={PTG1}
+                  style={{ textAlign: "center", width: "100%" }}
+                />
+              </View>
+
+              <View
+                style={{
+                  ...styles.bookCard,
+                  borderWidth: 2,
+                  borderColor: PTG1,
+                  borderStyle: "dashed",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
+                  ?
+                </Text>
+              </View>
+            </View>
+          </View>
+        );
+      case "sent":
+        return (
+          <View style={styles.booksAndArrows}>
+            <View
+              style={{
+                ...styles.bookCard,
+                borderWidth: 2,
+                borderColor: PTG1,
+                borderStyle: "dashed",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
+                ?
+              </Text>
+            </View>
+
+            <View style={{ justifyContent: "center" }}>
+              <Octicons
+                name="arrow-switch"
+                size={36}
+                color={PTG1}
+                style={{ textAlign: "center", width: "100%" }}
+              />
+            </View>
+
+            <Image
+              source={{
+                uri: info.user1_book_imgurl,
+              }}
+              style={styles.bookCard}
+            />
+          </View>
+        );
+      case "activeReceived":
+        return (
+          <View style={styles.booksAndArrows}>
+            <Image
+              source={{
+                uri: info.user1_book_imgurl,
+              }}
+              style={styles.bookCard}
+            />
+            <View style={{ justifyContent: "center" }}>
+              <Octicons
+                name="arrow-switch"
+                size={36}
+                color={PTG1}
+                style={{ textAlign: "center", width: "100%" }}
+              />
+            </View>
+            <Image
+              source={{
+                uri: info.user2_book_imgurl,
+              }}
+              style={styles.bookCard}
+            />
+          </View>
+        );
+      case "activeSent":
+        return (
+          <View style={styles.booksAndArrows}>
+            <Image
+              source={{
+                uri: info.user2_book_imgurl,
+              }}
+              style={styles.bookCard}
+            />
+            <View style={{ justifyContent: "center" }}>
+              <Octicons
+                name="arrow-switch"
+                size={36}
+                color={PTG1}
+                style={{ textAlign: "center", width: "100%" }}
+              />
+            </View>
+            <Image
+              source={{
+                uri: info.user1_book_imgurl,
+              }}
+              style={styles.bookCard}
+            />
+          </View>
+        );
+      default:
+        return null;
+    }
+  }
+
+  console.log(info);
   // console.log(session)
   // console.log(type)
 
@@ -128,7 +270,6 @@ const activeUser = session.user.id
   //   }
   //   setReconsidered(false);
   // }, [reconsidered, user2_book_info, timeKey]);
-
 
   useEffect(() => {
     getTransferData().then((res) => {
@@ -142,100 +283,119 @@ const activeUser = session.user.id
   //   }
   // }, [user2_book, user2BookUrl]);
 
-    async function getTransferData() {
-        const { data, error } = await supabase
-            .from('Pending_Swaps')
-            .select()
-            .eq('pending_swap_id', info.pending_swap_id );
-        return data[0];
-    }
+  async function getTransferData() {
+    const { data, error } = await supabase
+      .from("Pending_Swaps")
+      .select()
+      .eq("pending_swap_id", info.pending_swap_id);
+    return data[0];
+  }
 
-    async function updateSwapHistory(info) {
-        const { data, error } = await supabase.from('Swap_History').insert([info]);
-    }
+  async function updateSwapHistory(info) {
+    const { data, error } = await supabase.from("Swap_History").insert([info]);
+  }
 
-    async function removeData(infoResponse) {
-        await Promise.all([supabase.from('Pending_Swaps').delete().eq('pending_swap_id', infoResponse.pending_swap_id), supabase.from('Listings').delete().eq('book_id', infoResponse.user1_listing_id), supabase.from('Listings').delete().eq('book_id', infoResponse.user2_listing_id)]);
-    }
+  async function removeData(infoResponse) {
+    await Promise.all([
+      supabase
+        .from("Pending_Swaps")
+        .delete()
+        .eq("pending_swap_id", infoResponse.pending_swap_id),
+      supabase
+        .from("Listings")
+        .delete()
+        .eq("book_id", infoResponse.user1_listing_id),
+      supabase
+        .from("Listings")
+        .delete()
+        .eq("book_id", infoResponse.user2_listing_id),
+    ]);
+  }
 
-    async function rejectBook(info) {
-        await Promise.all([
-            supabase.from('Notifications').insert([
-                {
-                    type: 'Offer_Rejected',
-                    user_id: info.user1_id === session.user.id ? info.user2_id : info.user1_id,
-                    username: session.user.user_metadata.username,
-                },
-            ]),
-            supabase.from('Notifications').delete().eq('swap_offer_id', info.pending_swap_id),
-            supabase.from('Pending_Swaps').delete().eq('pending_swap_id', info.pending_swap_id),
-        ]);
-    }
+  async function rejectBook(info) {
+    await Promise.all([
+      supabase.from("Notifications").insert([
+        {
+          type: "Offer_Rejected",
+          user_id:
+            info.user1_id === session.user.id ? info.user2_id : info.user1_id,
+          username: session.user.user_metadata.username,
+        },
+      ]),
+      supabase
+        .from("Notifications")
+        .delete()
+        .eq("swap_offer_id", info.pending_swap_id),
+      supabase
+        .from("Pending_Swaps")
+        .delete()
+        .eq("pending_swap_id", info.pending_swap_id),
+    ]);
+  }
 
   return (
     <View style={styles.page}>
       <View>
-        <Text style={styles.heading}>
-          Your Offer
-        </Text>
+        <Text style={styles.heading}>Your Offer</Text>
       </View>
       <View style={styles.booksAndProfilePics}>
         <View style={styles.profilePics}>
           <View style={styles.picAndName}>
-            <Image source={user1ProfilePic} style={styles.user1Profile} />
-            <Text style={styles.body}>{info.user1_username}</Text>
+            <Image
+              source={
+                activeUserID === info.user1_id
+                  ? user1ProfilePic
+                  : user2ProfilePic
+              }
+              style={styles.user1Profile}
+            />
+            <Text style={styles.body}>
+              {activeUserID === info.user1_id
+                ? info.user1_username
+                : info.user2_username}
+            </Text>
           </View>
 
-          {/* <Text style={{backgroundColor:"white"}}>{info.user1_username}{"user 1"}</Text>
-          <Text style={{backgroundColor:"white"}}>{info.user2_username}{"user 2"}</Text> */}
-
           <Ionicons
-            name="chatbubbles-outline"
+            name="chatbubbles"
             size={60}
             style={styles.icon}
             onPress={() => {
               navigation.navigate("ChatWindow", {
-                sender: info
-                  ? info.user1_id
-                  : info.swapData.user_id,
-                receiver: user1_book ? user1_book.user2_id : info.user_id,
-                username: info
-                  ? user1_book.user2_username
-                  : info.username,
+                sender: nonActiveUserID,
+                receiver: activeUserID,
+                username:
+                  activeUserID === info.user1_id
+                    ? info.user2_username
+                    : info.user1_username,
                 session: session,
               });
             }}
           />
+
           <View style={styles.picAndName}>
-            <Image source={user2ProfilePic} style={styles.user2Profile} />
-            <Text style={styles.body}>{info.user2_username}</Text>
+            <Image
+              source={
+                activeUserID === info.user1_id
+                  ? user2ProfilePic
+                  : user1ProfilePic
+              }
+              style={styles.user2Profile}
+            />
+            <Text style={styles.body}>
+              {activeUserID === info.user1_id
+                ? info.user2_username
+                : info.user1_username}
+            </Text>
           </View>
         </View>
-        
-        {/* <View style={styles.booksAndArrows}>
-          <Image
-            source={{ uri: info.user1_book_imgurl }}
-            style={styles.bookCard}
-          />
-          <Text style={styles.arrows}>
-            <Entypo name="arrow-long-right" size={60} color="#C1514B" />
-            <Entypo name="arrow-long-left" size={60} color="#06A77D" />
-          </Text>
-          <Image
-            source={{
-              uri:
-                user2BookUrl 
-            }}
-            // source={{
-            //   uri:
-            //     user2BookUrl || user2_book_url 
-            // }}
-            style={styles.bookCard}
-          />
-        </View> */}
-        
-        {/* <View style={styles.buttons}>
-          <Pressable
+        {renderContent(currType, info)}
+
+        {/* Experimental */}
+
+        <View style={styles.buttons}>
+
+          {/* <Pressable
             style={styles.accept}
             onPress={() => {
               getTransferData()
@@ -252,8 +412,9 @@ const activeUser = session.user.id
             }}
           >
             <Text style={styles.body}>Accept</Text>
-          </Pressable>
-          <Pressable
+          </Pressable> */}
+
+          {/* <Pressable
             style={styles.reconsider}
             onPress={() => {
               getTransferData().then((res) => {
@@ -266,7 +427,8 @@ const activeUser = session.user.id
             }}
           >
             <Text style={styles.body}>Reconsider</Text>
-          </Pressable>
+          </Pressable> */}
+
           <Pressable
             style={styles.reject}
             onPress={() => {
@@ -278,8 +440,9 @@ const activeUser = session.user.id
           >
             <Text style={styles.body}>Reject Offer</Text>
           </Pressable>
-        </View> */}
-      
+
+        </View>
+
       </View>
     </View>
   );
@@ -374,7 +537,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   icon: {
-    color: "#4B7095",
+    color: PTG1,
   },
   buttons: {
     flexDirection: "row",

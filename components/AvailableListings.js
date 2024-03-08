@@ -12,7 +12,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { Ionicons, Entypo } from "@expo/vector-icons";
+import { Ionicons, Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 import supabase from "../config/supabaseClient";
 import ListedBook from "./ListedBook";
@@ -206,14 +206,14 @@ export default function AvailableListings({ route }) {
                       <View
                         style={{
                           flexDirection: "row",
-                          justifyContent: "flex-end",
-                          width: width * 0.9334,
+                          justifyContent: "center",
+                          width: width,
                           height: (height / 27) * 2,
                         }}
                       >
-                        <Feather
-                          name="x"
-                          size={24}
+                        <MaterialCommunityIcons
+                          name="chevron-double-down"
+                          size={36}
                           color={PTG1}
                           style={{ alignSelf: "center" }}
                           onPress={() => setIsModalVisible(false)}

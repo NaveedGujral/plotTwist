@@ -1,3 +1,4 @@
+
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
@@ -12,7 +13,7 @@ import {
 import Modal from "react-native-modal";
 import WishListButton from "./WishListButton";
 import { Ionicons } from "@expo/vector-icons";
-import { Entypo, Feather } from "@expo/vector-icons";
+import { Entypo, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const { height, width } = Dimensions.get("window");
 
@@ -66,10 +67,6 @@ export default function CarouselItem({ item, id }) {
         <Image style={tileImage} source={{ uri: item.img_url }} />
 
         <View style={{ justifyContent: "center", flex: 1 }}>
-          {/* <Text style={{ ...subHeading, textAlign: "center" }}>
-            {item.no_of_wishlists} people want this book
-          </Text> */}
-
           <View
             style={{
               flexDirection: "row",
@@ -160,14 +157,14 @@ export default function CarouselItem({ item, id }) {
                       <View
                         style={{
                           flexDirection: "row",
-                          justifyContent: "flex-end",
-                          width: width * 0.9334,
+                          justifyContent: "center",
+                          width: width,
                           height: (height / 27) * 2,
                         }}
                       >
-                       <Feather
-                          name="x"
-                          size={24}
+                        <MaterialCommunityIcons
+                          name="chevron-double-down"
+                          size={36}
                           color={PTG1}
                           style={{ alignSelf: "center" }}
                           onPress={() => setIsModalVisible(false)}
