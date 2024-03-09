@@ -59,7 +59,7 @@ function DrawerNavigator() {
         options={headerSS}
         initialParams={{ session: session }}
       />
-      <Drawer.Screen name="User Library" options={headerSS}>
+      <Drawer.Screen name="Your Library" options={headerSS}>
         {(props) => <UserLibrary {...props} session={session} />}
       </Drawer.Screen>
       <Drawer.Screen name="Wishlist" options={headerSS}>

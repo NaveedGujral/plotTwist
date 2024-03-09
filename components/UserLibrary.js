@@ -15,7 +15,8 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
+  FlatList,
 } from "react-native";
 import supabase from "../config/supabaseClient";
 
@@ -28,7 +29,7 @@ const {
   pillButton,
   roundButton,
   roundButtonPressed,
-  bookImage1
+  bookImage1,
 } = PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { height, width } = Dimensions.get("screen");
@@ -43,8 +44,7 @@ const UserLibrary = ({ session }) => {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    if (session) 
-    getListings();;
+    if (session) getListings();
   }, [userLibrary]);
 
   const onRefresh = useCallback(async () => {
@@ -77,18 +77,18 @@ const UserLibrary = ({ session }) => {
     }
   }
 
-  async function removeFromLibrary(book_id) {
-    const { data, error } = await supabase
-      .from("Listings")
-      .delete()
-      .eq("book_id", book_id);
+  // async function removeFromLibrary(book_id) {
+  //   const { data, error } = await supabase
+  //     .from("Listings")
+  //     .delete()
+  //     .eq("book_id", book_id);
 
-    if (error) {
-      alert(error);
-    } else {
-      setUserLibrary(userLibrary.filter((item) => item.book_id !== book_id));
-    }
-  }
+  //   if (error) {
+  //     alert(error);
+  //   } else {
+  //     setUserLibrary(userLibrary.filter((item) => item.book_id !== book_id));
+  //   }
+  // }
 
   const [fontsLoaded] = useFonts({
     VollkornSC_400Regular,
@@ -101,7 +101,7 @@ const UserLibrary = ({ session }) => {
     return <Text>Loading...</Text>;
   }
 
-console.log(userLibrary)
+  // console.log(userLibrary)
 
   return (
     <View style={page}>
@@ -114,7 +114,7 @@ console.log(userLibrary)
               textAlign: "center",
             }}
           >
-            User Library
+            Your Library
           </Text>
         </View>
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
@@ -129,132 +129,19 @@ console.log(userLibrary)
       </View>
 
       <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
-        
-      {/* <FlatList
+        <FlatList
           data={userLibrary}
-          renderItem={({ item }) => <CarouselItem item={item} id={id} />}
-          horizontal
+          renderItem={({ item }) => (
+            <LibraryBookItem item={item} id={item.book_id} />
+          )}
+          keyExtractor={(item) => item.book_id.toString()}
+          vertical={true}
           pagingEnabled
           snapToAlignment="center"
-          showsHorizontalScrollIndicator={false}
-          onScroll={handleOnScroll}
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={{ height: "100%", alignSelf: "center" }}
           style={{ flex: 1 }}
-        /> */}
-
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-
-          {userLibrary.map(
-            ({
-              book_id,
-              img_url,
-              book_title,
-              author,
-              condition,
-              description,
-              category,
-            }) => 
-            
-            (
-              <View key={book_id} style={styles.listContainer}>
-                <View style={{ height: width / 27, width: "100%" }}></View>
-                <View
-                  style={{
-                    width: width - (2 * width) / 27,
-                    height: containerHeight - (2 * width) / 27,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "row",
-                  }}
-                >
-                  <View style={{ flex: 3, height: "100%" }}>
-                    {img_url && (
-                      <Image
-                        source={{ uri: img_url }}
-                        style={styles.bookImage}
-                      />
-                    )}
-                  </View>
-                  <View
-                    style={{ flex: 6, height: "100%", flexDirection: "row" }}
-                  >
-                    <View
-                      style={{
-                        flex: 8,
-                        height: "100%",
-                        justifyContent: "space-around",
-                      }}
-                    >
-                      <View
-                        style={{
-                          height: "33%",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            ...subHeading,
-                            fontWeight: "600",
-                          }}
-                        >
-                          {book_title}
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          height: "33%",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            ...subHeading,
-                          }}
-                        >
-                          {author}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={{ flex: 1, top: 0, alignItems: "center" }}>
-                      <Feather
-                        name="x"
-                        size={24}
-                        color={PTG1}
-                        style={{
-                          alignSelf: "center",
-                        }}
-                        onPress={() => removeFromLibrary(book_id)}
-                      />
-                    </View>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    height: width / 27,
-                    justifyContent: "flex-end",
-                    width: "100%",
-                    alignItems: "center",
-                  }}
-                >
-                  <View
-                    style={{
-                      height: 2,
-                      width: "100%",
-                      backgroundColor: PTG2,
-                    }}
-                  ></View>
-                </View>
-              </View>
-            )
-          )}
-
-        </ScrollView>
-
+        />
       </View>
     </View>
   );

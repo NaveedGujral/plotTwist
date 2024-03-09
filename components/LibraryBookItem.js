@@ -1,3 +1,15 @@
+import {
+  Dimensions,
+  Image,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
+import supabase from "../config/supabaseClient";
+
 const { PTStyles, PTSwatches } = require("../Styling");
 const {
   heading,
@@ -7,7 +19,7 @@ const {
   pillButton,
   roundButton,
   roundButtonPressed,
-  bookImage1
+  bookImage1,
 } = PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { height, width } = Dimensions.get("screen");
@@ -16,15 +28,26 @@ const viewHeight = (8 * pageHeight) / 9;
 const containerHeight = viewHeight / 3.5;
 
 export default function LibraryBookItem(item, id, inSwapReq) {
-    const {
-        book_id,
-        img_url,
-        book_title,
-        author,
-        condition,
-        description,
-        category,
-      } = item
+  const {
+    book_id,
+    img_url,
+    book_title,
+    author,
+    condition,
+    description,
+    category,
+  } = item.item;
+
+  async function removeFromLibrary(book_id) {
+    const { data, error } = await supabase
+      .from("Listings")
+      .delete()
+      .eq("book_id", book_id);
+
+    if (error) {
+      alert(error);
+    } 
+  }
 
   return (
     <View key={book_id} style={styles.listContainer}>
@@ -115,19 +138,18 @@ export default function LibraryBookItem(item, id, inSwapReq) {
 }
 
 const styles = StyleSheet.create({
-    bookImage: {
-      width: (2 * (containerHeight - (2 * width) / 27)) / 3,
-      borderRadius: width / 27,
-      height: "100%",
-      resizeMode: "cover",
-    },
-    listContainer: {
-      display: "flex",
-      position: "relative",
-      height: containerHeight,
-      width: width - (2 * width) / 27,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-  });
-  
+  bookImage: {
+    width: (2 * (containerHeight - (2 * width) / 27)) / 3,
+    borderRadius: width / 27,
+    height: "100%",
+    resizeMode: "cover",
+  },
+  listContainer: {
+    display: "flex",
+    position: "relative",
+    height: containerHeight,
+    width: width - (2 * width) / 27,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
