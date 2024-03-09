@@ -43,9 +43,16 @@ const UserLibrary = ({ session }) => {
   const [isDescriptionCollapsed, setIsDescriptionCollapsed] = useState(true);
   const [username, setUsername] = useState("");
 
+  // experimental
+  // const [testState, setTestState] = useState(false)
+
   useEffect(() => {
     if (session) getListings();
   }, [userLibrary]);
+
+  // useEffect(() => {
+  //   console.log("parent testState", testState)
+  // }, [testState])
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -77,19 +84,6 @@ const UserLibrary = ({ session }) => {
     }
   }
 
-  // async function removeFromLibrary(book_id) {
-  //   const { data, error } = await supabase
-  //     .from("Listings")
-  //     .delete()
-  //     .eq("book_id", book_id);
-
-  //   if (error) {
-  //     alert(error);
-  //   } else {
-  //     setUserLibrary(userLibrary.filter((item) => item.book_id !== book_id));
-  //   }
-  // }
-
   const [fontsLoaded] = useFonts({
     VollkornSC_400Regular,
     Bellefair_400Regular,
@@ -101,7 +95,8 @@ const UserLibrary = ({ session }) => {
     return <Text>Loading...</Text>;
   }
 
-  // console.log(userLibrary)
+  
+
 
   return (
     <View style={page}>
@@ -132,7 +127,14 @@ const UserLibrary = ({ session }) => {
         <FlatList
           data={userLibrary}
           renderItem={({ item }) => (
-            <LibraryBookItem item={item} id={item.book_id} />
+            <LibraryBookItem 
+            book={item} 
+            id={item.book_id} 
+            inSwapReq={false} 
+            activeUserCheck={true} 
+            // setTestState={setTestState} 
+            // testState={testState}
+            />
           )}
           keyExtractor={(item) => item.book_id.toString()}
           vertical={true}

@@ -27,6 +27,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { JosefinSans_400Regular } from "@expo-google-fonts/dev";
+import LibraryBookItem from "./LibraryBookItem";
 
 const { PTStyles, PTSwatches } = require("../Styling");
 const {
@@ -54,9 +55,33 @@ export default function SwapNegotiationPage({ route }) {
   const [nonActiveUserLibrary, setNonActiveUserLibrary] = useState([]);
   const activeUserLibraryRef = useRef(activeUserLibrary);
   const nonActiveUserLibraryRef = useRef(nonActiveUserLibrary);
+
   // Passed down props from swap card or notifications
   const { info, session, type } = route.params;
   const [currType, setCurrType] = useState(type);
+  const [currSwap, setCurrSwap] = useState(info);
+  const {
+    user1_author,
+    user1_book_imgurl,
+    user1_book_title,
+    user1_id,
+    user1_listing_id,
+    user1_username,
+    user1_category,
+    user1_condition,
+    user1_desc,
+    user2_author,
+    user2_book_imgurl,
+    user2_book_title,
+    user2_id,
+    user2_listing_id,
+    user2_username,
+    user2_category,
+    user2_condition,
+    user2_desc,
+  } = currSwap;
+
+  console.log(currSwap);
 
   const activeUserID =
     session.user.id === info.user1_id ? info.user1_id : info.user2_id;
@@ -66,23 +91,16 @@ export default function SwapNegotiationPage({ route }) {
   const [modalUserID, setModalUserID] = useState();
   const [modalLibrary, setModalLibrary] = useState();
 
-  // useEffect(() => {
-  //   getListings(activeUserID)
-  //   .then((res) => {
-  //     setActiveUserLibrary(res);
-  //   });
-  //   getListings(nonActiveUserID)
-  //   .then((res) => {
-  //     setNonActiveUserLibrary(res);
-  //   });;
-  // }, []);
-
   useEffect(() => {
     activeUserLibraryRef.current = activeUserLibrary;
   }, [activeUserLibrary]);
   useEffect(() => {
     nonActiveUserLibraryRef.current = nonActiveUserLibrary;
   }, [nonActiveUserLibrary]);
+
+  useEffect(() => {
+    updateSwapInfo(currSwap);
+  }, [currSwap]);
 
   useEffect(() => {
     const fetchAllListings = async () => {
@@ -186,25 +204,64 @@ export default function SwapNegotiationPage({ route }) {
     }
   }
 
+  async function updateSwapInfo(currSwap) {
+    const { data, error } = await supabase
+      .from("Pending_Swaps")
+      .update(currSwap)
+      .eq("pending_swap_id", currSwap.pending_swap_id);
+
+    if (error) {
+      console.log(error);
+    }
+    console.log(data[0]);
+    return data[0];
+  }
+
   function renderModal(activeUserCheck, user_id, library) {
     return activeUserCheck === true ? (
       <View>
-        <View
-          style={{
-            justifyContent: "center",
-            width: width,
-            height: (height / 27) * 2,
-          }}
-        >
-          <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
-            Your Library
-          </Text>
-        </View>
+        <View style={{ height: height - (height / 27) * 4 }}>
+          <View
+            style={{
+              justifyContent: "center",
+              width: width,
+              flex: 1,
+            }}
+          >
+            <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
+              Your Library
+            </Text>
+          </View>
 
-        <View
-          style={{ backgroundColor: PTRed, height: height - (height / 27) * 6 }}
-        >
-          <FlatList />
+          <View
+            style={{
+              flex: 8,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <FlatList
+              data={activeUserLibrary}
+              renderItem={({ item }) => (
+                <LibraryBookItem
+                  book={item}
+                  id={item.book_id}
+                  inSwapReq={true}
+                  activeUserCheck={true}
+                  activeUserID={activeUserID}
+                  currSwap={currSwap}
+                  setCurrSwap={setCurrSwap}
+                />
+              )}
+              keyExtractor={(item) => item.book_id.toString()}
+              vertical={true}
+              pagingEnabled
+              snapToAlignment="center"
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ height: "100%", alignSelf: "center" }}
+              style={{ flex: 1 }}
+            />
+          </View>
         </View>
       </View>
     ) : (
@@ -244,7 +301,7 @@ export default function SwapNegotiationPage({ route }) {
               >
                 <Image
                   source={{
-                    uri: info.user1_book_imgurl,
+                    uri: user1_book_imgurl,
                   }}
                   style={{ width: "100%", height: "100%" }}
                 />
@@ -390,30 +447,11 @@ export default function SwapNegotiationPage({ route }) {
     }
   }
 
-  // console.log(info);
-  // console.log(session)
-  // console.log(type)
-
-  // when reconsider
-  // useEffect(() => {
-  //   if (reconsidered) {
-  //     let newUser2BookInfo = { ...user2_book_info };
-  //     setUser2BookUrl(newUser2BookInfo.img_url);
-  //   }
-  //   setReconsidered(false);
-  // }, [reconsidered, user2_book_info, timeKey]);
-
   useEffect(() => {
     getTransferData().then((res) => {
       setTitle([`${res.user1_book_title}`, `${res.user2_book_title}`]);
     });
   }, []);
-
-  // useEffect(() => {
-  //   if (user2_book && user2BookUrl !== user2_book.user2_book_imgurl) {
-  //     setUser2BookUrl(user2_book.user2_book_imgurl);
-  //   }
-  // }, [user2_book, user2BookUrl]);
 
   async function getTransferData() {
     const { data, error } = await supabase
@@ -423,8 +461,10 @@ export default function SwapNegotiationPage({ route }) {
     return data[0];
   }
 
-  async function updateSwapHistory(info) {
-    const { data, error } = await supabase.from("Swap_History").insert([info]);
+  async function updateSwapHistory(currSwap) {
+    const { data, error } = await supabase
+      .from("Swap_History")
+      .insert([currSwap]);
   }
 
   async function removeData(infoResponse) {

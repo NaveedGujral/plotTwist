@@ -1,13 +1,15 @@
 import {
   Dimensions,
   Image,
+  Pressable,
   RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { React, useCallback, useEffect, useState } from "react";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import supabase from "../config/supabaseClient";
 
 const { PTStyles, PTSwatches } = require("../Styling");
@@ -27,7 +29,18 @@ const pageHeight = height - (height / 27) * 4;
 const viewHeight = (8 * pageHeight) / 9;
 const containerHeight = viewHeight / 3.5;
 
-export default function LibraryBookItem(item, id, inSwapReq) {
+export default function LibraryBookItem(item) {
+  const {
+    activeUserCheck,
+    activeUserID,
+    book,
+    id,
+    inSwapReq,
+    currSwap,
+    setCurrSwap,
+    // setTestState, testState
+  } = item;
+
   const {
     book_id,
     img_url,
@@ -36,7 +49,41 @@ export default function LibraryBookItem(item, id, inSwapReq) {
     condition,
     description,
     category,
-  } = item.item;
+  } = book;
+
+  // if (inSwapReq === true) {
+
+    // const {
+    //   user1_author,
+    //   user1_book_imgurl,
+    //   user1_book_title,
+    //   user1_id,
+    //   user1_listing_id,
+    //   user1_username,
+    //   user1_category,
+    //   user1_condition,
+    //   user1_desc,
+    //   user2_author,
+    //   user2_book_imgurl,
+    //   user2_book_title,
+    //   user2_id,
+    //   user2_listing_id,
+    //   user2_username,
+    //   user2_category,
+    //   user2_condition,
+    //   user2_desc,
+    // } = currSwap;
+
+  // }
+
+  // if (inSwapReq) {
+  //   console.log("active User ID ", activeUserID)
+  //   console.log(currSwap)
+  // }
+
+  // useEffect(() => {
+  //   console.log("child testState", testState)
+  // }, [testState])
 
   async function removeFromLibrary(book_id) {
     const { data, error } = await supabase
@@ -46,7 +93,7 @@ export default function LibraryBookItem(item, id, inSwapReq) {
 
     if (error) {
       alert(error);
-    } 
+    }
   }
 
   return (
@@ -56,28 +103,75 @@ export default function LibraryBookItem(item, id, inSwapReq) {
         style={{
           width: width - (2 * width) / 27,
           height: containerHeight - (2 * width) / 27,
-          justifyContent: "center",
+          justifyContent: "space-between",
+          gap: width / 27,
           alignItems: "center",
           flexDirection: "row",
         }}
       >
-        <View style={{ flex: 3, height: "100%" }}>
+        <Pressable
+          style={{ flex: 2, height: "100%" }}
+          onPress={() => {
+            if (book_id !== currSwap.user1_listing_id && book_id !== currSwap.user2_listing_id) {
+              if (currSwap.user1_id === activeUserID) {
+                setCurrSwap((prevState) => ({
+                  ...prevState,
+                  user1_listing_id: book_id,
+                  user1_author: author,
+                  user1_book_imgurl: img_url,
+                  user1_book_title: book_title,
+                  user1_category: category,
+                  user1_condition: condition,
+                  user1_desc: description,
+                }));
+              } else {
+                setCurrSwap((prevState) => ({
+                  ...prevState,
+                  user2_listing_id: book_id,
+                  user2_author: author,
+                  user2_book_imgurl: img_url,
+                  user2_book_title: book_title,
+                  user2_category: category,
+                  user2_condition: condition,
+                  user2_desc: description,
+                }));
+              }
+            }
+          }}
+        >
           {img_url && (
-            <Image source={{ uri: img_url }} style={styles.bookImage} />
+            <Image
+              source={{ uri: img_url }}
+              style={
+                inSwapReq ? 
+                (currSwap.user1_listing_id === book_id ||
+                currSwap.user2_listing_id === book_id
+                  ? { ...styles.bookImage, borderWidth: 5, borderColor: PTG1 }
+                  : styles.bookImage)
+                  :
+                  styles.bookImage
+                }
+            />
           )}
-        </View>
-        <View style={{ flex: 6, height: "100%", flexDirection: "row" }}>
+        </Pressable>
+        <View
+          style={{
+            flex: 4,
+            height: "100%",
+            flexDirection: "row",
+            gap: width / 27,
+          }}
+        >
           <View
             style={{
               flex: 8,
               height: "100%",
-              justifyContent: "space-around",
+              justifyContent: "space-between",
             }}
           >
             <View
               style={{
-                height: "33%",
-                justifyContent: "center",
+                justifyContent: "space-between",
               }}
             >
               <Text
@@ -88,13 +182,13 @@ export default function LibraryBookItem(item, id, inSwapReq) {
               >
                 {book_title}
               </Text>
-            </View>
-            <View
-              style={{
-                height: "33%",
-                justifyContent: "center",
-              }}
-            >
+              <Text
+                style={{
+                  ...subHeading,
+                }}
+              >
+                {" "}
+              </Text>
               <Text
                 style={{
                   ...subHeading,
@@ -102,19 +196,111 @@ export default function LibraryBookItem(item, id, inSwapReq) {
               >
                 {author}
               </Text>
+              <Text
+                style={{
+                  ...subHeading,
+                }}
+              >
+                {" "}
+              </Text>
+              <Text
+                style={{
+                  ...subHeading,
+                }}
+              >
+                Condition: {condition}
+              </Text>
+              <Text
+                style={{
+                  ...subHeading,
+                }}
+              >
+                {" "}
+              </Text>
+              <Text
+                style={{
+                  ...subHeading,
+                }}
+              >
+                {category}
+              </Text>
             </View>
           </View>
-          <View style={{ flex: 1, top: 0, alignItems: "center" }}>
-            <Feather
-              name="x"
-              size={24}
-              color={PTG1}
+
+          {(activeUserCheck || inSwapReq) && (
+            <View
               style={{
-                alignSelf: "center",
+                flex: 1,
+                top: 0,
+                alignItems: "center",
+                justifyContent: "space-around",
               }}
-              onPress={() => removeFromLibrary(book_id)}
-            />
-          </View>
+            >
+              {inSwapReq && (
+                <View>
+                  <Ionicons
+                    name="checkmark"
+                    size={30}
+                    color={
+                      currSwap.user1_listing_id === book_id ||
+                      currSwap.user2_listing_id === book_id
+                        ? PTGreen
+                        : PTG2
+                    }
+                    style={{
+                      alignSelf: "center",
+                    }}
+                    onPress={() => {
+                      if (
+                        book_id !== currSwap.user1_listing_id &&
+                        book_id !== currSwap.user2_listing_id
+                      ) {
+                        if (currSwap.user1_id === activeUserID) {
+                          setCurrSwap((prevState) => ({
+                            ...prevState,
+                            user1_listing_id: book_id,
+                            user1_author: author,
+                            user1_book_imgurl: img_url,
+                            user1_book_title: book_title,
+                            user1_category: category,
+                            user1_condition: condition,
+                            user1_desc: description,
+                          }));
+                        } else {
+                          setCurrSwap((prevState) => ({
+                            ...prevState,
+                            user2_listing_id: book_id,
+                            user2_author: author,
+                            user2_book_imgurl: img_url,
+                            user2_book_title: book_title,
+                            user2_category: category,
+                            user2_condition: condition,
+                            user2_desc: description,
+                          }));
+                        }
+                      }
+                    }}
+                  />
+                </View>
+              )}
+
+              {activeUserCheck && (
+                <View>
+                  <Feather
+                    name="x"
+                    size={30}
+                    color={PTG2}
+                    style={{
+                      alignSelf: "center",
+                    }}
+                    onPress={() => {
+                      removeFromLibrary(book_id);
+                    }}
+                  />
+                </View>
+              )}
+            </View>
+          )}
         </View>
       </View>
       <View
