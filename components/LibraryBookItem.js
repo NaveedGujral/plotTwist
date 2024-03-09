@@ -113,7 +113,7 @@ export default function LibraryBookItem(item) {
           style={{ flex: 2, height: "100%" }}
           onPress={() => {
             if (book_id !== currSwap.user1_listing_id && book_id !== currSwap.user2_listing_id) {
-              if (currSwap.user1_id === activeUserID) {
+              if (currSwap.user1_id === activeUserID && activeUserCheck === true) {
                 setCurrSwap((prevState) => ({
                   ...prevState,
                   user1_listing_id: book_id,

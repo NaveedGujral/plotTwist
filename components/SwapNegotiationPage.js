@@ -266,19 +266,51 @@ export default function SwapNegotiationPage({ route }) {
       </View>
     ) : (
       <View>
-        <View
-          style={{
-            justifyContent: "center",
-            width: width,
-            height: (height / 27) * 2,
-          }}
-        >
-          <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
-            {session.user.id === info.user1_id
-              ? info.user2_username
-              : info.user1_username}
-            {`'s Library`}
-          </Text>
+        <View style={{ height: height - (height / 27) * 4 }}>
+          <View
+            style={{
+              justifyContent: "center",
+              width: width,
+              flex: 1,
+            }}
+          >
+            <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
+              {session.user.id === info.user1_id
+                ? info.user2_username
+                : info.user1_username}
+              {`'s Library`}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              flex: 8,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <FlatList
+              data={nonActiveUserLibrary}
+              renderItem={({ item }) => (
+                <LibraryBookItem
+                  book={item}
+                  id={item.book_id}
+                  inSwapReq={true}
+                  activeUserCheck={false}
+                  activeUserID={activeUserID}
+                  currSwap={currSwap}
+                  setCurrSwap={setCurrSwap}
+                />
+              )}
+              keyExtractor={(item) => item.book_id.toString()}
+              vertical={true}
+              pagingEnabled
+              snapToAlignment="center"
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ height: "100%", alignSelf: "center" }}
+              style={{ flex: 1 }}
+            />
+          </View>
         </View>
       </View>
     );
@@ -316,7 +348,8 @@ export default function SwapNegotiationPage({ route }) {
                 />
               </View>
 
-              <View
+
+              <Pressable
                 style={{
                   ...styles.bookCard,
                   borderWidth: 2,
@@ -324,11 +357,17 @@ export default function SwapNegotiationPage({ route }) {
                   borderStyle: "dashed",
                   justifyContent: "center",
                 }}
+                onPress={() => {
+                  setActiveUserCheck(false);
+                  setModalUserID(nonActiveUserID);
+                  setModalLibrary(nonActiveUserLibrary);
+                  setIsModalVisible(true);
+                }}
               >
                 <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
                   ?
                 </Text>
-              </View>
+              </Pressable>
 
               <Modal isVisible={isModalVisible}>
                 <View style={styles.modal}>
