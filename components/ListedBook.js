@@ -97,6 +97,7 @@ export default function ListedBook({ route }) {
   checkSwapExists()
 
   // inserts info into pending swaps
+  console.log(listing)
   const reqSwap = async () => {
     if (swapState) {
       return;
@@ -110,6 +111,10 @@ export default function ListedBook({ route }) {
           user1_listing_id: listing.book_id,
           user1_book_imgurl: listing.img_url,
           user1_username: userName,
+          user1_desc: listing.description,
+          user1_condition: listing.condition,
+          user1_author: listing.author,
+          user1_category: listing.Category,
           user2_id: session.user.id,
           user2_username: session.user.user_metadata.username,
         },

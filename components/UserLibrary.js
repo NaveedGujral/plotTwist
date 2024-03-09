@@ -7,6 +7,7 @@ import {
 import { Feather } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import { React, useCallback, useEffect, useState } from "react";
+import LibraryBookItem from "./LibraryBookItem";
 import {
   Dimensions,
   Image,
@@ -43,8 +44,7 @@ const UserLibrary = ({ session }) => {
 
   useEffect(() => {
     if (session) 
-    getListings(session?.user?.user_metadata?.username);
-    setUsername(session?.user?.user_metadata?.username);
+    getListings();;
   }, [userLibrary]);
 
   const onRefresh = useCallback(async () => {
@@ -63,7 +63,7 @@ const UserLibrary = ({ session }) => {
     setRefreshing(false);
   }, []);
 
-  async function getListings(username) {
+  async function getListings() {
     const { data, error } = await supabase
       .from("Listings")
       .select("*")
@@ -101,6 +101,8 @@ const UserLibrary = ({ session }) => {
     return <Text>Loading...</Text>;
   }
 
+console.log(userLibrary)
+
   return (
     <View style={page}>
       <View style={{ flex: 1 }}>
@@ -127,21 +129,38 @@ const UserLibrary = ({ session }) => {
       </View>
 
       <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
+        
+      {/* <FlatList
+          data={userLibrary}
+          renderItem={({ item }) => <CarouselItem item={item} id={id} />}
+          horizontal
+          pagingEnabled
+          snapToAlignment="center"
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleOnScroll}
+          contentContainerStyle={{ height: "100%", alignSelf: "center" }}
+          style={{ flex: 1 }}
+        /> */}
+
         <ScrollView
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
+
           {userLibrary.map(
             ({
               book_id,
               img_url,
               book_title,
               author,
+              condition,
               description,
               category,
-            }) => (
+            }) => 
+            
+            (
               <View key={book_id} style={styles.listContainer}>
                 <View style={{ height: width / 27, width: "100%" }}></View>
                 <View
@@ -233,7 +252,9 @@ const UserLibrary = ({ session }) => {
               </View>
             )
           )}
+
         </ScrollView>
+
       </View>
     </View>
   );

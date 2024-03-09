@@ -190,6 +190,7 @@ export default function CarouselItem({ item, id }) {
                     </LinearGradient>
                   </View>
                 </Modal>
+                
               </View>
           </View>
         </View>

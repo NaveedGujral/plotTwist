@@ -46,7 +46,7 @@ export default function BookList({ categoryName, id }) {
       let { data, error } = await supabase
         .from("Listings")
         .select("*")
-        .eq("Category", categoryName)
+        .eq("category", categoryName)
         .order("date_posted", { ascending: false })
         .range(0, 10);
 

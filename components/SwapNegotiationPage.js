@@ -9,7 +9,9 @@ import {
   View,
   Dimensions,
   Image,
+  FlatList,
 } from "react-native";
+import Modal from "react-native-modal";
 import {
   ScreenWidth,
   ScreenHeight,
@@ -17,8 +19,13 @@ import {
 } from "react-native-elements/dist/helpers";
 import { useNavigation } from "@react-navigation/native";
 import supabase from "../config/supabaseClient";
-import { useEffect, useState } from "react";
-import { Entypo, Ionicons, Octicons } from "@expo/vector-icons";
+import { useEffect, useState, useRef } from "react";
+import {
+  Entypo,
+  Ionicons,
+  Octicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { JosefinSans_400Regular } from "@expo-google-fonts/dev";
 
 const { PTStyles, PTSwatches } = require("../Styling");
@@ -42,6 +49,58 @@ export default function SwapNegotiationPage({ route }) {
   const [user2BookUrl, setUser2BookUrl] = useState("");
   const [reconsidered, setReconsidered] = useState(false);
   const [timeKey, setTimeKey] = useState(Date.now());
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [activeUserLibrary, setActiveUserLibrary] = useState([]);
+  const [nonActiveUserLibrary, setNonActiveUserLibrary] = useState([]);
+  const activeUserLibraryRef = useRef(activeUserLibrary);
+  const nonActiveUserLibraryRef = useRef(nonActiveUserLibrary);
+  // Passed down props from swap card or notifications
+  const { info, session, type } = route.params;
+  const [currType, setCurrType] = useState(type);
+
+  const activeUserID =
+    session.user.id === info.user1_id ? info.user1_id : info.user2_id;
+  const nonActiveUserID =
+    session.user.id === info.user1_id ? info.user2_id : info.user1_id;
+  const [activeUserCheck, setActiveUserCheck] = useState();
+  const [modalUserID, setModalUserID] = useState();
+  const [modalLibrary, setModalLibrary] = useState();
+
+  // useEffect(() => {
+  //   getListings(activeUserID)
+  //   .then((res) => {
+  //     setActiveUserLibrary(res);
+  //   });
+  //   getListings(nonActiveUserID)
+  //   .then((res) => {
+  //     setNonActiveUserLibrary(res);
+  //   });;
+  // }, []);
+
+  useEffect(() => {
+    activeUserLibraryRef.current = activeUserLibrary;
+  }, [activeUserLibrary]);
+  useEffect(() => {
+    nonActiveUserLibraryRef.current = nonActiveUserLibrary;
+  }, [nonActiveUserLibrary]);
+
+  useEffect(() => {
+    const fetchAllListings = async () => {
+      try {
+        const [activeUserListings, nonActiveUserListings] = await Promise.all([
+          getListings(activeUserID),
+          getListings(nonActiveUserID),
+        ]);
+
+        setActiveUserLibrary(activeUserListings);
+        setNonActiveUserLibrary(nonActiveUserListings);
+      } catch (error) {
+        console.error("Error fetching listings:", error);
+      }
+    };
+
+    fetchAllListings();
+  }, [activeUserID, nonActiveUserID]);
 
   // MVP ONLY - NEEDS REFACTORING TO BE SCALABLE!
   useEffect(() => {
@@ -113,36 +172,83 @@ export default function SwapNegotiationPage({ route }) {
     }
   }, []);
 
-  // Passed down props from swap card or notifications
-  const { info, session, type } = route.params;
-  const [currType, setCurrType] = useState(type);
+  async function getListings(user_id) {
+    const { data, error } = await supabase
+      .from("Listings")
+      .select("*")
+      .eq("user_id", user_id)
+      .order("date_posted", { ascending: false });
 
-  const activeUserID =
-    session.user.id === info.user1_id ? info.user1_id : info.user2_id;
-  const nonActiveUserID =
-    session.user.id === info.user1_id ? info.user2_id : info.user1_id;
+    if (error) {
+      alert(error);
+    } else {
+      return data;
+    }
+  }
 
-  // const {
-  //   user1_book,
-  //   user2_book,
-  //   info,
-  //   session,
-  //   user2_book_url,
-  //   user2_book_info,
-  // } = route.params;
+  function renderModal(activeUserCheck, user_id, library) {
+    return activeUserCheck === true ? (
+      <View>
+        <View
+          style={{
+            justifyContent: "center",
+            width: width,
+            height: (height / 27) * 2,
+          }}
+        >
+          <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
+            Your Library
+          </Text>
+        </View>
 
-  function renderContent(currType, info) {
+        <View
+          style={{ backgroundColor: PTRed, height: height - (height / 27) * 6 }}
+        >
+          <FlatList />
+        </View>
+      </View>
+    ) : (
+      <View>
+        <View
+          style={{
+            justifyContent: "center",
+            width: width,
+            height: (height / 27) * 2,
+          }}
+        >
+          <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
+            {session.user.id === info.user1_id
+              ? info.user2_username
+              : info.user1_username}
+            {`'s Library`}
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
+  function renderSwap(currType, info) {
     switch (currType) {
       case "received":
         return (
-          <View style={{justifyContent:"space-between"}}>
+          <View style={{ justifyContent: "space-between" }}>
             <View style={styles.booksAndArrows}>
-              <Image
-                source={{
-                  uri: info.user1_book_imgurl,
-                }}
+              <Pressable
                 style={styles.bookCard}
-              />
+                onPress={() => {
+                  setActiveUserCheck(true);
+                  setModalUserID(activeUserID);
+                  setModalLibrary(activeUserLibrary);
+                  setIsModalVisible(true);
+                }}
+              >
+                <Image
+                  source={{
+                    uri: info.user1_book_imgurl,
+                  }}
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </Pressable>
 
               <View style={{ justifyContent: "center" }}>
                 <Octicons
@@ -166,6 +272,32 @@ export default function SwapNegotiationPage({ route }) {
                   ?
                 </Text>
               </View>
+
+              <Modal isVisible={isModalVisible}>
+                <View style={styles.modal}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      width: width,
+                      height: (height / 27) * 2,
+                      backgroundColor: PTGreen,
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      name="chevron-double-down"
+                      size={36}
+                      color={PTG1}
+                      style={{ alignSelf: "center" }}
+                      onPress={() => {
+                        setIsModalVisible(false);
+                      }}
+                    />
+                  </View>
+
+                  {renderModal(activeUserCheck, modalUserID, modalLibrary)}
+                </View>
+              </Modal>
             </View>
           </View>
         );
@@ -258,7 +390,7 @@ export default function SwapNegotiationPage({ route }) {
     }
   }
 
-  console.log(info);
+  // console.log(info);
   // console.log(session)
   // console.log(type)
 
@@ -389,12 +521,11 @@ export default function SwapNegotiationPage({ route }) {
             </Text>
           </View>
         </View>
-        {renderContent(currType, info)}
+        {renderSwap(currType, info)}
 
         {/* Experimental */}
 
         <View style={styles.buttons}>
-
           {/* <Pressable
             style={styles.accept}
             onPress={() => {
@@ -432,23 +563,26 @@ export default function SwapNegotiationPage({ route }) {
           <Pressable
             style={styles.reject}
             onPress={() => {
-              getTransferData()
-              .then((res) => {
+              getTransferData().then((res) => {
                 rejectBook(res);
               });
             }}
           >
             <Text style={styles.body}>Reject Offer</Text>
           </Pressable>
-
         </View>
-
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  modal: {
+    width: width,
+    height: height,
+    alignSelf: "center",
+    backgroundColor: PTG4,
+  },
   heading: {
     fontSize: 28,
     fontWeight: "bold",

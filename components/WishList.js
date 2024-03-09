@@ -60,7 +60,8 @@ const WishList = ({ session }) => {
     }
 
     const wishlist = data?.wishlist || [];
-    const promises = wishlist.map(async (book_id) => {
+    const promises = 
+    wishlist.map(async (book_id) => {
       const { data, error } = await supabase
         .from("Listings")
         .select("*")

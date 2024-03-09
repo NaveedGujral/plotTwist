@@ -67,10 +67,10 @@ const HomeScreen = ({ navigation }) => {
     async function getCategories() {
       const { data, error } = await supabase
         .from("Listings")
-        .select("Category");
+        .select("category");
       const catArr = [];
       data.forEach((obj) => {
-        if (!catArr.includes(obj.Category)) catArr.push(obj.Category);
+        if (!catArr.includes(obj.category)) catArr.push(obj.category);
       });
       setCategories(catArr);
     }

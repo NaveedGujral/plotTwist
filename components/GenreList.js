@@ -37,7 +37,7 @@ export default function GenreList({ route }) {
       const { data, error } = await supabase
         .from("Listings")
         .select()
-        .eq("Category", genre);
+        .eq("category", genre);
 
       const uniqueData = Array.from(
         new Set(data.map((item) => item.book_title))
