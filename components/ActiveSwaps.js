@@ -41,8 +41,15 @@ const ActiveSwaps = ({ session }) => {
   const [sentSwaps, setSentSwaps] = useState([]);
   const [receivedSwaps, setReceivedSwaps] = useState([]);
   const [activeSwaps, setActiveSwaps] = useState([]);
+  const [updateSwapList, setUpdateSwapList] = useState(false)
 
   const [activeSections, setActiveSections] = useState([]);
+
+  useEffect(() => {
+    getSwapInfo()
+  }, [receivedSwaps, sentSwaps, activeSwaps]);
+
+
   const content = [
     {
       title: "Incoming Requests",

@@ -56,8 +56,10 @@ export default function SwapNegotiationPage({ route }) {
   const activeUserLibraryRef = useRef(activeUserLibrary);
   const nonActiveUserLibraryRef = useRef(nonActiveUserLibrary);
 
+  
   // Passed down props from swap card or notifications
   const { info, session, type } = route.params;
+
   const [currType, setCurrType] = useState(type);
   const [currSwap, setCurrSwap] = useState(info);
   const {
@@ -81,7 +83,7 @@ export default function SwapNegotiationPage({ route }) {
     user2_desc,
   } = currSwap;
 
-  console.log(currSwap);
+  // console.log(currSwap);
 
   const activeUserID =
     session.user.id === info.user1_id ? info.user1_id : info.user2_id;
@@ -213,7 +215,7 @@ export default function SwapNegotiationPage({ route }) {
     if (error) {
       console.log(error);
     }
-    console.log(data[0]);
+    // console.log(data[0]);
     return data[0];
   }
 

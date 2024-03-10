@@ -27,7 +27,7 @@ const renderContentHeight = (8 * pageHeight) / 9 - 3 * renderHeaderHeight;
 const cardHeight = renderContentHeight / 3.5;
 const cardWidth = width - (2 * width) / 27;
 
-export default function SwapCard({ swap, type, session, navigation }) {
+export default function SwapCard({ swap, type, session, navigation}) {
   const sessionUserId = session.user.id;
 
   function renderContent(type, swap) {
@@ -260,7 +260,7 @@ export default function SwapCard({ swap, type, session, navigation }) {
           navigation.navigate("SwapNegotiationPage", {
             info: swap,
             session: session,
-            type: type
+            type: type,
           });
       // onPress={() => {
       //   if (type !== "completed") {
