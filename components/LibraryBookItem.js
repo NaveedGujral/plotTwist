@@ -112,6 +112,9 @@ export default function LibraryBookItem(item) {
         <Pressable
           style={{ flex: 2, height: "100%" }}
           onPress={() => {
+            // extract into it's own function
+            // does not work on outgoing requests it partially overwrites user1 info instead of user2 - use switch inside a function
+
             if (book_id !== currSwap.user1_listing_id && book_id !== currSwap.user2_listing_id) {
               if (currSwap.user1_id === activeUserID && activeUserCheck === true) {
                 setCurrSwap((prevState) => ({

@@ -114,7 +114,7 @@ export default function ListedBook({ route }) {
           user1_desc: listing.description,
           user1_condition: listing.condition,
           user1_author: listing.author,
-          user1_category: listing.Category,
+          user1_category: listing.category,
           user2_id: session.user.id,
           user2_username: session.user.user_metadata.username,
         },

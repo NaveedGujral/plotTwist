@@ -56,11 +56,15 @@ export default function SwapNegotiationPage({ route }) {
   const activeUserLibraryRef = useRef(activeUserLibrary);
   const nonActiveUserLibraryRef = useRef(nonActiveUserLibrary);
 
-  
   // Passed down props from swap card or notifications
   const { info, session, type } = route.params;
 
   const [currType, setCurrType] = useState(type);
+  
+  if (currType === "activeReceived" || currType === "activeSent") {
+    setCurrType("active")
+  }
+
   const [currSwap, setCurrSwap] = useState(info);
   const {
     user1_author,
@@ -83,7 +87,10 @@ export default function SwapNegotiationPage({ route }) {
     user2_desc,
   } = currSwap;
 
-  // console.log(currSwap);
+  console.log(
+    !(Object.values(currSwap)).includes(null)
+    );
+  console.log(currSwap)
 
   const activeUserID =
     session.user.id === info.user1_id ? info.user1_id : info.user2_id;
@@ -101,6 +108,9 @@ export default function SwapNegotiationPage({ route }) {
   }, [nonActiveUserLibrary]);
 
   useEffect(() => {
+    if (!(Object.values(currSwap)).includes(null)) {
+      setCurrType("active")
+    }
     updateSwapInfo(currSwap);
   }, [currSwap]);
 
@@ -217,6 +227,58 @@ export default function SwapNegotiationPage({ route }) {
     }
     // console.log(data[0]);
     return data[0];
+  }
+
+  async function getTransferData() {
+    const { data, error } = await supabase
+      .from("Pending_Swaps")
+      .select()
+      .eq("pending_swap_id", info.pending_swap_id);
+    return data[0];
+  }
+
+  async function updateSwapHistory(currSwap) {
+    const { data, error } = await supabase
+      .from("Swap_History")
+      .insert([currSwap]);
+  }
+
+  async function removeData(infoResponse) {
+    await Promise.all([
+      supabase
+        .from("Pending_Swaps")
+        .delete()
+        .eq("pending_swap_id", infoResponse.pending_swap_id),
+      supabase
+        .from("Listings")
+        .delete()
+        .eq("book_id", infoResponse.user1_listing_id),
+      supabase
+        .from("Listings")
+        .delete()
+        .eq("book_id", infoResponse.user2_listing_id),
+    ]);
+  }
+
+  async function rejectBook(info) {
+    await Promise.all([
+      supabase.from("Notifications").insert([
+        {
+          type: "Offer_Rejected",
+          user_id:
+            info.user1_id === session.user.id ? info.user2_id : info.user1_id,
+          username: session.user.user_metadata.username,
+        },
+      ]),
+      supabase
+        .from("Notifications")
+        .delete()
+        .eq("swap_offer_id", info.pending_swap_id),
+      supabase
+        .from("Pending_Swaps")
+        .delete()
+        .eq("pending_swap_id", info.pending_swap_id),
+    ]);
   }
 
   function renderModal(activeUserCheck, user_id, library) {
@@ -350,7 +412,6 @@ export default function SwapNegotiationPage({ route }) {
                 />
               </View>
 
-
               <Pressable
                 style={{
                   ...styles.bookCard,
@@ -402,7 +463,7 @@ export default function SwapNegotiationPage({ route }) {
       case "sent":
         return (
           <View style={styles.booksAndArrows}>
-            <View
+            <Pressable
               style={{
                 ...styles.bookCard,
                 borderWidth: 2,
@@ -410,11 +471,17 @@ export default function SwapNegotiationPage({ route }) {
                 borderStyle: "dashed",
                 justifyContent: "center",
               }}
+              onPress={() => {
+                setActiveUserCheck(true);
+                setModalUserID(activeUserID);
+                setModalLibrary(activeUserLibrary);
+                setIsModalVisible(true);               
+              }}
             >
               <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
                 ?
               </Text>
-            </View>
+            </Pressable>
 
             <View style={{ justifyContent: "center" }}>
               <Octicons
@@ -425,23 +492,73 @@ export default function SwapNegotiationPage({ route }) {
               />
             </View>
 
-            <Image
-              source={{
-                uri: info.user1_book_imgurl,
-              }}
+            <Pressable
               style={styles.bookCard}
-            />
+              onPress={() => {
+                setActiveUserCheck(false);
+                setModalUserID(nonActiveUserID);
+                setModalLibrary(nonActiveUserLibrary);
+                setIsModalVisible(true);
+              }}
+            >
+              <Image
+                source={{
+                  uri: user1_book_imgurl,
+                }}
+                style={{ width: "100%", height: "100%" }}
+              />
+            </Pressable>
+
+            <Modal isVisible={isModalVisible}>
+              <View style={styles.modal}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    width: width,
+                    height: (height / 27) * 2,
+                    backgroundColor: PTGreen,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="chevron-double-down"
+                    size={36}
+                    color={PTG1}
+                    style={{ alignSelf: "center" }}
+                    onPress={() => {
+                      setIsModalVisible(false);
+                    }}
+                  />
+                </View>
+
+                {renderModal(activeUserCheck, modalUserID, modalLibrary)}
+              </View>
+            </Modal>
           </View>
         );
-      case "activeReceived":
+      case "active":
         return (
           <View style={styles.booksAndArrows}>
-            <Image
-              source={{
-                uri: info.user1_book_imgurl,
-              }}
-              style={styles.bookCard}
-            />
+
+            <Pressable
+                style={styles.bookCard}
+                onPress={() => {
+                  setActiveUserCheck(true);
+                  setModalUserID(activeUserID);
+                  setModalLibrary(activeUserLibrary);
+                  setIsModalVisible(true);
+                }}
+              >
+                <Image
+                  source={{
+                    uri: activeUserID === info.user1_id
+                      ? info.user1_book_imgurl
+                      : info.user2_book_imgurl
+                  }}
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </Pressable>
+
             <View style={{ justifyContent: "center" }}>
               <Octicons
                 name="arrow-switch"
@@ -450,15 +567,54 @@ export default function SwapNegotiationPage({ route }) {
                 style={{ textAlign: "center", width: "100%" }}
               />
             </View>
-            <Image
-              source={{
-                uri: info.user2_book_imgurl,
-              }}
+
+            <Pressable
               style={styles.bookCard}
-            />
+              onPress={() => {
+                setActiveUserCheck(false);
+                setModalUserID(nonActiveUserID);
+                setModalLibrary(nonActiveUserLibrary);
+                setIsModalVisible(true);
+              }}
+            >
+              <Image
+               source={{
+                uri: activeUserID === info.user1_id
+                  ? info.user2_book_imgurl
+                  : info.user1_book_imgurl
+              }}
+                style={{ width: "100%", height: "100%" }}
+              />
+            </Pressable>
+
+            <Modal isVisible={isModalVisible}>
+              <View style={styles.modal}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    width: width,
+                    height: (height / 27) * 2,
+                    backgroundColor: PTGreen,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="chevron-double-down"
+                    size={36}
+                    color={PTG1}
+                    style={{ alignSelf: "center" }}
+                    onPress={() => {
+                      setIsModalVisible(false);
+                    }}
+                  />
+                </View>
+
+                {renderModal(activeUserCheck, modalUserID, modalLibrary)}
+              </View>
+            </Modal>
+
           </View>
         );
-      case "activeSent":
         return (
           <View style={styles.booksAndArrows}>
             <Image
@@ -489,62 +645,11 @@ export default function SwapNegotiationPage({ route }) {
   }
 
   useEffect(() => {
-    getTransferData().then((res) => {
+    getTransferData()
+    .then((res) => {
       setTitle([`${res.user1_book_title}`, `${res.user2_book_title}`]);
     });
   }, []);
-
-  async function getTransferData() {
-    const { data, error } = await supabase
-      .from("Pending_Swaps")
-      .select()
-      .eq("pending_swap_id", info.pending_swap_id);
-    return data[0];
-  }
-
-  async function updateSwapHistory(currSwap) {
-    const { data, error } = await supabase
-      .from("Swap_History")
-      .insert([currSwap]);
-  }
-
-  async function removeData(infoResponse) {
-    await Promise.all([
-      supabase
-        .from("Pending_Swaps")
-        .delete()
-        .eq("pending_swap_id", infoResponse.pending_swap_id),
-      supabase
-        .from("Listings")
-        .delete()
-        .eq("book_id", infoResponse.user1_listing_id),
-      supabase
-        .from("Listings")
-        .delete()
-        .eq("book_id", infoResponse.user2_listing_id),
-    ]);
-  }
-
-  async function rejectBook(info) {
-    await Promise.all([
-      supabase.from("Notifications").insert([
-        {
-          type: "Offer_Rejected",
-          user_id:
-            info.user1_id === session.user.id ? info.user2_id : info.user1_id,
-          username: session.user.user_metadata.username,
-        },
-      ]),
-      supabase
-        .from("Notifications")
-        .delete()
-        .eq("swap_offer_id", info.pending_swap_id),
-      supabase
-        .from("Pending_Swaps")
-        .delete()
-        .eq("pending_swap_id", info.pending_swap_id),
-    ]);
-  }
 
   return (
     <View style={styles.page}>
