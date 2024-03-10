@@ -178,13 +178,6 @@ export default function LibraryBookItem(item) {
             >
               <Text
                 style={{
-                  ...body,
-                }}
-              >
-                {" "}
-              </Text>
-              <Text
-                style={{
                   ...subHeading,
                   fontWeight: "600",
                 }}
@@ -236,7 +229,7 @@ export default function LibraryBookItem(item) {
             </View>
           </View>
 
-          {(activeUserCheck || inSwapReq) && (
+          {(activeUserCheck) && (
             <View
               style={{
                 flex: 1,

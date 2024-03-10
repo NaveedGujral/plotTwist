@@ -6,6 +6,7 @@ import {
   Dimensions,
   Image,
   FlatList,
+  SafeAreaView,
 } from "react-native";
 import Modal from "react-native-modal";
 import {
@@ -37,6 +38,8 @@ const {
 } = PTStyles;
 const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { width, height } = Dimensions.get("screen");
+const pageHeight = height - (height / 27) * 4;
+const containerWidth = width - (2 * width) / 27;
 
 export default function SwapNegotiationPage({ route }) {
   const navigation = useNavigation();
@@ -594,63 +597,110 @@ export default function SwapNegotiationPage({ route }) {
   }
 
   return (
-    <View style={page}>
-      <View>
-        <Text style={styles.heading}>Your Offer</Text>
-      </View>
-      <View style={styles.booksAndProfilePics}>
-        <View style={styles.profilePics}>
-          <View style={styles.picAndName}>
+    <SafeAreaView style={page}>
+      <View style={{ height: pageHeight, alignItems: "center" }}>
+        <View style={{ flex: 3, justifyContent: "center" }}>
+          <Text
+            style={{
+              ...heading,
+              textAlign: "center",
+            }}
+          >
+            Your Offer
+          </Text>
+        </View>
+
+        <View style={styles.userInfo}>
+          <View style={styles.profilePics}>
+            <View style={styles.picAndName}>
             <Image
               source={
                 activeUserID === info.user1_id
                   ? user1ProfilePic
                   : user2ProfilePic
               }
-              style={styles.user1Profile}
+              style={styles.profileImg}
             />
-            <Text style={styles.body}>
+             <View 
+          >
+            <Text style={{ ...subHeading, textAlign: "center" }}>
               {activeUserID === info.user1_id
                 ? info.user1_username
                 : info.user2_username}
             </Text>
           </View>
+            </View>
 
-          <Ionicons
-            name="chatbubbles"
-            size={60}
-            style={styles.icon}
-            onPress={() => {
-              navigation.navigate("ChatWindow", {
-                sender: nonActiveUserID,
-                receiver: activeUserID,
-                username:
-                  activeUserID === info.user1_id
-                    ? info.user2_username
-                    : info.user1_username,
-                session: session,
-              });
-            }}
-          />
+            <Pressable
+              onPress={() => {
+                navigation.navigate("ChatWindow", {
+                  sender: nonActiveUserID,
+                  receiver: activeUserID,
+                  username:
+                    activeUserID === info.user1_id
+                      ? info.user2_username
+                      : info.user1_username,
+                  session: session,
+                });
+              }}
+              style={roundButton}
+            >
+              <Ionicons
+                name="chatbubbles-outline"
+                size={30}
+                color={PTG1}
+                style={{ textAlign: "center", width: "100%" }}
+              />
+            </Pressable>
 
-          <View style={styles.picAndName}>
+            <View style={styles.picAndName}>
             <Image
               source={
                 activeUserID === info.user1_id
                   ? user2ProfilePic
                   : user1ProfilePic
               }
-              style={styles.user2Profile}
+              style={styles.profileImg}
             />
-            <Text style={styles.body}>
+            <View 
+          // style={{ width: containerWidth / 3 }}
+          >
+            <Text style={{ ...subHeading, textAlign: "center" }}>
               {activeUserID === info.user1_id
                 ? info.user2_username
                 : info.user1_username}
             </Text>
           </View>
-        </View>
-        {renderSwap(currType, info)}
+            </View>
+          </View>
+          
+          {/* <View style={{
+            height: 2*pageHeight/9 - containerWidth / 3, 
+            width: containerWidth, flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
+          <View 
+          >
+            <Text style={{ ...subHeading, textAlign: "center" }}>
+              {activeUserID === info.user1_id
+                ? info.user1_username
+                : info.user2_username}
+            </Text>
+          </View>
+          <View 
 
+          ></View>
+          <View 
+          // style={{ width: containerWidth / 3 }}
+          >
+            <Text style={{ ...subHeading, textAlign: "center" }}>
+              {activeUserID === info.user1_id
+                ? info.user2_username
+                : info.user1_username}
+            </Text>
+          </View>
+          </View> */}
+
+        </View>
+        <View style={styles.books}>{renderSwap(currType, info)}</View>
         {/* Experimental */}
 
         <View style={styles.buttons}>
@@ -700,7 +750,7 @@ export default function SwapNegotiationPage({ route }) {
           </Pressable>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -723,19 +773,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  booksAndProfilePics: {
-    margin: "auto",
-    display: "flex",
+  userInfo: {
+    width: containerWidth,
     justifyContent: "space-between",
-    // borderColor: "gray",
-    // borderWidth: 5,
-    width: ScreenWidth * 0.9,
-    height: 600,
+    flex: 7,
+    // flex: 9,
   },
   profilePics: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  books: {
+    justifyContent: "space-between",
+    width: containerWidth,
+    // flex: 12,
+    flex: 14,
+    // backgroundColor: PTRed,
+  },
+  buttons: {
+    flex: 3,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: PTG1,
   },
   booksAndArrows: {
     flexDirection: "row",
@@ -751,21 +811,14 @@ const styles = StyleSheet.create({
     width: 120,
     borderRadius: 16,
   },
-  user1Profile: {
-    borderRadius: 60,
-    height: 120,
-    width: 120,
+  profileImg: {
+    // borderRadius: containerWidth / 6,
+    // height: containerWidth / 3,
+    // width: containerWidth / 3,
+    borderRadius: 10*containerWidth / 54,
+    height: 10*containerWidth / 27,
+    width: 10*containerWidth / 27,
     resizeMode: "cover",
-    borderColor: "#C1514B",
-    borderWidth: 3,
-  },
-  user2Profile: {
-    borderRadius: 60,
-    height: 120,
-    width: 120,
-    resizeMode: "cover",
-    borderColor: "#06A77D",
-    borderWidth: 3,
   },
   bookCard: {
     borderRadius: 16,
@@ -797,13 +850,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: JosefinSans_400Regular,
     color: "white",
-  },
-  icon: {
-    color: PTG1,
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
   },
   accept: {
     justifyContent: "center",
