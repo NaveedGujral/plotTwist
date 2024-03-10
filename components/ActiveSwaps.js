@@ -72,7 +72,9 @@ const ActiveSwaps = ({ session }) => {
               );
             })
           ) : (
-            <Text style={subHeading}>You have no new swap requests!</Text>
+            <View  style={{ height: renderContentHeight, width: "100%", justifyContent: "center", alignItems:"center" }}>
+              <Text style={subHeading}>You have no new swap requests!</Text>
+            </View>
           )}
         </ScrollView>
       ),
@@ -95,9 +97,9 @@ const ActiveSwaps = ({ session }) => {
               />
             ))
           ) : (
-            <Text style={styles.antiText}>
-              You have no sent swap requests pending!
-            </Text>
+            <View  style={{ height: renderContentHeight, width: "100%", justifyContent: "center", alignItems:"center" }}>
+            <Text style={subHeading}>You have no new swap requests!</Text>
+          </View>
           )}
         </ScrollView>
       ),
@@ -123,9 +125,9 @@ const ActiveSwaps = ({ session }) => {
               />
             ))
           ) : (
-            <Text style={styles.antiText}>
-              You have no active swap negotiations!
-            </Text>
+            <View  style={{ height: renderContentHeight, width: "100%", justifyContent: "center", alignItems:"center" }}>
+              <Text style={subHeading}>You have no new swap requests!</Text>
+            </View>
           )}
         </ScrollView>
       ),

@@ -51,40 +51,6 @@ export default function LibraryBookItem(item) {
     category,
   } = book;
 
-  // if (inSwapReq === true) {
-
-  // const {
-  //   user1_author,
-  //   user1_book_imgurl,
-  //   user1_book_title,
-  //   user1_id,
-  //   user1_listing_id,
-  //   user1_username,
-  //   user1_category,
-  //   user1_condition,
-  //   user1_desc,
-  //   user2_author,
-  //   user2_book_imgurl,
-  //   user2_book_title,
-  //   user2_id,
-  //   user2_listing_id,
-  //   user2_username,
-  //   user2_category,
-  //   user2_condition,
-  //   user2_desc,
-  // } = currSwap;
-
-  // }
-
-  // if (inSwapReq) {
-  //   console.log("active User ID ", activeUserID)
-  //   console.log(currSwap)
-  // }
-
-  // useEffect(() => {
-  //   console.log("child testState", testState)
-  // }, [testState])
-
   async function removeFromLibrary(book_id) {
     const { data, error } = await supabase
       .from("Listings")
@@ -96,27 +62,13 @@ export default function LibraryBookItem(item) {
     }
   }
 
-  function updateCurrSwap() {
-    console.log("currSwap Info", currSwap);
-    console.log("active user check", activeUserCheck);
-    
-    // activeUserCheck
-    //   ? currSwap.user1_id === activeUserID
-    //     ? console.log(1)
-    //     : console.log(2)
-    //   : currSwap.user1_id === activeUserID
-    //     ? console.log(2)
-    //     : console.log(1);
-    
+  function updateCurrSwap() {    
     if (
       book_id !== currSwap.user1_listing_id &&
       book_id !== currSwap.user2_listing_id
     ) {
       if (activeUserCheck) {
         if (currSwap.user1_id === activeUserID) {
-
-          console.log(1);
-
           setCurrSwap((prevState) => ({
             ...prevState,
             user1_listing_id: book_id,
@@ -129,8 +81,6 @@ export default function LibraryBookItem(item) {
 
           }));
         } else {
-
-          console.log(2);
           setCurrSwap((prevState) => ({
             ...prevState,
             user2_listing_id: book_id,
@@ -145,8 +95,6 @@ export default function LibraryBookItem(item) {
         }
       } else {
         if (currSwap.user1_id === activeUserID) {
-          console.log(2);
-
           setCurrSwap((prevState) => ({
             ...prevState,
             user2_listing_id: book_id,
@@ -159,8 +107,6 @@ export default function LibraryBookItem(item) {
 
           }));
         } else {
-          console.log(1);
-
           setCurrSwap((prevState) => ({
             ...prevState,
             user1_listing_id: book_id,
@@ -175,36 +121,6 @@ export default function LibraryBookItem(item) {
         }
       }
     }
-
-    // if (
-    //   book_id !== currSwap.user1_listing_id &&
-    //   book_id !== currSwap.user2_listing_id
-    // ) {
-    //   if (currSwap.user1_id === activeUserID && activeUserCheck === true) {
-    //     setCurrSwap((prevState) => ({
-    //       ...prevState,
-    //       user1_listing_id: book_id,
-    //       user1_author: author,
-    //       user1_book_imgurl: img_url,
-    //       user1_book_title: book_title,
-    //       user1_category: category,
-    //       user1_condition: condition,
-    //       user1_desc: description,
-    //     }));
-    //   } else {
-    //     setCurrSwap((prevState) => ({
-    //       ...prevState,
-    //       user2_listing_id: book_id,
-    //       user2_author: author,
-    //       user2_book_imgurl: img_url,
-    //       user2_book_title: book_title,
-    //       user2_category: category,
-    //       user2_condition: condition,
-    //       user2_desc: description,
-    //     }));
-    //   }
-    // }
-
   }
 
   return (
@@ -223,9 +139,6 @@ export default function LibraryBookItem(item) {
         <Pressable
           style={{ flex: 2, height: "100%" }}
           onPress={() => {
-            // extract into it's own function
-            // does not work on outgoing requests it partially overwrites user1 info instead of user2 - use switch inside a function
-
             updateCurrSwap();
           }}
         >
@@ -265,6 +178,13 @@ export default function LibraryBookItem(item) {
             >
               <Text
                 style={{
+                  ...body,
+                }}
+              >
+                {" "}
+              </Text>
+              <Text
+                style={{
                   ...subHeading,
                   fontWeight: "600",
                 }}
@@ -273,7 +193,7 @@ export default function LibraryBookItem(item) {
               </Text>
               <Text
                 style={{
-                  ...subHeading,
+                  ...body,
                 }}
               >
                 {" "}
@@ -287,7 +207,7 @@ export default function LibraryBookItem(item) {
               </Text>
               <Text
                 style={{
-                  ...subHeading,
+                  ...body,
                 }}
               >
                 {" "}
@@ -301,7 +221,7 @@ export default function LibraryBookItem(item) {
               </Text>
               <Text
                 style={{
-                  ...subHeading,
+                  ...body,
                 }}
               >
                 {" "}
@@ -322,10 +242,10 @@ export default function LibraryBookItem(item) {
                 flex: 1,
                 top: 0,
                 alignItems: "center",
-                justifyContent: "space-around",
+                justifyContent: "flex-start",
               }}
             >
-              {inSwapReq && (
+              {/* {inSwapReq && (
                 <View>
                   <Ionicons
                     name="checkmark"
@@ -344,17 +264,14 @@ export default function LibraryBookItem(item) {
                     }}
                   />
                 </View>
-              )}
+              )} */}
 
               {activeUserCheck && (
-                <View>
+                <View >
                   <Feather
                     name="x"
                     size={30}
                     color={PTG2}
-                    style={{
-                      alignSelf: "center",
-                    }}
                     onPress={() => {
                       removeFromLibrary(book_id);
                     }}

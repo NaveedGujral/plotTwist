@@ -1,7 +1,3 @@
-// Complete Requests lead here
-// sender is the other user
-// reciever is you
-
 import {
   Text,
   StyleSheet,
@@ -43,7 +39,6 @@ const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { width, height } = Dimensions.get("screen");
 
 export default function SwapNegotiationPage({ route }) {
-  const [title, setTitle] = useState([]);
   const navigation = useNavigation();
   const [user1ProfilePic, setUser1ProfilePic] = useState();
   const [user2ProfilePic, setUser2ProfilePic] = useState();
@@ -60,9 +55,12 @@ export default function SwapNegotiationPage({ route }) {
   const { info, session, type } = route.params;
 
   const [currType, setCurrType] = useState(type);
-  
-  if (currType === "activeReceived" || currType === "activeSent") {
-    setCurrType("active")
+
+  if (currType === "activeReceived") {
+    setCurrType("received");
+  }
+  if (currType === "activeSent") {
+    setCurrType("sent");
   }
 
   const [currSwap, setCurrSwap] = useState(info);
@@ -87,13 +85,6 @@ export default function SwapNegotiationPage({ route }) {
     user2_desc,
   } = currSwap;
 
-  // console.log(
-  //   !(Object.values(currSwap)).includes(null)
-  //   );
-  // console.log(currSwap)
-
-
-
   const activeUserID =
     session.user.id === info.user1_id ? info.user1_id : info.user2_id;
   const nonActiveUserID =
@@ -110,9 +101,6 @@ export default function SwapNegotiationPage({ route }) {
   }, [nonActiveUserLibrary]);
 
   useEffect(() => {
-    if (!(Object.values(currSwap)).includes(null)) {
-      setCurrType("active")
-    }
     updateSwapInfo(currSwap);
   }, [currSwap]);
 
@@ -389,7 +377,17 @@ export default function SwapNegotiationPage({ route }) {
           <View style={{ justifyContent: "space-between" }}>
             <View style={styles.booksAndArrows}>
               <Pressable
-                style={styles.bookCard}
+                style={
+                  user1_book_imgurl
+                    ? styles.bookCard
+                    : {
+                        ...styles.bookCard,
+                        borderWidth: 2,
+                        borderColor: PTG1,
+                        borderStyle: "dashed",
+                        justifyContent: "center",
+                      }
+                }
                 onPress={() => {
                   setActiveUserCheck(true);
                   setModalUserID(activeUserID);
@@ -397,14 +395,20 @@ export default function SwapNegotiationPage({ route }) {
                   setIsModalVisible(true);
                 }}
               >
-                
-                <Image
-                  source={{
-                    uri: user1_book_imgurl,
-                  }}
-                  style={{ width: "100%", height: "100%" }}
-                />
-
+                {user1_book_imgurl ? (
+                  <Image
+                    source={{
+                      uri: user1_book_imgurl,
+                    }}
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                ) : (
+                  <Text
+                    style={{ ...heading, color: PTG1, textAlign: "center" }}
+                  >
+                    ?
+                  </Text>
+                )}
               </Pressable>
 
               <View style={{ justifyContent: "center" }}>
@@ -417,13 +421,17 @@ export default function SwapNegotiationPage({ route }) {
               </View>
 
               <Pressable
-                style={{
-                  ...styles.bookCard,
-                  borderWidth: 2,
-                  borderColor: PTG1,
-                  borderStyle: "dashed",
-                  justifyContent: "center",
-                }}
+                style={
+                  user2_book_imgurl
+                    ? styles.bookCard
+                    : {
+                        ...styles.bookCard,
+                        borderWidth: 2,
+                        borderColor: PTG1,
+                        borderStyle: "dashed",
+                        justifyContent: "center",
+                      }
+                }
                 onPress={() => {
                   setActiveUserCheck(false);
                   setModalUserID(nonActiveUserID);
@@ -431,9 +439,20 @@ export default function SwapNegotiationPage({ route }) {
                   setIsModalVisible(true);
                 }}
               >
-                <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
-                  ?
-                </Text>
+                {user2_book_imgurl ? (
+                  <Image
+                    source={{
+                      uri: user2_book_imgurl,
+                    }}
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                ) : (
+                  <Text
+                    style={{ ...heading, color: PTG1, textAlign: "center" }}
+                  >
+                    ?
+                  </Text>
+                )}
               </Pressable>
 
               <Modal isVisible={isModalVisible}>
@@ -468,102 +487,37 @@ export default function SwapNegotiationPage({ route }) {
         return (
           <View style={styles.booksAndArrows}>
             <Pressable
-              style={{
-                ...styles.bookCard,
-                borderWidth: 2,
-                borderColor: PTG1,
-                borderStyle: "dashed",
-                justifyContent: "center",
-              }}
+              style={
+                user2_book_imgurl
+                  ? styles.bookCard
+                  : {
+                      ...styles.bookCard,
+                      borderWidth: 2,
+                      borderColor: PTG1,
+                      borderStyle: "dashed",
+                      justifyContent: "center",
+                    }
+              }
               onPress={() => {
                 setActiveUserCheck(true);
                 setModalUserID(activeUserID);
                 setModalLibrary(activeUserLibrary);
-                setIsModalVisible(true);               
-              }}
-            >
-              <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
-                ?
-              </Text>
-            </Pressable>
-
-            <View style={{ justifyContent: "center" }}>
-              <Octicons
-                name="arrow-switch"
-                size={36}
-                color={PTG1}
-                style={{ textAlign: "center", width: "100%" }}
-              />
-            </View>
-
-            <Pressable
-              style={styles.bookCard}
-              onPress={() => {
-                setActiveUserCheck(false);
-                setModalUserID(nonActiveUserID);
-                setModalLibrary(nonActiveUserLibrary);
                 setIsModalVisible(true);
               }}
             >
-
-              <Image
-                source={{
-                  uri: user1_book_imgurl,
-                }}
-                style={{ width: "100%", height: "100%" }}
-              />
-
-            </Pressable>
-
-            <Modal isVisible={isModalVisible}>
-              <View style={styles.modal}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    width: width,
-                    height: (height / 27) * 2,
-                    backgroundColor: PTGreen,
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    name="chevron-double-down"
-                    size={36}
-                    color={PTG1}
-                    style={{ alignSelf: "center" }}
-                    onPress={() => {
-                      setIsModalVisible(false);
-                    }}
-                  />
-                </View>
-
-                {renderModal(activeUserCheck, modalUserID, modalLibrary)}
-              </View>
-            </Modal>
-          </View>
-        );
-      case "active":
-        return (
-          <View style={styles.booksAndArrows}>
-
-            <Pressable
-                style={styles.bookCard}
-                onPress={() => {
-                  setActiveUserCheck(true);
-                  setModalUserID(activeUserID);
-                  setModalLibrary(activeUserLibrary);
-                  setIsModalVisible(true);
-                }}
-              >
+              {user2_book_imgurl ? (
                 <Image
                   source={{
-                    uri: activeUserID === info.user1_id
-                      ? info.user1_book_imgurl
-                      : info.user2_book_imgurl
+                    uri: user2_book_imgurl,
                   }}
                   style={{ width: "100%", height: "100%" }}
                 />
-              </Pressable>
+              ) : (
+                <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
+                  ?
+                </Text>
+              )}
+            </Pressable>
 
             <View style={{ justifyContent: "center" }}>
               <Octicons
@@ -575,7 +529,17 @@ export default function SwapNegotiationPage({ route }) {
             </View>
 
             <Pressable
-              style={styles.bookCard}
+              style={
+                user1_book_imgurl
+                  ? styles.bookCard
+                  : {
+                      ...styles.bookCard,
+                      borderWidth: 2,
+                      borderColor: PTG1,
+                      borderStyle: "dashed",
+                      justifyContent: "center",
+                    }
+              }
               onPress={() => {
                 setActiveUserCheck(false);
                 setModalUserID(nonActiveUserID);
@@ -583,14 +547,18 @@ export default function SwapNegotiationPage({ route }) {
                 setIsModalVisible(true);
               }}
             >
-              <Image
-               source={{
-                uri: activeUserID === info.user1_id
-                  ? info.user2_book_imgurl
-                  : info.user1_book_imgurl
-              }}
-                style={{ width: "100%", height: "100%" }}
-              />
+              {user1_book_imgurl ? (
+                <Image
+                  source={{
+                    uri: user1_book_imgurl,
+                  }}
+                  style={{ width: "100%", height: "100%" }}
+                />
+              ) : (
+                <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
+                  ?
+                </Text>
+              )}
             </Pressable>
 
             <Modal isVisible={isModalVisible}>
@@ -618,44 +586,12 @@ export default function SwapNegotiationPage({ route }) {
                 {renderModal(activeUserCheck, modalUserID, modalLibrary)}
               </View>
             </Modal>
-
-          </View>
-        );
-        return (
-          <View style={styles.booksAndArrows}>
-            <Image
-              source={{
-                uri: info.user2_book_imgurl,
-              }}
-              style={styles.bookCard}
-            />
-            <View style={{ justifyContent: "center" }}>
-              <Octicons
-                name="arrow-switch"
-                size={36}
-                color={PTG1}
-                style={{ textAlign: "center", width: "100%" }}
-              />
-            </View>
-            <Image
-              source={{
-                uri: info.user1_book_imgurl,
-              }}
-              style={styles.bookCard}
-            />
           </View>
         );
       default:
         return null;
     }
   }
-
-  useEffect(() => {
-    getTransferData()
-    .then((res) => {
-      setTitle([`${res.user1_book_title}`, `${res.user2_book_title}`]);
-    });
-  }, []);
 
   return (
     <View style={styles.page}>
