@@ -53,26 +53,26 @@ export default function LibraryBookItem(item) {
 
   // if (inSwapReq === true) {
 
-    // const {
-    //   user1_author,
-    //   user1_book_imgurl,
-    //   user1_book_title,
-    //   user1_id,
-    //   user1_listing_id,
-    //   user1_username,
-    //   user1_category,
-    //   user1_condition,
-    //   user1_desc,
-    //   user2_author,
-    //   user2_book_imgurl,
-    //   user2_book_title,
-    //   user2_id,
-    //   user2_listing_id,
-    //   user2_username,
-    //   user2_category,
-    //   user2_condition,
-    //   user2_desc,
-    // } = currSwap;
+  // const {
+  //   user1_author,
+  //   user1_book_imgurl,
+  //   user1_book_title,
+  //   user1_id,
+  //   user1_listing_id,
+  //   user1_username,
+  //   user1_category,
+  //   user1_condition,
+  //   user1_desc,
+  //   user2_author,
+  //   user2_book_imgurl,
+  //   user2_book_title,
+  //   user2_id,
+  //   user2_listing_id,
+  //   user2_username,
+  //   user2_category,
+  //   user2_condition,
+  //   user2_desc,
+  // } = currSwap;
 
   // }
 
@@ -96,6 +96,117 @@ export default function LibraryBookItem(item) {
     }
   }
 
+  function updateCurrSwap() {
+    console.log("currSwap Info", currSwap);
+    console.log("active user check", activeUserCheck);
+    
+    // activeUserCheck
+    //   ? currSwap.user1_id === activeUserID
+    //     ? console.log(1)
+    //     : console.log(2)
+    //   : currSwap.user1_id === activeUserID
+    //     ? console.log(2)
+    //     : console.log(1);
+    
+    if (
+      book_id !== currSwap.user1_listing_id &&
+      book_id !== currSwap.user2_listing_id
+    ) {
+      if (activeUserCheck) {
+        if (currSwap.user1_id === activeUserID) {
+
+          console.log(1);
+
+          setCurrSwap((prevState) => ({
+            ...prevState,
+            user1_listing_id: book_id,
+            user1_author: author,
+            user1_book_imgurl: img_url,
+            user1_book_title: book_title,
+            user1_category: category,
+            user1_condition: condition,
+            user1_desc: description,
+
+          }));
+        } else {
+
+          console.log(2);
+          setCurrSwap((prevState) => ({
+            ...prevState,
+            user2_listing_id: book_id,
+            user2_author: author,
+            user2_book_imgurl: img_url,
+            user2_book_title: book_title,
+            user2_category: category,
+            user2_condition: condition,
+            user2_desc: description,
+          }));
+
+        }
+      } else {
+        if (currSwap.user1_id === activeUserID) {
+          console.log(2);
+
+          setCurrSwap((prevState) => ({
+            ...prevState,
+            user2_listing_id: book_id,
+            user2_author: author,
+            user2_book_imgurl: img_url,
+            user2_book_title: book_title,
+            user2_category: category,
+            user2_condition: condition,
+            user2_desc: description,
+
+          }));
+        } else {
+          console.log(1);
+
+          setCurrSwap((prevState) => ({
+            ...prevState,
+            user1_listing_id: book_id,
+            user1_author: author,
+            user1_book_imgurl: img_url,
+            user1_book_title: book_title,
+            user1_category: category,
+            user1_condition: condition,
+            user1_desc: description,
+          }));
+
+        }
+      }
+    }
+
+    // if (
+    //   book_id !== currSwap.user1_listing_id &&
+    //   book_id !== currSwap.user2_listing_id
+    // ) {
+    //   if (currSwap.user1_id === activeUserID && activeUserCheck === true) {
+    //     setCurrSwap((prevState) => ({
+    //       ...prevState,
+    //       user1_listing_id: book_id,
+    //       user1_author: author,
+    //       user1_book_imgurl: img_url,
+    //       user1_book_title: book_title,
+    //       user1_category: category,
+    //       user1_condition: condition,
+    //       user1_desc: description,
+    //     }));
+    //   } else {
+    //     setCurrSwap((prevState) => ({
+    //       ...prevState,
+    //       user2_listing_id: book_id,
+    //       user2_author: author,
+    //       user2_book_imgurl: img_url,
+    //       user2_book_title: book_title,
+    //       user2_category: category,
+    //       user2_condition: condition,
+    //       user2_desc: description,
+    //     }));
+    //   }
+    // }
+
+  }
+
   return (
     <View key={book_id} style={styles.listContainer}>
       <View style={{ height: width / 27, width: "100%" }}></View>
@@ -115,45 +226,20 @@ export default function LibraryBookItem(item) {
             // extract into it's own function
             // does not work on outgoing requests it partially overwrites user1 info instead of user2 - use switch inside a function
 
-            if (book_id !== currSwap.user1_listing_id && book_id !== currSwap.user2_listing_id) {
-              if (currSwap.user1_id === activeUserID && activeUserCheck === true) {
-                setCurrSwap((prevState) => ({
-                  ...prevState,
-                  user1_listing_id: book_id,
-                  user1_author: author,
-                  user1_book_imgurl: img_url,
-                  user1_book_title: book_title,
-                  user1_category: category,
-                  user1_condition: condition,
-                  user1_desc: description,
-                }));
-              } else {
-                setCurrSwap((prevState) => ({
-                  ...prevState,
-                  user2_listing_id: book_id,
-                  user2_author: author,
-                  user2_book_imgurl: img_url,
-                  user2_book_title: book_title,
-                  user2_category: category,
-                  user2_condition: condition,
-                  user2_desc: description,
-                }));
-              }
-            }
+            updateCurrSwap();
           }}
         >
           {img_url && (
             <Image
               source={{ uri: img_url }}
               style={
-                inSwapReq ? 
-                (currSwap.user1_listing_id === book_id ||
-                currSwap.user2_listing_id === book_id
-                  ? { ...styles.bookImage, borderWidth: 5, borderColor: PTG1 }
-                  : styles.bookImage)
-                  :
-                  styles.bookImage
-                }
+                inSwapReq
+                  ? currSwap.user1_listing_id === book_id ||
+                    currSwap.user2_listing_id === book_id
+                    ? { ...styles.bookImage, borderWidth: 5, borderColor: PTG1 }
+                    : styles.bookImage
+                  : styles.bookImage
+              }
             />
           )}
         </Pressable>
@@ -254,34 +340,7 @@ export default function LibraryBookItem(item) {
                       alignSelf: "center",
                     }}
                     onPress={() => {
-                      if (
-                        book_id !== currSwap.user1_listing_id &&
-                        book_id !== currSwap.user2_listing_id
-                      ) {
-                        if (currSwap.user1_id === activeUserID) {
-                          setCurrSwap((prevState) => ({
-                            ...prevState,
-                            user1_listing_id: book_id,
-                            user1_author: author,
-                            user1_book_imgurl: img_url,
-                            user1_book_title: book_title,
-                            user1_category: category,
-                            user1_condition: condition,
-                            user1_desc: description,
-                          }));
-                        } else {
-                          setCurrSwap((prevState) => ({
-                            ...prevState,
-                            user2_listing_id: book_id,
-                            user2_author: author,
-                            user2_book_imgurl: img_url,
-                            user2_book_title: book_title,
-                            user2_category: category,
-                            user2_condition: condition,
-                            user2_desc: description,
-                          }));
-                        }
-                      }
+                      updateCurrSwap()
                     }}
                   />
                 </View>

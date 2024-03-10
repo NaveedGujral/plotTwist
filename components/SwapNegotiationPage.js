@@ -87,10 +87,12 @@ export default function SwapNegotiationPage({ route }) {
     user2_desc,
   } = currSwap;
 
-  console.log(
-    !(Object.values(currSwap)).includes(null)
-    );
-  console.log(currSwap)
+  // console.log(
+  //   !(Object.values(currSwap)).includes(null)
+  //   );
+  // console.log(currSwap)
+
+
 
   const activeUserID =
     session.user.id === info.user1_id ? info.user1_id : info.user2_id;
@@ -395,12 +397,14 @@ export default function SwapNegotiationPage({ route }) {
                   setIsModalVisible(true);
                 }}
               >
+                
                 <Image
                   source={{
                     uri: user1_book_imgurl,
                   }}
                   style={{ width: "100%", height: "100%" }}
                 />
+
               </Pressable>
 
               <View style={{ justifyContent: "center" }}>
@@ -501,12 +505,14 @@ export default function SwapNegotiationPage({ route }) {
                 setIsModalVisible(true);
               }}
             >
+
               <Image
                 source={{
                   uri: user1_book_imgurl,
                 }}
                 style={{ width: "100%", height: "100%" }}
               />
+
             </Pressable>
 
             <Modal isVisible={isModalVisible}>
