@@ -78,7 +78,7 @@ export default function CarouselItem({ item, id }) {
               style={{
                 height: bookImageWidth / 5,
                 width: bookImageWidth / 5,
-                borderRadius: bookImageWidth / 10,
+                // borderRadius: bookImageWidth / 10,
                 justifyContent: "center",
                 alignItems: "center",
               }}

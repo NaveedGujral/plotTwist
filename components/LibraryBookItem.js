@@ -305,7 +305,7 @@ export default function LibraryBookItem(item) {
 const styles = StyleSheet.create({
   bookImage: {
     width: (2 * (containerHeight - (2 * width) / 27)) / 3,
-    borderRadius: width / 27,
+    // borderRadius: width / 27,
     height: "100%",
     resizeMode: "cover",
   },

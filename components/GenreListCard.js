@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   bookImage: {
     width: "100%",
     height: "100%",
-    borderRadius: (4 * width) / 81,
+    // borderRadius: (4 * width) / 81,
     resizeMode: "cover",
   },
   heartContainer: {

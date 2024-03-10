@@ -88,9 +88,8 @@ const PTStyles = StyleSheet.create({
     lineHeight: 20,
   },
   tileImage: {
-    borderRadius: width / 18,
-    flex: 4,
-    width: "44.45%",
+    height: 3*width/4.5,
+    width: 4*width/9,
     resizeMode: "cover",
   },
   webFix: {

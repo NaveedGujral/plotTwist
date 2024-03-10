@@ -123,6 +123,8 @@ export default function BookList({ categoryName, id }) {
             height: "100%",
             gap: width / 24,
             position: "absolute",
+            justifyContent:"center",
+            alignItems:"center"
           }}
           style={{
             flex: 1,

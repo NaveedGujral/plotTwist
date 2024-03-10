@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   cardMobile: {
     flexDirection: "row",
     width: width * 0.9,
-    borderRadius: 20,
+    // borderRadius: 20,
     padding: 10,
     height: 200,
     backgroundColor: "#06A77D",
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
   bookImg: {
     height: cardHeight - (2 * width) / 27,
     width: (2 * (cardHeight - (2 * width) / 27)) / 3,
-    borderRadius: (cardHeight - (2 * width) / 27) / 9,
+    // borderRadius: (cardHeight - (2 * width) / 27) / 9,
   },
   textContent: {
     flex: 1,

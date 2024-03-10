@@ -594,7 +594,7 @@ export default function SwapNegotiationPage({ route }) {
   }
 
   return (
-    <View style={styles.page}>
+    <View style={page}>
       <View>
         <Text style={styles.heading}>Your Offer</Text>
       </View>

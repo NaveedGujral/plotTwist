@@ -10,7 +10,7 @@ const { height, width } = Dimensions.get("window");
 
 const pageHeight = height - (height / 27) * 4;
 const viewHeight = 5 * (pageHeight / 18);
-const containerHeight = (8 * viewHeight) / 9;
+const containerHeight = 3*width / 8;
 
 export default function BookListCard({ listing, id }) {
   const [wishListed, setWishListed] = useState(false);
@@ -50,14 +50,14 @@ const styles = StyleSheet.create({
     width: width / 4,
   },
   bookCard: {
-    width: "100%",
-    height: "77.78%",
+    height: 3*width / 8,
+    width: width / 4,
     alignSelf: "center",
   },
   bookImage: {
     width: "100%",
     height: "100%",
-    borderRadius: (4 * width) / 81,
+    // borderRadius: (4 * width) / 81,
     resizeMode: "cover",
   },
   heartContainer: {
@@ -66,8 +66,10 @@ const styles = StyleSheet.create({
     height: (2 * width) / 27,
     borderRadius: width / 27,
     backgroundColor: PTG1,
-    right: width / 81,
-    top: containerHeight / 9 + width / 81,
+    // right: width / 81,
+    // top: containerHeight / 9 + width / 81,
+    right: width/81,
+    top: width/81,
     justifyContent: "center",
     alignItems: "center",
     opacity: 0.85,
