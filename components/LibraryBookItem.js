@@ -58,11 +58,11 @@ export default function LibraryBookItem(item) {
       .eq("book_id", book_id);
 
     if (error) {
-      alert(error);
+      // alert(error);
     }
   }
 
-  function updateCurrSwap() {    
+  function updateCurrSwap() {
     if (
       book_id !== currSwap.user1_listing_id &&
       book_id !== currSwap.user2_listing_id
@@ -78,7 +78,6 @@ export default function LibraryBookItem(item) {
             user1_category: category,
             user1_condition: condition,
             user1_desc: description,
-
           }));
         } else {
           setCurrSwap((prevState) => ({
@@ -91,7 +90,6 @@ export default function LibraryBookItem(item) {
             user2_condition: condition,
             user2_desc: description,
           }));
-
         }
       } else {
         if (currSwap.user1_id === activeUserID) {
@@ -104,7 +102,6 @@ export default function LibraryBookItem(item) {
             user2_category: category,
             user2_condition: condition,
             user2_desc: description,
-
           }));
         } else {
           setCurrSwap((prevState) => ({
@@ -117,7 +114,6 @@ export default function LibraryBookItem(item) {
             user1_condition: condition,
             user1_desc: description,
           }));
-
         }
       }
     }
@@ -139,7 +135,9 @@ export default function LibraryBookItem(item) {
         <Pressable
           style={{ flex: 2, height: "100%" }}
           onPress={() => {
-            updateCurrSwap();
+            if (inSwapReq) {
+              updateCurrSwap();
+            }
           }}
         >
           {img_url && (
@@ -229,7 +227,7 @@ export default function LibraryBookItem(item) {
             </View>
           </View>
 
-          {(activeUserCheck) && (
+          {activeUserCheck && (
             <View
               style={{
                 flex: 1,
@@ -260,7 +258,7 @@ export default function LibraryBookItem(item) {
               )} */}
 
               {activeUserCheck && (
-                <View >
+                <View>
                   <Feather
                     name="x"
                     size={30}

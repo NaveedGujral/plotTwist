@@ -79,7 +79,7 @@ export default function UserProfile({ route }) {
             .select();
     }
 
-    async function updateData(userid) {
+    async function updateUserData(userid) {
         const { data, error } = await supabase.from('Users').select('*').eq('user_id', userid);
         if (data.length > 0) {
             await supabase
@@ -90,9 +90,19 @@ export default function UserProfile({ route }) {
                     phone_number: phone,
                 })
                 .eq('user_id', userid);
-        } else {
-            sendNewData();
-        }
+            } else {
+                sendNewData();
+            }
+    }
+    
+    async function updateSessionUserData() {
+        const { data, error } = await supabase.auth.updateUser({
+            email: email,
+            phone: phone,
+            data: {
+                username: username
+             }
+          })
     }
 
     if (editing) {
@@ -135,10 +145,12 @@ export default function UserProfile({ route }) {
                         onPress={() => {
                             setIsEditing(false);
                             if (id) {
-                                updateData(id);
+                                updateUserData(id);
+                                update
                             } else {
                                 sendNewData();
                             }
+                            updateSessionUserData
                         }}
                         style={styles.edit_button}
                     >

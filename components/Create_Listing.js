@@ -76,7 +76,7 @@ const CreateListing = ({ route, navigation }) => {
           book_title: title,
           google_book_id: googleBookID, 
           author: author,
-          Category: category,
+          category: category,
           condition: condition,
           description: description,
           img_url: currImgUrl,

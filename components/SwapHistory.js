@@ -35,7 +35,6 @@ const SwapHistory = ({ session }) => {
       .select("*")
       .or(`user1_id.eq.${userID},user2_id.eq.${userID}`);
     setUserData(data);
-    console.log(data)
   };
 
   useEffect(() => {

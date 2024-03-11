@@ -33,6 +33,7 @@ export default function ListedBook({ route }) {
   const [userProfilePic, setUserProfilePic] = useState();
   const [userName, setUserName] = useState("");
 
+  
   useEffect(() => {
     async function getBookOwner() {
       const { data, error } = await supabase
@@ -44,6 +45,9 @@ export default function ListedBook({ route }) {
     getBookOwner();
   }, []);
 
+
+
+  
   useEffect(() => {
     switch (listing.user_id) {
       case "10240ee4-1b43-4749-afbe-1356c83af4da":
@@ -96,8 +100,6 @@ export default function ListedBook({ route }) {
   }
   checkSwapExists()
 
-  // inserts info into pending swaps
-  console.log(listing)
   const reqSwap = async () => {
     if (swapState) {
       return;
