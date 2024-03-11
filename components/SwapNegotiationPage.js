@@ -216,6 +216,7 @@ export default function SwapNegotiationPage({ route }) {
       .eq("pending_swap_id", currSwap.pending_swap_id);
 
     if (error) {
+      alert("Error", error)
       console.log(error);
     }
     // console.log(data[0]);
