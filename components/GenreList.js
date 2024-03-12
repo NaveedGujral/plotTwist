@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import supabase from "../config/supabaseClient";
 import GenreListCard from "./GenreListCard";
 
@@ -87,16 +88,18 @@ export default function GenreList({ route }) {
             {genre}
           </Text>
         </View>
-        <View style={{ flex: 1, 
-          justifyContent: "flex-end" 
-          }}>
-          <View
+        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+          <LinearGradient
+            colors={[PTGreen, PTBlue]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
             style={{
-              height: 2,
+              height: 5,
               width: "100%",
-              backgroundColor: PTG1,
+              zIndex: 1,
+              elevation: 1,
             }}
-          ></View>
+          ></LinearGradient>
         </View>
       </View>
 

@@ -149,7 +149,7 @@ const WishList = ({ session }) => {
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{
-              height: 2,
+              height: 5,
               width: "100%",
             }}
           ></LinearGradient>

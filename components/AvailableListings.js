@@ -32,7 +32,7 @@ const bookImageWidth = width * 0.4445 * 0.9334;
 const view1Height = pageHeight / 2;
 const container1Height = view1Height - view1Height / 4;
 const view2Height = (7 * pageHeight) / 18;
-const container2Height = (9 * view2Height) / 10;
+const container2Height = (8 * view2Height) / 9;
 const cardContainerHeight = container2Height / 1.5;
 
 export default function AvailableListings({ route }) {
@@ -250,13 +250,17 @@ export default function AvailableListings({ route }) {
         }}
       >
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
-          <View
+          <LinearGradient
+            colors={[PTGreen, PTBlue]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
             style={{
-              height: 2,
+              height: 5,
               width: "100%",
-              backgroundColor: PTG1,
+              zIndex: 1,
+              elevation: 1,
             }}
-          ></View>
+          ></LinearGradient>
         </View>
 
         <View
@@ -276,7 +280,7 @@ export default function AvailableListings({ route }) {
                 />
               </View>
             )}
-            contentContainerStyle={{ flex: 1 }}
+            contentContainerStyle={{ flex: 1, zIndex: 0, elevation: 0 }}
           />
         </View>
       </View>
@@ -290,6 +294,8 @@ const styles = StyleSheet.create({
     width: width,
     justifyContent: "center",
     alignContent: "center",
+    zIndex: 0,
+    elevation: 0,
   },
   heartContainer: {
     position: "absolute",

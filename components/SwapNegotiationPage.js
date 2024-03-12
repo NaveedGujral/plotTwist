@@ -1036,6 +1036,10 @@ export default function SwapNegotiationPage({ route }) {
                     session: session,
                   });
                 }}
+                key={
+                  activeUserID === info.user1_id
+                    ? info.user2_username
+                    : info.user1_username}
                 style={roundButton}
               >
                 <Ionicons

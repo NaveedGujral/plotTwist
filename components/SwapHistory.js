@@ -11,6 +11,7 @@ import {
   Pressable,
 } from "react-native";
 import SwapCard from "./SwapCard";
+import { LinearGradient } from "expo-linear-gradient";
 
 const { PTStyles, PTSwatches, importFonts } = require("../Styling");
 const { heading, subHeading, body, page, roundButton } = PTStyles;
@@ -62,13 +63,15 @@ const SwapHistory = ({ session }) => {
           </Text>
         </View>
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
-          <View
-            style={{
-              height: 2,
-              width: "100%",
-              backgroundColor: PTG1,
-            }}
-          ></View>
+        <LinearGradient
+        colors={[PTGreen, PTBlue]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{
+          height: 5,
+          width: "100%",
+        }}
+      ></LinearGradient>
         </View>
       </View>
 
