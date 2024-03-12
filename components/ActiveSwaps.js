@@ -42,25 +42,37 @@ const ActiveSwaps = ({ session }) => {
   const [receivedSwaps, setReceivedSwaps] = useState([]);
   const [activeSwaps, setActiveSwaps] = useState([]);
   const [updateSwapList, setUpdateSwapList] = useState(false)
-
   const [activeSections, setActiveSections] = useState([]);
+  const [swapInfo, setSwapInfo] = useState({});
+  const [trigger, setTrigger] = useState(false)
 
-  useEffect(() => {
-    getSwapInfo()
-  }, [receivedSwaps, sentSwaps, activeSwaps]);
-
-  useEffect(() => {
-    if (userID) {
-      getSwapInfo();
+  const channel = supabase
+  .channel('Pending_Swaps')
+  .on(
+    'postgres_changes',
+    {
+      event: '*',
+      schema: 'public',
+    },
+    (payload) => {
+      console.log(payload)
+      setTrigger(!trigger)
     }
-  }, [userID]);
+  )
+  .subscribe()
 
-  const getSwapInfo = async () => {
-    const { data, error } = await supabase
-      .from("Pending_Swaps")
-      .select("*")
-      .or(`user1_id.eq.${userID},user2_id.eq.${userID}`);
-    setUserData(data);
+  useEffect(() => {
+    const fetchSwapInfo = async () => {
+       if (userID) {
+         const { data, error } = await supabase
+           .from("Pending_Swaps")
+           .select("*")
+           .or(`user1_id.eq.${userID},user2_id.eq.${userID}`);
+         if (error) {
+           console.error("Error fetching swap info:", error);
+           return;
+         }
+         setUserData(data);
     setSentSwaps(
       data.filter((swap) => swap.user1_id !== userID && !swap.user2_listing_id)
     );
@@ -70,7 +82,12 @@ const ActiveSwaps = ({ session }) => {
     setActiveSwaps(
       data.filter((swap) => swap.user1_listing_id && swap.user2_listing_id)
     );
-  };
+         setSwapInfo({ userData, sentSwaps, receivedSwaps, activeSwaps });
+       }
+    };
+   
+    fetchSwapInfo();
+   }, [userID, trigger]); 
 
   const content = [
     {

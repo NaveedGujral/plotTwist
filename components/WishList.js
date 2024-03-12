@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import supabase from "../config/supabaseClient";
 import { LinearGradient } from "expo-linear-gradient";
+import UserLibrary from "./UserLibrary";
 
 const { PTStyles, PTSwatches } = require("../Styling");
 const {
@@ -34,13 +35,26 @@ const WishList = ({ session }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [username, setUsername] = useState("");
 
+  const [trigger, setTrigger] = useState(false);
+
+  const channel = supabase
+    .channel("Users")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+      },
+      (payload) => {
+        console.log(payload);
+        setTrigger(!trigger);
+      }
+    )
+    .subscribe();
+
   useEffect(() => {
-    if (session) {
-      getWishlist();
-      console.log("data retrieved")
-      setUsername(session?.user?.user_metadata?.username);
-    }
-  }, [userWishlist]);
+    getWishlist();
+  }, [trigger]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -85,7 +99,8 @@ const WishList = ({ session }) => {
       };
     });
 
-    let booksWithImages = await Promise.all(promises);
+    // console.log("data retrieved");
+    let booksWithImages = await Promise.all(promises)
     booksWithImages = booksWithImages.filter((item) => item !== null);
     setBookObjects(booksWithImages);
     booksWithImages = booksWithImages.map((book) => book.book_id);
@@ -93,18 +108,26 @@ const WishList = ({ session }) => {
   };
 
   const removeFromWishList = async (book_id) => {
-    const { data, error } = await supabase
-      .from("Users")
-      .update({ wishlist: userWishlist.filter((book) => book !== book_id) })
-      .select("wishlist")
-      .eq("user_id", session.user.id);
+    setUserWishlist( async (currentWishlist) => {
+       const updatedWishlist = currentWishlist.filter((wishlistBookID) => wishlistBookID !== book_id);
+       console.log(updatedWishlist === currentWishlist)
+       const {data, error} = await supabase
+         .from("Users")
+         .update({ wishlist: updatedWishlist })
+         .eq("user_id", session.user.id);
 
     if (error) {
       console.log(error);
-    } else {
-      setUserWishlist(data[0].wishlist);
     }
-  };
+
+       return updatedWishlist;
+    });
+   
+    setBookObjects((currentBookObjects) => {
+       const updatedBookObjects = currentBookObjects.filter((bookObj) => bookObj.book_id !== book_id);
+       return updatedBookObjects;
+    });
+   };
 
   return (
     <View style={page}>
@@ -162,7 +185,12 @@ const WishList = ({ session }) => {
                     )}
                   </View>
                   <View
-                    style={{ flex: 6, height: "100%", flexDirection: "row", gap: width / 27 }}
+                    style={{
+                      flex: 6,
+                      height: "100%",
+                      flexDirection: "row",
+                      gap: width / 27,
+                    }}
                   >
                     <View
                       style={{

@@ -35,8 +35,23 @@ const HomeScreen = ({ navigation }) => {
   const scrollRef = useRef();
   const [scrollOffset, setScrollOffset] = useState(0);
   const scrollOffsetLimit = 200;
+  const [trigger, setTrigger] = useState(false);
 
-  importFonts();
+  const channel = supabase
+    .channel("Listings")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+      },
+      (payload) => {
+        console.log(payload);
+        console.log("triggered in Home");
+        setTrigger(!trigger);
+      }
+    )
+    .subscribe();
 
   useEffect(() => {
     async function compareId(id) {
@@ -63,6 +78,8 @@ const HomeScreen = ({ navigation }) => {
       });
   }, []);
 
+  importFonts();
+
   useEffect(() => {
     async function getCategories() {
       const { data, error } = await supabase
@@ -86,7 +103,32 @@ const HomeScreen = ({ navigation }) => {
 
     getTopTen("Listings");
     getCategories();
-  }, []);
+  }, [trigger]);
+
+  // useEffect(() => {
+  //   async function getCategories() {
+  //     const { data, error } = await supabase
+  //       .from("Listings")
+  //       .select("category");
+  //     const catArr = [];
+  //     data.forEach((obj) => {
+  //       if (!catArr.includes(obj.category)) catArr.push(obj.category);
+  //     });
+  //     setCategories(catArr);
+  //   }
+
+  //   async function getTopTen(table) {
+  //     const { data, error } = await supabase
+  //       .from(table)
+  //       .select()
+  //       .order("no_of_wishlists", { ascending: false })
+  //       .range(0, 9);
+  //     setTopTen(data);
+  //   }
+
+  //   getTopTen("Listings");
+  //   getCategories();
+  // }, []);
 
   return (
     <View style={page}>

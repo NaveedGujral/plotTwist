@@ -46,10 +46,27 @@ const UserLibrary = ({ session }) => {
 
   // experimental
   // const [testState, setTestState] = useState(false)
+  const [trigger, setTrigger] = useState(false)
+
+  const channel = supabase
+  .channel('Listings')
+  .on(
+    'postgres_changes',
+    {
+      event: '*',
+      schema: 'public',
+    },
+    (payload) => {
+      console.log(payload)
+      console.log("triggered in userLibrary")
+      setTrigger(!trigger)
+    }
+  )
+  .subscribe()
 
   useEffect(() => {
-    if (session) getListings();
-  }, [userLibrary]);
+    getListings();
+  }, [trigger]);
 
   // useEffect(() => {
   //   console.log("parent testState", testState)
