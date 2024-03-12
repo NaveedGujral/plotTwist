@@ -18,6 +18,7 @@ import {
   View,
   FlatList,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import supabase from "../config/supabaseClient";
 
 const { PTStyles, PTSwatches } = require("../Styling");
@@ -113,13 +114,15 @@ const UserLibrary = ({ session }) => {
           </Text>
         </View>
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
-          <View
-            style={{
-              height: 2,
-              width: "100%",
-              backgroundColor: PTG1,
-            }}
-          ></View>
+           <LinearGradient
+        colors={[PTGreen, PTBlue]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{
+          height: 2,
+          width: "100%",
+        }}
+      ></LinearGradient>
         </View>
       </View>
 

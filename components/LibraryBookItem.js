@@ -127,7 +127,7 @@ export default function LibraryBookItem(item) {
           width: width - (2 * width) / 27,
           height: containerHeight - (2 * width) / 27,
           justifyContent: "space-between",
-          gap: width / 27,
+          // gap: width / 27,
           alignItems: "center",
           flexDirection: "row",
         }}

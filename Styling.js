@@ -7,6 +7,7 @@ import {
 import { Dimensions } from "react-native";
 
 const { height, width } = Dimensions.get("window");
+const pageHeight = height - (height / 27) * 4;
 
 function LogoW() {
   const logoW = 576;
@@ -92,27 +93,26 @@ const PTStyles = StyleSheet.create({
     width: 4*width/9,
     resizeMode: "cover",
   },
-  webFix: {
-    marginBottom: height * 0.09,
-    backgroundColor: PTSwatches.PTG4,
-  },
+  // webFix: {
+  //   marginBottom: height * 0.09,
+  //   backgroundColor: PTSwatches.PTG4,
+  // },
   pillButton: {
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: PTSwatches.PTGreen
+    height:4*pageHeight/81,
+    borderRadius: 2*pageHeight/81,
   },
   roundButton: {
-    width: width/9,
-    height: width/9,
-    borderRadius: width/18,
+    width: 4*width/27,
+    height: 4*width/27,
+    borderRadius: 2*width/27,
     backgroundColor: PTSwatches.PTGreen,
     justifyContent: "center",
     alignContent: "center",
   },
   roundButtonPressed: {
-    width: width/9,
-    height: width/9,
-    borderRadius: width/18,
+    width: 4*width/27,
+    height: 4*width/27,
+    borderRadius: 2*width/27,
     backgroundColor: PTSwatches.PTG2,
     justifyContent: "center",
     alignContent: "center",

@@ -49,6 +49,28 @@ const ActiveSwaps = ({ session }) => {
     getSwapInfo()
   }, [receivedSwaps, sentSwaps, activeSwaps]);
 
+  useEffect(() => {
+    if (userID) {
+      getSwapInfo();
+    }
+  }, [userID]);
+
+  const getSwapInfo = async () => {
+    const { data, error } = await supabase
+      .from("Pending_Swaps")
+      .select("*")
+      .or(`user1_id.eq.${userID},user2_id.eq.${userID}`);
+    setUserData(data);
+    setSentSwaps(
+      data.filter((swap) => swap.user1_id !== userID && !swap.user2_listing_id)
+    );
+    setReceivedSwaps(
+      data.filter((swap) => swap.user1_id === userID && !swap.user2_listing_id)
+    );
+    setActiveSwaps(
+      data.filter((swap) => swap.user1_listing_id && swap.user2_listing_id)
+    );
+  };
 
   const content = [
     {
@@ -211,29 +233,9 @@ const ActiveSwaps = ({ session }) => {
     }
   }, [session]);
 
-  const getSwapInfo = async () => {
-    const { data, error } = await supabase
-      .from("Pending_Swaps")
-      .select("*")
-      .or(`user1_id.eq.${userID},user2_id.eq.${userID}`);
-    setUserData(data);
-    setSentSwaps(
-      data.filter((swap) => swap.user1_id !== userID && !swap.user2_listing_id)
-    );
-    setReceivedSwaps(
-      data.filter((swap) => swap.user1_id === userID && !swap.user2_listing_id)
-    );
-    setActiveSwaps(
-      data.filter((swap) => swap.user1_listing_id && swap.user2_listing_id)
-    );
-  };
+  
 
-  useEffect(() => {
-    if (userID) {
-      getSwapInfo();
-    }
-  }, [userID]);
-
+ 
   return (
     <SafeAreaView style={page}>
       <View style={{ height: pageHeight }}>

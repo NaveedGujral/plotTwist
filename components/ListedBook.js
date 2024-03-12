@@ -126,7 +126,7 @@ export default function ListedBook({ route }) {
     if (error) {
       console.error("Failed to make swap request: ", error);
     } else {
-      console.log("Data inserted: ", data);
+      // console.log("Data inserted: ", data);
     }
     setSwapState(true);
     return data[0].pending_swap_id;
@@ -188,7 +188,7 @@ export default function ListedBook({ route }) {
             <View style={roundButtonPressed}>
               <Octicons
                 name="arrow-switch"
-                size={24}
+                size={30}
                 color={PTG4}
                 style={{ textAlign: "center", width: "100%" }}
               />
@@ -207,7 +207,7 @@ export default function ListedBook({ route }) {
             >
               <Octicons
                 name="arrow-switch"
-                size={24}
+                size={30}
                 color={PTG1}
                 style={{ textAlign: "center", width: "100%" }}
               />

@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import supabase from "../config/supabaseClient";
+import { LinearGradient } from "expo-linear-gradient";
 
 const { PTStyles, PTSwatches } = require("../Styling");
 const {
@@ -36,6 +37,7 @@ const WishList = ({ session }) => {
   useEffect(() => {
     if (session) {
       getWishlist();
+      console.log("data retrieved")
       setUsername(session?.user?.user_metadata?.username);
     }
   }, [userWishlist]);
@@ -60,8 +62,7 @@ const WishList = ({ session }) => {
     }
 
     const wishlist = data?.wishlist || [];
-    const promises = 
-    wishlist.map(async (book_id) => {
+    const promises = wishlist.map(async (book_id) => {
       const { data, error } = await supabase
         .from("Listings")
         .select("*")
@@ -79,7 +80,7 @@ const WishList = ({ session }) => {
         img_url: bookObj?.img_url,
         title: bookObj?.book_title,
         author: bookObj.author,
-        category: bookObj?.Category,
+        category: bookObj?.category,
         description: bookObj?.description,
       };
     });
@@ -120,13 +121,15 @@ const WishList = ({ session }) => {
           </Text>
         </View>
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
-          <View
+          <LinearGradient
+            colors={[PTGreen, PTBlue]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
             style={{
               height: 2,
               width: "100%",
-              backgroundColor: PTG1,
             }}
-          ></View>
+          ></LinearGradient>
         </View>
       </View>
 
@@ -159,19 +162,19 @@ const WishList = ({ session }) => {
                     )}
                   </View>
                   <View
-                    style={{ flex: 6, height: "100%", flexDirection: "row" }}
+                    style={{ flex: 6, height: "100%", flexDirection: "row", gap: width / 27 }}
                   >
                     <View
                       style={{
                         flex: 8,
                         height: "100%",
-                        justifyContent: "space-around",
+                        justifyContent: "space-between",
                       }}
                     >
                       <View
                         style={{
                           height: "33%",
-                          justifyContent: "center",
+                          justifyContent: "space-between",
                         }}
                       >
                         <Text
@@ -182,13 +185,13 @@ const WishList = ({ session }) => {
                         >
                           {title}
                         </Text>
-                      </View>
-                      <View
-                        style={{
-                          height: "33%",
-                          justifyContent: "center",
-                        }}
-                      >
+                        <Text
+                          style={{
+                            ...body,
+                          }}
+                        >
+                          {" "}
+                        </Text>
                         <Text
                           style={{
                             ...subHeading,
@@ -196,13 +199,27 @@ const WishList = ({ session }) => {
                         >
                           {author}
                         </Text>
+                        <Text
+                          style={{
+                            ...body,
+                          }}
+                        >
+                          {" "}
+                        </Text>
+                        <Text
+                          style={{
+                            ...subHeading,
+                          }}
+                        >
+                          {category}
+                        </Text>
                       </View>
                     </View>
                     <View style={{ flex: 1, top: 0, alignItems: "center" }}>
                       <Feather
                         name="x"
-                        size={24}
-                        color={PTG1}
+                        size={30}
+                        color={PTG2}
                         style={{
                           alignSelf: "center",
                         }}

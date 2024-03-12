@@ -28,14 +28,18 @@ const cardHeight = renderContentHeight / 3.5;
 const cardWidth = width - (2 * width) / 27;
 
 export default function SwapCard({ swap, type, session, navigation}) {
-  const sessionUserId = session.user.id;
-
+  const userID = session.user.id;
+  console.log(userID)
+  
   function renderContent(type, swap) {
     switch (type) {
       case "received":
+        console.log(swap)
+        console.log(type)
         return (
           <>
-            <Image
+          {swap.user1_id === userID && !swap.user2_listing_id} ? 
+             <Image
               source={{ uri: swap.user1_book_imgurl }}
               style={styles.bookImg}
             />
@@ -71,6 +75,8 @@ export default function SwapCard({ swap, type, session, navigation}) {
                 </Text>
               </Text>
             </View>
+            :
+            <View style={{backgroundColor:PTRed}}></View>
           </>
         );
       case "sent":
@@ -196,7 +202,7 @@ export default function SwapCard({ swap, type, session, navigation}) {
             <Image
               source={{
                 uri:
-                  sessionUserId === swap.user1_id
+                  userID === swap.user1_id
                     ? swap.user1_book_imgurl
                     : swap.user2_book_imgurl,
               }}
@@ -213,7 +219,7 @@ export default function SwapCard({ swap, type, session, navigation}) {
             <Image
               source={{
                 uri:
-                  sessionUserId === swap.user1_id
+                  userID === swap.user1_id
                     ? swap.user2_book_imgurl
                     : swap.user1_book_imgurl,
               }}
@@ -228,18 +234,18 @@ export default function SwapCard({ swap, type, session, navigation}) {
               >
                 {"You swapped "}
                 <Text style={{ fontStyle: "italic" }}>
-                  {sessionUserId === swap.user1_id
+                  {userID === swap.user1_id
                     ? swap.user1_book_title
                     : swap.user2_book_title}
                 </Text>
                 {" for "}
-                {sessionUserId === swap.user1_id
+                {userID === swap.user1_id
                   ? swap.user2_username
                   : swap.user1_username}
                 's
                 <Text style={{ fontStyle: "italic" }}>
                   {" "}
-                  {sessionUserId === swap.user1_id
+                  {userID === swap.user1_id
                     ? swap.user2_book_title
                     : swap.user1_book_title}
                 </Text>

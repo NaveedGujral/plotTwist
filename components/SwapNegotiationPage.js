@@ -22,9 +22,11 @@ import {
   Ionicons,
   Octicons,
   MaterialCommunityIcons,
+  Feather
 } from "@expo/vector-icons";
 import { JosefinSans_400Regular } from "@expo-google-fonts/dev";
 import LibraryBookItem from "./LibraryBookItem";
+import { LinearGradient } from "expo-linear-gradient";
 
 const { PTStyles, PTSwatches } = require("../Styling");
 const {
@@ -40,6 +42,11 @@ const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { width, height } = Dimensions.get("screen");
 const pageHeight = height - (height / 27) * 4;
 const containerWidth = width - (2 * width) / 27;
+
+const headerFlex = 3;
+const userInfoFlex = 7;
+const booksFlex = 14;
+const buttonsFlex = 3;
 
 export default function SwapNegotiationPage({ route }) {
   const navigation = useNavigation();
@@ -68,6 +75,7 @@ export default function SwapNegotiationPage({ route }) {
 
   const [currSwap, setCurrSwap] = useState(info);
   const {
+    pending_swap_id,
     user1_author,
     user1_book_imgurl,
     user1_book_title,
@@ -96,20 +104,8 @@ export default function SwapNegotiationPage({ route }) {
   const [modalUserID, setModalUserID] = useState();
   const [modalLibrary, setModalLibrary] = useState();
 
-  useEffect(() => {
-    fetchAllListings()
-  }, [activeUserLibrary]);
-  useEffect(() => {
-    fetchAllListings()
-  }, [nonActiveUserLibrary]);
-
-  useEffect(() => {
-    updateSwapInfo(currSwap);
-  }, [currSwap]);
-
-  useEffect(() => {
-    fetchAllListings();
-  }, [activeUserID, nonActiveUserID]);
+  // State to trigger fetchAllListings
+  const [triggerFetch, setTriggerFetch] = useState(false);
 
   // MVP ONLY - NEEDS REFACTORING TO BE SCALABLE!
   useEffect(() => {
@@ -181,6 +177,23 @@ export default function SwapNegotiationPage({ route }) {
     }
   }, []);
 
+  useEffect(() => {
+    fetchAllListings();
+  }, [triggerFetch]);
+
+  useEffect(() => {
+    fetchAllListings();
+    handleUserIDChange();
+  }, [activeUserID, nonActiveUserID]);
+
+  useEffect(() => {
+    updateSwapInfo(currSwap);
+  }, [currSwap]);
+
+  function handleUserIDChange() {
+    setTriggerFetch((prev) => !prev);
+  }
+
   async function getListings(user_id) {
     const { data, error } = await supabase
       .from("Listings")
@@ -201,13 +214,13 @@ export default function SwapNegotiationPage({ route }) {
         getListings(activeUserID),
         getListings(nonActiveUserID),
       ]);
-
+      // console.log("listings retrieved");
       setActiveUserLibrary(activeUserListings);
       setNonActiveUserLibrary(nonActiveUserListings);
     } catch (error) {
       console.error("Error fetching listings:", error);
     }
-  };
+  }
 
   async function updateSwapInfo(currSwap) {
     const { data, error } = await supabase
@@ -254,7 +267,7 @@ export default function SwapNegotiationPage({ route }) {
     ]);
   }
 
-  async function rejectBook(info) {
+  async function rejectBook(pending_swap_id) {
     await Promise.all([
       supabase.from("Notifications").insert([
         {
@@ -267,11 +280,11 @@ export default function SwapNegotiationPage({ route }) {
       supabase
         .from("Notifications")
         .delete()
-        .eq("swap_offer_id", info.pending_swap_id),
+        .eq("swap_offer_id", pending_swap_id),
       supabase
         .from("Pending_Swaps")
         .delete()
-        .eq("pending_swap_id", info.pending_swap_id),
+        .eq("pending_swap_id", pending_swap_id),
     ]);
   }
 
@@ -286,9 +299,23 @@ export default function SwapNegotiationPage({ route }) {
               flex: 1,
             }}
           >
-            <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
-              Your Library
-            </Text>
+            <View style={{ flex: 1 }}></View>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
+                Your Library
+              </Text>
+            </View>
+            <View style={{ flex: 1, justifyContent: "flex-end" }}>
+              <LinearGradient
+                colors={[PTGreen, PTBlue]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  height: 2,
+                  width: "100%",
+                }}
+              ></LinearGradient>
+            </View>
           </View>
 
           <View
@@ -332,12 +359,26 @@ export default function SwapNegotiationPage({ route }) {
               flex: 1,
             }}
           >
-            <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
-              {session.user.id === info.user1_id
-                ? info.user2_username
-                : info.user1_username}
-              {`'s Library`}
-            </Text>
+            <View style={{ flex: 1 }}></View>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
+                {session.user.id === info.user1_id
+                  ? info.user2_username
+                  : info.user1_username}
+                {`'s Library`}
+              </Text>
+            </View>
+            <View style={{ flex: 1, justifyContent: "flex-end" }}>
+              <LinearGradient
+                colors={[PTGreen, PTBlue]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  height: 2,
+                  width: "100%",
+                }}
+              ></LinearGradient>
+            </View>
           </View>
 
           <View
@@ -413,77 +454,79 @@ export default function SwapNegotiationPage({ route }) {
                     ?
                   </Text>
                 )}
-                <View
-                  style={{
-                    height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
-                    width: "100%",
-                  }}
-                >
-                  <Text
+                {user1_listing_id && (
+                  <View
                     style={{
-                      ...body,
+                      height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
+                      width: "100%",
                     }}
                   >
-                    {" "}
-                  </Text>
-                  <Text
-                    style={{
-                      ...body,
-                      fontWeight: "600",
-                    }}
-                  >
-                    {user1_book_title}
-                  </Text>
-                  <Text
-                    style={{
-                      ...body,
-                    }}
-                  >
-                    {" "}
-                  </Text>
-                  <Text
-                    style={{
-                      ...body,
-                    }}
-                  >
-                    {user1_author}
-                  </Text>
-                  <Text
-                    style={{
-                      ...body,
-                    }}
-                  >
-                    {" "}
-                  </Text>
-                  <Text
-                    style={{
-                      ...body,
-                    }}
-                  >
-                    Condition:
-                  </Text>
-                  <Text
-                    style={{
-                      ...body,
-                    }}
-                  >
-                    {user1_condition}
-                  </Text>
-                  <Text
-                    style={{
-                      ...body,
-                    }}
-                  >
-                    {" "}
-                  </Text>
-                  <Text
-                    style={{
-                      ...body,
-                    }}
-                  >
-                    {user1_category}
-                  </Text>
-                </View>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                        fontWeight: "600",
+                      }}
+                    >
+                      {user1_book_title}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {user1_author}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      Condition:
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {user1_condition}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {user1_category}
+                    </Text>
+                  </View>
+                )}
               </Pressable>
 
               <View style={{ justifyContent: "center" }}>
@@ -528,6 +571,173 @@ export default function SwapNegotiationPage({ route }) {
                     ?
                   </Text>
                 )}
+                {user2_listing_id && (
+                  <View
+                    style={{
+                      height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
+                      width: "100%",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                        fontWeight: "600",
+                      }}
+                    >
+                      {user2_book_title}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {user2_author}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      Condition:
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {user2_condition}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {user2_category}
+                    </Text>
+                  </View>
+                )}
+              </Pressable>
+
+              <Modal isVisible={isModalVisible}>
+                <View style={styles.modal}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      width: width,
+                      height: (height / 27) * 2,
+                      backgroundColor: PTGreen,
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      name="chevron-double-down"
+                      size={36}
+                      color={PTG1}
+                      style={{ alignSelf: "center" }}
+                      onPress={() => {
+                        setIsModalVisible(false);
+                      }}
+                    />
+                  </View>
+                  {renderModal(activeUserCheck, modalUserID, modalLibrary)}
+                  
+                  <View
+                    style={{
+                      width: width,
+                      height: (height / 27) * 2,
+                      backgroundColor: PTGreen,
+                    }}
+                  >
+                  </View>
+
+                </View>
+              </Modal>
+            </View>
+
+            <View
+              style={{
+                height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
+                width: "100%",
+                justifyContent: "space-between",
+                backgroundColor: PTRed,
+              }}
+            ></View>
+          </View>
+        );
+      case "sent":
+        return (
+          <View style={styles.booksAndArrows}>
+            <Pressable
+              style={
+                user2_book_imgurl
+                  ? styles.bookCard
+                  : {
+                      ...styles.bookCard,
+                      borderWidth: 2,
+                      borderColor: PTG1,
+                      borderStyle: "dashed",
+                      justifyContent: "center",
+                    }
+              }
+              onPress={() => {
+                setActiveUserCheck(true);
+                setModalUserID(activeUserID);
+                setModalLibrary(activeUserLibrary);
+                setIsModalVisible(true);
+              }}
+            >
+              {user2_book_imgurl ? (
+                <Image
+                  source={{
+                    uri: user2_book_imgurl,
+                  }}
+                  style={{ width: "100%", height: "100%" }}
+                />
+              ) : (
+                <View
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text
+                    style={{ ...heading, color: PTG1, textAlign: "center" }}
+                  >
+                    ?
+                  </Text>
+                </View>
+              )}
+
+              {user2_listing_id && (
                 <View
                   style={{
                     height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
@@ -599,150 +809,7 @@ export default function SwapNegotiationPage({ route }) {
                     {user2_category}
                   </Text>
                 </View>
-              </Pressable>
-
-              <Modal isVisible={isModalVisible}>
-                <View style={styles.modal}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      width: width,
-                      height: (height / 27) * 2,
-                      backgroundColor: PTGreen,
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name="chevron-double-down"
-                      size={36}
-                      color={PTG1}
-                      style={{ alignSelf: "center" }}
-                      onPress={() => {
-                        setIsModalVisible(false);
-                      }}
-                    />
-                  </View>
-
-                  {renderModal(activeUserCheck, modalUserID, modalLibrary)}
-                </View>
-              </Modal>
-            </View>
-
-            <View
-              style={{
-                height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
-                width: "100%",
-                justifyContent: "space-between",
-                backgroundColor: PTRed,
-              }}
-            ></View>
-          </View>
-        );
-      case "sent":
-        return (
-          <View style={styles.booksAndArrows}>
-            <Pressable
-              style={
-                user2_book_imgurl
-                  ? styles.bookCard
-                  : {
-                      ...styles.bookCard,
-                      borderWidth: 2,
-                      borderColor: PTG1,
-                      borderStyle: "dashed",
-                      justifyContent: "center",
-                    }
-              }
-              onPress={() => {
-                setActiveUserCheck(true);
-                setModalUserID(activeUserID);
-                setModalLibrary(activeUserLibrary);
-                setIsModalVisible(true);
-              }}
-            >
-              {user2_book_imgurl ? (
-                <Image
-                  source={{
-                    uri: user2_book_imgurl,
-                  }}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              ) : (
-                <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
-                  ?
-                </Text>
               )}
-              <View
-                style={{
-                  height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
-                  width: "100%",
-                }}
-              >
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  {" "}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                    fontWeight: "600",
-                  }}
-                >
-                  {user2_book_title}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  {" "}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  {user2_author}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  {" "}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  Condition:
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  {user2_condition}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  {" "}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  {user2_category}
-                </Text>
-              </View>
             </Pressable>
 
             <View style={{ justifyContent: "center" }}>
@@ -781,81 +848,93 @@ export default function SwapNegotiationPage({ route }) {
                   style={{ width: "100%", height: "100%" }}
                 />
               ) : (
-                <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
-                  ?
-                </Text>
+                <View
+                  style={{
+                    backgroundColor: PTRed,
+                    width: "100%",
+                    height: "100%",
+                  }}
+                >
+                  <Text
+                    style={{ ...heading, color: PTG1, textAlign: "center" }}
+                  >
+                    ?
+                  </Text>
+                </View>
               )}
-              <View
-                style={{
-                  height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
-                  width: "100%",
-                }}
-              >
-                <Text
+              {user1_listing_id && (
+                <View
                   style={{
-                    ...body,
+                    height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
+                    width: "100%",
                   }}
                 >
-                  {" "}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                    fontWeight: "600",
-                  }}
-                >
-                  {user1_book_title}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  {" "}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  {user1_author}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  {" "}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  Condition:
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  {user1_condition}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  {" "}
-                </Text>
-                <Text
-                  style={{
-                    ...body,
-                  }}
-                >
-                  {user1_category}
-                </Text>
-              </View>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {" "}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                      fontWeight: "600",
+                    }}
+                  >
+                    {user1_book_title}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {" "}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {user1_author}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {" "}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    Condition:
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {user1_condition}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {" "}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {user1_category}
+                  </Text>
+                </View>
+              )}
             </Pressable>
 
             <Modal isVisible={isModalVisible}>
@@ -881,6 +960,16 @@ export default function SwapNegotiationPage({ route }) {
                 </View>
 
                 {renderModal(activeUserCheck, modalUserID, modalLibrary)}
+
+                <View
+                    style={{
+                      width: width,
+                      height: (height / 27) * 2,
+                      backgroundColor: PTGreen,
+                    }}
+                  >
+                  </View>
+
               </View>
             </Modal>
           </View>
@@ -893,7 +982,7 @@ export default function SwapNegotiationPage({ route }) {
   return (
     <SafeAreaView style={page}>
       <View style={{ height: pageHeight, alignItems: "center" }}>
-        <View style={{ flex: 3, justifyContent: "center" }}>
+        <View style={{ flex: headerFlex, justifyContent: "center" }}>
           <Text
             style={{
               ...heading,
@@ -987,7 +1076,6 @@ export default function SwapNegotiationPage({ route }) {
         {/* Experimental */}
 
         <View style={styles.buttons}>
-
           {/* <Pressable
             style={styles.accept}
             onPress={() => {
@@ -1023,14 +1111,19 @@ export default function SwapNegotiationPage({ route }) {
           </Pressable> */}
 
           <Pressable
-            style={styles.reject}
+            style={{
+              ...pillButton,
+              backgroundColor: PTRed,
+              width: (7 * width) / 27,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
             onPress={() => {
-              getTransferData().then((res) => {
-                rejectBook(res);
-              });
+              rejectBook(pending_swap_id);
+              navigation.navigate("Home");
             }}
           >
-            <Text style={styles.body}>Reject Offer</Text>
+            <Text style={body}>Reject Offer</Text>
           </Pressable>
         </View>
       </View>
@@ -1060,8 +1153,7 @@ const styles = StyleSheet.create({
   userInfo: {
     width: containerWidth,
     justifyContent: "space-between",
-    flex: 7,
-    // flex: 9,
+    flex: userInfoFlex,
   },
   profilePics: {
     flexDirection: "row",
@@ -1071,15 +1163,13 @@ const styles = StyleSheet.create({
   books: {
     justifyContent: "space-between",
     width: containerWidth,
-    // flex: 12,
-    flex: 14,
-    // backgroundColor: PTRed,
+    flex: booksFlex,
   },
   buttons: {
-    flex: 3,
+    flex: buttonsFlex,
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: PTG1,
+    alignItems: "center",
   },
   booksAndArrows: {
     flexDirection: "row",
@@ -1094,7 +1184,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 180,
     width: 120,
-    borderRadius: 16,
+    // borderRadius: 16,
   },
   profileImg: {
     // borderRadius: containerWidth / 6,
@@ -1106,7 +1196,7 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   bookCard: {
-    borderRadius: 16,
+    // borderRadius: 16,
     height: (5 * containerWidth) / 9,
     width: (10 * containerWidth) / 27,
     resizeMode: "contain",
