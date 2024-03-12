@@ -47,7 +47,6 @@ const HomeScreen = ({ navigation }) => {
       },
       (payload) => {
         console.log(payload);
-        console.log("triggered in Home");
         setTrigger(!trigger);
       }
     )
@@ -105,31 +104,6 @@ const HomeScreen = ({ navigation }) => {
     getCategories();
   }, [trigger]);
 
-  // useEffect(() => {
-  //   async function getCategories() {
-  //     const { data, error } = await supabase
-  //       .from("Listings")
-  //       .select("category");
-  //     const catArr = [];
-  //     data.forEach((obj) => {
-  //       if (!catArr.includes(obj.category)) catArr.push(obj.category);
-  //     });
-  //     setCategories(catArr);
-  //   }
-
-  //   async function getTopTen(table) {
-  //     const { data, error } = await supabase
-  //       .from(table)
-  //       .select()
-  //       .order("no_of_wishlists", { ascending: false })
-  //       .range(0, 9);
-  //     setTopTen(data);
-  //   }
-
-  //   getTopTen("Listings");
-  //   getCategories();
-  // }, []);
-
   return (
     <View style={page}>
       <View style={{ flex: 1 }}>
@@ -147,7 +121,7 @@ const HomeScreen = ({ navigation }) => {
           style={{ height: "100%" }}
         >
           <View style={{ flex: 2, backgroundColor: PTG4 }}>
-            <TopTenCarousel listings={topTen} id={currSession} />
+            <TopTenCarousel listings={topTen} id={currSession} trigger={trigger}/>
           </View>
           <View style={{ flex: 1 }}>
             <View
@@ -174,6 +148,7 @@ const HomeScreen = ({ navigation }) => {
                     categoryName={category}
                     key={category}
                     id={currSession}
+                    trigger={trigger}
                   />
                 );
               })}

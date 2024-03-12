@@ -19,7 +19,7 @@ const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 
 const { height, width } = Dimensions.get("window");
 
-export default function BookList({ categoryName, id }) {
+export default function BookList({ categoryName, id, trigger }) {
   importFonts();
   const [bookList, setBookList] = useState([]);
   const navigation = useNavigation();
@@ -48,17 +48,16 @@ export default function BookList({ categoryName, id }) {
         .select("*")
         .eq("category", categoryName)
         .order("date_posted", { ascending: false })
-        .range(0, 10);
+        // .range(0, 10);
 
       const uniqueData = Array.from(
         new Set(data.map((item) => item.book_title))
       ).map((title) => data.find((item) => item.book_title === title));
-
       setBookList(uniqueData);
     }
 
     getBooks(categoryName);
-  }, []);
+  }, [trigger]);
 
   return (
     <View style={styles.categoryContainer}>

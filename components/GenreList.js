@@ -15,6 +15,23 @@ export default function GenreList({ route }) {
   const { genre, key, id } = route.params;
   const [genreList, setGenreList] = useState([]);
 
+  const [trigger, setTrigger] = useState(false);
+
+  const channel = supabase
+    .channel("Users")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+      },
+      (payload) => {
+        console.log(payload);
+        setTrigger(!trigger);
+      }
+    )
+    .subscribe();
+
   function handleOnScroll(event) {
     Animated.event(
       [
@@ -47,7 +64,7 @@ export default function GenreList({ route }) {
     }
 
     getBooksByGenre(genre);
-  }, []);
+  }, [trigger]);
 
   return (
     <View style={page}>
