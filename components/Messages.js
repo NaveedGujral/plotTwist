@@ -3,6 +3,7 @@ import { Text, View, Pressable, StyleSheet, Dimensions, FlatList } from "react-n
 import supabase from "../config/supabaseClient";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import MessageItem from "./MessageItem";
 
 const { PTStyles, PTSwatches } = require("../Styling");
 const {
@@ -47,6 +48,7 @@ export default function ChatComponent({ navigation, route }) {
       .select()
       .or(`sender_id.eq.${session.user.id}, receiver_id.eq.${session.user.id}`);
 
+      console.log(data)
     return data;
   }
 
@@ -106,7 +108,7 @@ export default function ChatComponent({ navigation, route }) {
     );
   }, [uniqueChats]);
 
-  console.log(usernames)
+  // console.log(usernames)
 
   return (
     <View style={page}>
@@ -148,25 +150,14 @@ export default function ChatComponent({ navigation, route }) {
 
       <FlatList
           data={usernames}
-          renderItem={({ item }) => (
-            <Pressable
-            onPress={() => {
-                console.log(item)
-                navigation.navigate("ChatWindow", {
-                  sender: item[0].sender,
-                  receiver: item[1].receiver,
-                  username: item[2],
-                  session: session,
-                });
-              }}
-              key={item[2]}
-              style={styles.listItem}
-            >
-              <Text style={styles.text}>
-                {item[2]}
-              </Text>
-            </Pressable>
-          )} 
+          renderItem={({ item, index }) => (
+            <MessageItem 
+            usernames={item} 
+            id={index}
+            session={session}
+            navigation={navigation} 
+            />
+          )}
           keyExtractor={(item) => item[2]}
           vertical={true}
           pagingEnabled

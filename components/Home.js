@@ -19,6 +19,7 @@ import { JosefinSans_400Regular } from "@expo-google-fonts/dev";
 
 import BookList from "./BookList";
 import TopTenCarousel from "./TopTenCarousel";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { PTStyles, PTSwatches, importFonts } = require("../Styling");
 const { heading, subHeading, body, page, roundButton } = PTStyles;
@@ -105,7 +106,7 @@ const HomeScreen = ({ navigation }) => {
   }, [trigger]);
 
   return (
-    <View style={page}>
+    <SafeAreaView style={page}>
       <View style={{ flex: 1 }}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -194,7 +195,7 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </Pressable>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
