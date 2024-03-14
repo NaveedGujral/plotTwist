@@ -70,7 +70,7 @@ const PTStyles = StyleSheet.create({
   page: {
     backgroundColor: PTSwatches.PTG4,
     height: height - (height / 27) * 4,
-    width: "100%",
+    width: width,
   },
   gradTile: {
     borderRadius: width / 18,

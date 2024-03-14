@@ -146,7 +146,7 @@ export default function ChatComponent({ navigation, route }) {
         </View>
       </View>
 
-      <View style={{ backgroundColor: PTG4, flex: 9}}>
+      <View style={{ backgroundColor: PTG4, flex: 8}}>
 
       <FlatList
           data={usernames}
