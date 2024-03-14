@@ -22,7 +22,7 @@ import {
   Ionicons,
   Octicons,
   MaterialCommunityIcons,
-  Feather
+  Feather,
 } from "@expo/vector-icons";
 import { JosefinSans_400Regular } from "@expo-google-fonts/dev";
 import LibraryBookItem from "./LibraryBookItem";
@@ -244,10 +244,20 @@ export default function SwapNegotiationPage({ route }) {
   }
 
   async function updateSwapHistory(currSwap) {
+    const swapHistoryObj = currSwap;
+    delete swapHistoryObj.updated_at;
+    delete swapHistoryObj.pending_swap_id;
+    console.log(swapHistoryObj);
     const { data, error } = await supabase
-      .from("Swap_History")
-      .insert([currSwap]);
-  }
+       .from("Swap_History")
+       .insert(swapHistoryObj);
+   
+    if (error) {
+       console.error("Error inserting into Swap_History:", error);
+    } else {
+       console.log("Insert successful:", data);
+    }
+   }
 
   async function removeData(infoResponse) {
     await Promise.all([
@@ -310,7 +320,7 @@ export default function SwapNegotiationPage({ route }) {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{
-                  height: 2,
+                  height: 5,
                   width: "100%",
                 }}
               ></LinearGradient>
@@ -373,7 +383,7 @@ export default function SwapNegotiationPage({ route }) {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{
-                  height: 2,
+                  height: 5,
                   width: "100%",
                 }}
               ></LinearGradient>
@@ -667,16 +677,24 @@ export default function SwapNegotiationPage({ route }) {
                     />
                   </View>
                   {renderModal(activeUserCheck, modalUserID, modalLibrary)}
-                  
+
                   <View
                     style={{
                       width: width,
                       height: (height / 27) * 2,
-                      backgroundColor: PTGreen,
+                      backgroundColor: PTG4,
                     }}
                   >
+                    <LinearGradient
+                      colors={[PTGreen, PTBlue]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={{
+                        height: 5,
+                        width: "100%",
+                      }}
+                    ></LinearGradient>
                   </View>
-
                 </View>
               </Modal>
             </View>
@@ -686,7 +704,6 @@ export default function SwapNegotiationPage({ route }) {
                 height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
                 width: "100%",
                 justifyContent: "space-between",
-                backgroundColor: PTRed,
               }}
             ></View>
           </View>
@@ -961,14 +978,22 @@ export default function SwapNegotiationPage({ route }) {
                 {renderModal(activeUserCheck, modalUserID, modalLibrary)}
 
                 <View
+                  style={{
+                    width: width,
+                    height: (height / 27) * 2,
+                    backgroundColor: PTG4,
+                  }}
+                >
+                  <LinearGradient
+                    colors={[PTGreen, PTBlue]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
                     style={{
-                      width: width,
-                      height: (height / 27) * 2,
-                      backgroundColor: PTGreen,
+                      height: 5,
+                      width: "100%",
                     }}
-                  >
-                  </View>
-
+                  ></LinearGradient>
+                </View>
               </View>
             </Modal>
           </View>
@@ -977,6 +1002,8 @@ export default function SwapNegotiationPage({ route }) {
         return null;
     }
   }
+
+console.log(currSwap)
 
   return (
     <SafeAreaView style={page}>
@@ -1039,7 +1066,8 @@ export default function SwapNegotiationPage({ route }) {
                 key={
                   activeUserID === info.user1_id
                     ? info.user2_username
-                    : info.user1_username}
+                    : info.user1_username
+                }
                 style={roundButton}
               >
                 <Ionicons
@@ -1097,6 +1125,26 @@ export default function SwapNegotiationPage({ route }) {
           >
             <Text style={styles.body}>Accept</Text>
           </Pressable> */}
+          <View
+            style={{ width: (10 * containerWidth) / 27, alignItems: "center" }}
+          >
+            <Pressable
+              style={{
+                ...pillButton,
+                backgroundColor: PTGreen,
+                width: (9 * containerWidth) / 27,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                updateSwapHistory(currSwap);
+                removeData(currSwap);
+                navigation.navigate("Home");
+              }}
+            >
+              <Text style={body}>Accept Offer</Text>
+            </Pressable>
+          </View>
 
           {/* <Pressable
             style={styles.reconsider}
@@ -1112,22 +1160,25 @@ export default function SwapNegotiationPage({ route }) {
           >
             <Text style={styles.body}>Reconsider</Text>
           </Pressable> */}
-
-          <Pressable
-            style={{
-              ...pillButton,
-              backgroundColor: PTRed,
-              width: (7 * width) / 27,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={() => {
-              rejectBook(pending_swap_id);
-              navigation.navigate("Home");
-            }}
+          <View
+            style={{ width: (10 * containerWidth) / 27, alignItems: "center" }}
           >
-            <Text style={body}>Reject Offer</Text>
-          </Pressable>
+            <Pressable
+              style={{
+                ...pillButton,
+                backgroundColor: PTRed,
+                width: (9 * containerWidth) / 27,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                rejectBook(pending_swap_id);
+                navigation.navigate("Home");
+              }}
+            >
+              <Text style={body}>Reject Offer</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -1173,6 +1224,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    width: containerWidth,
   },
   booksAndArrows: {
     flexDirection: "row",

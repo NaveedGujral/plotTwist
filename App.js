@@ -19,8 +19,8 @@ import ListedBook from "./components/ListedBook";
 import SwapNegotiationPage from "./components/SwapNegotiationPage";
 import DrawerNavigator from "./components/Menu";
 import AvailableListings from "./components/AvailableListings";
-import SwapOffer from "./components/SwapOffer";
-import User2LibraryPage from "./components/User2Library";
+// import SwapOffer from "./components/SwapOffer";
+// import User2LibraryPage from "./components/User2Library";
 import GenreList from "./components/GenreList";
 import ReconsiderLibrary from "./components/ReconsiderLibrary";
 import ChatComponent from "./components/Messages";
@@ -109,7 +109,7 @@ function App() {
             component={Search_Existing_Book}
             options={headerSS}
           />
-          <Stack.Screen
+          {/* <Stack.Screen
             name="SwapOffer"
             component={SwapOffer}
             initialParams={{ session: session }}
@@ -119,7 +119,7 @@ function App() {
             component={User2LibraryPage}
             initialParams={{ session: session }}
             options={headerSS}
-          />
+          /> */}
           <Stack.Screen
             name="GenreList"
             component={GenreList}

@@ -23,6 +23,22 @@ const containerHeight = 8*pageHeight/9
 const SwapHistory = ({ session }) => {
   const [userID, setUserID] = useState(session.user.id);
   const [userData, setUserData] = useState([]);
+  const [trigger, setTrigger] = useState(false);
+
+  const channel = supabase
+    .channel("Users")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+      },
+      (payload) => {
+        console.log(payload);
+        setTrigger(!trigger);
+      }
+    )
+    .subscribe();
 
   useEffect(() => {
     if (session) {
@@ -30,19 +46,19 @@ const SwapHistory = ({ session }) => {
     }
   }, [session]);
 
+  useEffect(() => {
+      getSwapInfo();
+  }, [trigger]);
+  
   const getSwapInfo = async () => {
     const { data, error } = await supabase
       .from("Swap_History")
       .select("*")
       .or(`user1_id.eq.${userID},user2_id.eq.${userID}`);
     setUserData(data);
+    console.log(data)
   };
 
-  useEffect(() => {
-    if (userID) {
-      getSwapInfo();
-    }
-  }, [userID]);
 
   const formatDate = (date) => {
     return date.split("T")[0];
