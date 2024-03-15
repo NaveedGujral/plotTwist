@@ -29,7 +29,7 @@ const Notifications = ({ route }) => {
       const { data, error } = await supabase
         .from("Notifications")
         .select()
-        .eq("user_id", session.user.id);
+        .eq("active_user_id", session.user.id);
       return data;
     }
 

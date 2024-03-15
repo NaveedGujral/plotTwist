@@ -33,7 +33,6 @@ export default function ListedBook({ route }) {
   const [userProfilePic, setUserProfilePic] = useState();
   const [userName, setUserName] = useState("");
 
-  
   useEffect(() => {
     async function getBookOwner() {
       const { data, error } = await supabase
@@ -45,9 +44,6 @@ export default function ListedBook({ route }) {
     getBookOwner();
   }, []);
 
-
-
-  
   useEffect(() => {
     switch (listing.user_id) {
       case "10240ee4-1b43-4749-afbe-1356c83af4da":
@@ -93,12 +89,12 @@ export default function ListedBook({ route }) {
 
     if (data.length > 0) {
       setSwapState(true);
-      setSwapRequestMade(true)
+      setSwapRequestMade(true);
     } else {
       setSwapState(false);
     }
   }
-  checkSwapExists()
+  checkSwapExists();
 
   const reqSwap = async () => {
     if (swapState) {
@@ -140,7 +136,8 @@ export default function ListedBook({ route }) {
       {
         swap_offer_id: id,
         type: "Swap_Request",
-        user_id: listing.user_id,
+        active_user_id: listing.user_id,
+        username: session.user.user_metadata.username,
       },
     ]);
   };
@@ -184,37 +181,39 @@ export default function ListedBook({ route }) {
           </View>
 
           <View>
-            {swapRequestMade ?
-            <View style={roundButtonPressed}>
-              <Octicons
-                name="arrow-switch"
-                size={30}
-                color={PTG4}
-                style={{ textAlign: "center", width: "100%" }}
-              />
-            </View>
-            :
-            <Pressable
-              onPress={() => {
-                Promise.all([checkSwapExists(), reqSwap()])
-                .then(
-                  ([checkResults, reqResults]) => {
-                    sendNotification(reqResults);
-                  }
-                );
-                setSwapRequestMade(true);
-              }}
-              style={roundButton}
-            >
-              <Octicons
-                name="arrow-switch"
-                size={30}
-                color={PTG1}
-                style={{ textAlign: "center", width: "100%" }}
-              />
-            </Pressable>}
-          </View>
+            {swapRequestMade ? (
+              <View style={roundButtonPressed}>
+                <Octicons
+                  name="arrow-switch"
+                  size={30}
+                  color={PTG4}
+                  style={{ textAlign: "center", width: "100%" }}
+                />
+              </View>
+            ) : (
+              <Pressable
+                onPress={() => {
+                  Promise.all([checkSwapExists(), reqSwap()]).then(
+                    ([checkResults, reqResults]) => {
+                      sendNotification(reqResults).then((res) => {
+                        console.log(res);
+                      });
+                    }
+                  );
 
+                  setSwapRequestMade(true);
+                }}
+                style={roundButton}
+              >
+                <Octicons
+                  name="arrow-switch"
+                  size={30}
+                  color={PTG1}
+                  style={{ textAlign: "center", width: "100%" }}
+                />
+              </Pressable>
+            )}
+          </View>
         </View>
       </View>
       <View style={{ flex: 1, justifyContent: "flex-end" }}>
