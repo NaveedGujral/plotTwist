@@ -1,18 +1,38 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
-  KeyboardAvoidingView,
-  Platform,
+  Image,
 } from "react-native";
 import supabase from "../config/supabaseClient";
+import { LinearGradient } from "expo-linear-gradient";
+
+const { PTStyles, PTSwatches } = require("../Styling");
+const {
+  heading,
+  subHeading,
+  body,
+  page,
+  pillButton,
+  roundButton,
+  roundButtonPressed,
+  bookImage1,
+} = PTStyles;
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
+const { height, width } = Dimensions.get("screen");
+const pageHeight = height - (height / 27) * 4;
+// const headerHeight = (2 * (pageHeight - height / 27)) / 9;
+const headerHeight = (4 * height) / 27;
+const containerWidth = width - (2 * width) / 27;
 
 export default function ChatWindow({ route }) {
-  const { sender, receiver, username, session } = route.params;
+  const { sender, receiver, username, session, profilePicture } = route.params;
   const [chatMessages, setChatMessages] = useState([]);
   const [text, setText] = useState("");
 
@@ -68,71 +88,169 @@ export default function ChatWindow({ route }) {
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        ref={scrollViewRef}
+      <View
         style={{
-          flex: 1,
-          marginBottom: Dimensions.get("window").height * 0.078,
+          // flex: 2,
+          height: headerHeight,
+          justifyContent: "center",
+          alignItems: "center",
         }}
-        contentContainerStyle={{ flexGrow: 1 }}
       >
-        {chatMessages.map((message) => {
-          if (!message) {
-            console.warn("Encountered undefined message object");
-            return null;
-          }
-          return message.sender_id === session.user.id ? (
-            <View style={styles.senderMessage}>
-              <Text>{message.message}</Text>
-              {/* {session.user.user_metadata.username}: {message.message} */}
-            </View>
-          ) : (
-            <View style={styles.receiverMessage}>
-              {/* {username}: {message.message} */}
-              <Text>{message.message}</Text>
-
-            </View>
-          );
-        })}
-      </ScrollView>
-      {Platform.OS !== "web" && (
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ position: "absolute", bottom: 0, width: "100%" }}
+        <View
+          style={{
+            height: headerHeight - 5,
+            width: containerWidth,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: width / 27,
+          }}
         >
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Send a message ..."
-              onChangeText={setText}
-              value={text}
-              onSubmitEditing={sendMessage}
-              style={styles.input}
-            />
+          <View>
+            <Image source={profilePicture} style={styles.profilePicture} />
           </View>
-        </KeyboardAvoidingView>
-      )}
-      {Platform.OS === "web" && (
-       <View style={styles.footer}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="Send a message ..."
-            onChangeText={setText}
-            value={text}
-            onSubmitEditing={sendMessage}
-            style={styles.input}
-          />
-        </View> 
-      </View> 
-      )}
+          <View>
+            <Text style={heading}>{username}</Text>
+          </View>
+        </View>
+        <View style={{ height: 5, justifyContent: "flex-end" }}>
+          <LinearGradient
+            colors={[PTGreen, PTBlue]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{
+              height: "100%",
+              width: width,
+              zIndex: 1,
+              elevation: 1,
+            }}
+          ></LinearGradient>
+        </View>
+      </View>
+
+      <View
+        style={{
+          // flex: 7
+          height: pageHeight - (6 * height) / 27,
+        }}
+      >
+        <ScrollView
+          ref={scrollViewRef}
+          style={{
+            width: width - (2 * width) / 27,
+          }}
+          contentContainerStyle={
+            {
+              // flexGrow: 1
+            }
+          }
+          showsVerticalScrollIndicator={false}
+        >
+          {chatMessages.map((message) => {
+            if (!message) {
+              console.warn("Encountered undefined message object");
+              return null;
+            }
+            return message.sender_id === session.user.id ? (
+              <View
+                style={
+                  chatMessages[0] === message
+                    ? {
+                        ...styles.message,
+                        alignSelf: "flex-end",
+                        color: PTG1,
+                        backgroundColor: PTBlue,
+                        marginTop: (2 * width) / 81,
+                      }
+                    : {
+                        ...styles.message,
+                        alignSelf: "flex-end",
+                        color: PTG1,
+                        backgroundColor: PTBlue,
+                      }
+                }
+              >
+                <Text style={body}>{message.message}</Text>
+                {/* {session.user.user_metadata.username}: {message.message} */}
+              </View>
+            ) : (
+              <View
+                style={
+                  chatMessages[0] === message
+                    ? {
+                        ...styles.message,
+                        alignSelf: "flex-start",
+                        color: PTG4,
+                        backgroundColor: PTG1,
+                        marginTop: (2 * width) / 81,
+                      }
+                    : {
+                        ...styles.message,
+                        alignSelf: "flex-start",
+                        color: PTG4,
+                        backgroundColor: PTG1,
+                      }
+                }
+              >
+                {/* {username}: {message.message} */}
+                <Text>{message.message}</Text>
+              </View>
+            );
+          })}
+        </ScrollView>
+      </View>
+
+      <View style={{ height: (2 * height) / 27 }}>
+        {Platform.OS !== "web" && (
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ width: "100%" }}
+          >
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="Send a message ..."
+                onChangeText={setText}
+                value={text}
+                onSubmitEditing={sendMessage}
+                style={{
+                  ...body,
+                  height: "100%",
+                  paddingHorizontal: 10,
+                  backgroundColor: PTG3,
+                }}
+              />
+            </View>
+          </KeyboardAvoidingView>
+        )}
+        {Platform.OS === "web" && (
+          <View style={styles.footer}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="Send a message ..."
+                onChangeText={setText}
+                value={text}
+                onSubmitEditing={sendMessage}
+                style={{
+                  ...body,
+                  height: "100%",
+                  paddingHorizontal: 10,
+                  backgroundColor: PTG3,
+                }}
+              />
+            </View>
+          </View>
+        )}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#272727",
-    overflow: 'hidden',
+    height: pageHeight,
+    backgroundColor: PTG4,
+    overflow: "hidden",
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
     fontFamily: "CormorantGaramond_400Regular",
@@ -140,52 +258,34 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
   },
+  profilePicture: {
+    height: (7 * headerHeight) / 9,
+    width: (7 * headerHeight) / 9,
+    borderRadius: (7 * headerHeight) / 18,
+  },
   inputContainer: {
-    backgroundColor: "white",
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 5,
+    backgroundColor: PTG1,
+    width: width,
+    height: "100%",
   },
   footer: {
-    justifyContent: "flex-end",
-    marginBottom: Dimensions.get("window").height * 0.08,
-    height: 10,
+    width: width,
+    height: "100%",
   },
-
-  senderMessage: {
-    fontFamily: "CormorantGaramond_400Regular",
-    color: "white",
-    fontSize: 16,
-    alignSelf: "flex-end",
-    padding: 5,
-    borderColor: "gray",
-    borderWidth: 2,
-    borderRadius: 12,
-    marginTop: 5,
-    marginBottom: 5,
-    marginRight: 5,
-    maxWidth: '70%',
-    backgroundColor: "#2b88cf"
-  },
-  receiverMessage: {
-    backgroundColor: "#dadfe3",
-    fontFamily: "CormorantGaramond_400Regular",
-    color: "black",
-    fontSize: 16,
-    alignSelf: "flex-start",
-    padding: 5,
-    borderColor: "gray",
-    borderWidth: 2,
-    borderRadius: 12,
-    marginTop: 5,
-    marginBottom: 5,
-    marginLeft: 5,
-    maxWidth: '70%',
+  message: {
+    padding: (2 * width) / 81,
+    borderRadius: (2 * pageHeight) / 81,
+    marginBottom: (2 * width) / 81,
+    minHeight: (4 * pageHeight) / 81,
+    maxWidth: (2 * (width - (2 * width) / 27)) / 3,
+    justifyContent: "center",
   },
   input: {
-    height: 40,
+    fontSize: 18,
+    fontWeight: "100",
+    color: PTSwatches.PTG3,
+    fontFamily: "JosefinSans_",
+    height: "100%",
     paddingHorizontal: 10,
-    marginBottom: 15,
-    fontSize: 16,
   },
 });

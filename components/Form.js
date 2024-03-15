@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Image } from "react-native";
+import { Image, Text, View } from "react-native";
 import { Input } from "react-native-elements";
 import SelectDropdown from "react-native-select-dropdown";
 
