@@ -687,8 +687,8 @@ export default function SwapNegotiationPage({ route }) {
                   >
                     <LinearGradient
                       colors={[PTGreen, PTBlue]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
+                      start={{ x: 1, y: 1 }}
+                      end={{ x: 0, y: 0 }}
                       style={{
                         height: 5,
                         width: "100%",
@@ -986,8 +986,8 @@ export default function SwapNegotiationPage({ route }) {
                 >
                   <LinearGradient
                     colors={[PTGreen, PTBlue]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
+                    start={{ x: 1, y: 1 }}
+                    end={{ x: 0, y: 0 }}
                     style={{
                       height: 5,
                       width: "100%",
@@ -1002,8 +1002,6 @@ export default function SwapNegotiationPage({ route }) {
         return null;
     }
   }
-
-console.log(currSwap)
 
   return (
     <SafeAreaView style={page}>

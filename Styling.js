@@ -14,6 +14,8 @@ function LogoW() {
   const logoH = 96;
   const targetBannerHeight = height / 27;
   const resizeVal = targetBannerHeight / logoH;
+
+  
   return (
     <Image
       source={require("./assets/Logos/Banner2W1X.png")}
@@ -60,6 +62,13 @@ const PTStyles = StyleSheet.create({
     color: PTSwatches.PTG1,
     fontFamily: "JosefinSans_300Light",
   },
+  buttonText: {
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "400",
+    color: PTSwatches.PTG1,
+    fontFamily: "JosefinSans_400Regular",
+  },
   body: {
     fontSize: 16,
     fontWeight: "100",
@@ -100,6 +109,7 @@ const PTStyles = StyleSheet.create({
   pillButton: {
     height:4*pageHeight/81,
     borderRadius: 2*pageHeight/81,
+    backgroundColor:PTSwatches.PTGreen,
   },
   roundButton: {
     width: 4*width/27,

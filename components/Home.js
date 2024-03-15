@@ -84,7 +84,8 @@ const HomeScreen = ({ navigation }) => {
     async function getCategories() {
       const { data, error } = await supabase
         .from("Listings")
-        .select("category");
+        .select("category")
+        .order('category', { ascending: true})
       const catArr = [];
       data.forEach((obj) => {
         if (!catArr.includes(obj.category)) catArr.push(obj.category);
