@@ -1,17 +1,15 @@
 import { AntDesign, Octicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
 import {
-  Dimensions,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
+    Dimensions,
+    Image,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
-import { Input } from "react-native-elements";
 import supabase from "../config/supabaseClient";
 
 const screenHeight = Dimensions.get("window").height;
@@ -92,10 +90,6 @@ export default function UserProfile({ route }) {
       });
   }, [session.user_id]);
 
-  //   useEffect(() => {
-  //     setActiveSaveButton(true)
-  //   }, [username])
-
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -142,64 +136,6 @@ export default function UserProfile({ route }) {
       },
     });
   }
-
-  //   if (editing) {
-  //     return (
-  //       <View>
-  //         <View>
-  //           <Input
-  //             title="Username"
-  //             placeholder="Username"
-  //             value={username}
-  //             onChangeText={(text) => {
-  //               setUsername(text);
-  //             }}
-  //           />
-  //         </View>
-  //         <View style={styles.edit_container}>
-  //           <Input
-  //             title="Email"
-  //             placeholder="Email"
-  //             value={email}
-  //             onChangeText={(text) => {
-  //               setEmail(text);
-  //             }}
-  //           />
-  //         </View>
-  //         <View>
-  //           <Input
-  //             title="Phone Number"
-  //             placeholder="+44.............."
-  //             value={phone}
-  //             inputMode="numeric"
-  //             onChangeText={(text) => {
-  //               setPhone(text);
-  //             }}
-  //           />
-  //         </View>
-
-  //         <View style={styles.buttonContainer}>
-  //           <Pressable
-  //             onPress={() => {
-  //               setIsEditing(false);
-  //               if (id) {
-  //                 updateUserData(id);
-  //                 update;
-  //               } else {
-  //                 sendNewData();
-  //               }
-  //               updateSessionUserData;
-  //             }}
-  //             style={styles.edit_button}
-  //           >
-  //             <AntDesign name="save" size={24} color="black" />
-  //           </Pressable>
-  //         </View>
-  //       </View>
-  //     );
-  //   }
-
-  console.log(activeSaveButton);
 
   return (
     <View style={page}>

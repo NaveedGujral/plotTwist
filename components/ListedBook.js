@@ -196,7 +196,8 @@ export default function ListedBook({ route }) {
             :
             <Pressable
               onPress={() => {
-                Promise.all([checkSwapExists(), reqSwap()]).then(
+                Promise.all([checkSwapExists(), reqSwap()])
+                .then(
                   ([checkResults, reqResults]) => {
                     sendNotification(reqResults);
                   }
