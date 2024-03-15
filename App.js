@@ -12,17 +12,13 @@ import SignUp from "./components/SignUp";
 import Footer from "./components/Footer";
 import UserProfile from "./components/UserProfile";
 import Messages from "./components/Messages";
-import Notifications from "./components/Notifications";
 import CreateListing from "./components/Create_Listing";
 import Search_Existing_Book from "./components/Search_Existing_Book";
 import ListedBook from "./components/ListedBook";
 import SwapNegotiationPage from "./components/SwapNegotiationPage";
 import DrawerNavigator from "./components/Menu";
 import AvailableListings from "./components/AvailableListings";
-// import SwapOffer from "./components/SwapOffer";
-// import User2LibraryPage from "./components/User2Library";
 import GenreList from "./components/GenreList";
-import ReconsiderLibrary from "./components/ReconsiderLibrary";
 import ChatComponent from "./components/Messages";
 import ChatWindow from "./components/ChatWindow";
 
@@ -32,7 +28,7 @@ const Stack = createNativeStackNavigator();
 
 function App() {
   const [session, setSession] = useState(null);
-  const [newNotif, setNewNotif] = useState(false);
+  // const [newNotif, setNewNotif] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then((session) => {
@@ -74,12 +70,12 @@ function App() {
             initialParams={{ session: session }}
             options={headerSS}
           />
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Notifications"
             component={Notifications}
             initialParams={{ session: session, setNewNotif: setNewNotif }}
             options={headerSS}
-          />
+          /> */}
           <Stack.Screen
             name="CreateListing"
             component={CreateListing}
@@ -125,12 +121,12 @@ function App() {
             component={GenreList}
             options={headerSS}
           />
-          <Stack.Screen
+          {/* <Stack.Screen
             name="ReconsiderLibrary"
             component={ReconsiderLibrary}
             initialParams={{ session: session }}
             options={headerSS}
-          />
+          /> */}
 		  <Stack.Screen
             name="ChatWindow"
             component={ChatWindow}
@@ -145,7 +141,7 @@ function App() {
           <Stack.Screen name="SignUp" component={SignUp} options={headerSS} />
         </Stack.Navigator>
       )}
-      {session && session.user && <Footer newNotif={newNotif} />}
+      {session && session.user && <Footer/>}
       <StatusBar style="auto" />
     </NavigationContainer>
   );
