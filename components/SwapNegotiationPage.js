@@ -1,32 +1,25 @@
+import { JosefinSans_400Regular } from "@expo-google-fonts/dev";
 import {
-  Text,
-  StyleSheet,
-  Pressable,
-  View,
+  Ionicons,
+  MaterialCommunityIcons,
+  Octicons
+} from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import { useEffect, useRef, useState } from "react";
+import {
   Dimensions,
-  Image,
   FlatList,
+  Image,
+  Pressable,
   SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import Modal from "react-native-modal";
-import {
-  ScreenWidth,
-  ScreenHeight,
-  color,
-} from "react-native-elements/dist/helpers";
-import { useNavigation } from "@react-navigation/native";
 import supabase from "../config/supabaseClient";
-import { useEffect, useState, useRef } from "react";
-import {
-  Entypo,
-  Ionicons,
-  Octicons,
-  MaterialCommunityIcons,
-  Feather,
-} from "@expo/vector-icons";
-import { JosefinSans_400Regular } from "@expo-google-fonts/dev";
 import LibraryBookItem from "./LibraryBookItem";
-import { LinearGradient } from "expo-linear-gradient";
 
 const { PTStyles, PTSwatches } = require("../Styling");
 const {

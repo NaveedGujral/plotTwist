@@ -44,8 +44,6 @@ const CreateListing = ({ route, navigation }) => {
   const [condition, setCondition] = useState("");
   const [description, setDescription] = useState(currDescription);
   const [currImgUrl, setcurrImgUrl] = useState(imgUrl);
-  const [categoryOpen, setCategoryOpen] = useState(false);
-  const [conditionOpen, setConditionOpen] = useState(false);
 
   const conditions = [
     { label: "New", value: "New" },
