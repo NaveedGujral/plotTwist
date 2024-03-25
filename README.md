@@ -1,6 +1,8 @@
-# Book Swap App
+# Book Swap App - MVP BUILD
 
 This is a book swapping app developed using React Native and Supabase. Users can list their books and trade them with other users to obtain different books, helping reduce the need to buy new, and connecting readers with other like-minded people.
+
+The project is still in development and currently only works when previewed within a web browser.
 
 ## Features
 
@@ -34,4 +36,6 @@ This is a book swapping app developed using React Native and Supabase. Users can
  npm start
 ```
 
- 2. Open the app in your browser or on your mobile device.
+ 2. Open the app in google chrome
+ 3. Right click anywhere in the window and click Inspect
+ 4. Select any mobile device from the dimensions drop down menu
