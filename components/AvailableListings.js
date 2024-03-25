@@ -1,36 +1,44 @@
-import {
-  Text,
-  StyleSheet,
-  Pressable,
-  View,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-  Platform,
-} from "react-native";
+import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { Ionicons, Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
+import Modal from "react-native-modal";
 import supabase from "../config/supabaseClient";
 import ListedBook from "./ListedBook";
-import Collapsible from "react-native-collapsible";
-import { LinearGradient } from "expo-linear-gradient";
-import { useFonts } from "expo-font";
-import Modal from "react-native-modal";
-import { Dimensions } from "react-native";
-import {
-  VollkornSC_400Regular,
-  Bellefair_400Regular,
-  CormorantGaramond_400Regular,
-  Lora_400Regular,
-  JosefinSans_400Regular,
-} from "@expo-google-fonts/dev";
+import WishListButton from "./WishListButton";
+
 const screenHeight = Dimensions.get("window").height;
 const api = process.env.GOOGLE_BOOKS_API_KEY;
+
+const { PTStyles, PTSwatches } = require("../Styling");
+const { heading, subHeading, body, page, gradTile, tileHeaderBox, tileImage } =
+  PTStyles;
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
+const { height, width } = Dimensions.get("screen");
+
+const pageHeight = height - (height / 27) * 4;
+const bookImageWidth = width * 0.4445 * 0.9334;
+const view1Height = pageHeight / 2;
+const container1Height = view1Height - view1Height / 4;
+const view2Height = (7 * pageHeight) / 18;
+const container2Height = (8 * view2Height) / 9;
+const cardContainerHeight = container2Height / 1.5;
 
 export default function AvailableListings({ route }) {
   const navigation = useNavigation();
   const { session, listing } = route.params;
+  const id = session.user.id;
   const [listings, setListings] = useState([]);
   const [userName, setUserName] = useState("");
   const [bookInfo, setBookInfo] = useState({});
@@ -38,24 +46,9 @@ export default function AvailableListings({ route }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [swapRequestMade, setSwapRequestMade] = useState(false);
   const [showCloseButton, setShowCloseButton] = useState(false);
-
-  const googleID = route.params.listing.google_book_id;
+  const [wishListed, setWishListed] = useState(false);
 
   useEffect(() => {
-    async function getBookInfo() {
-      // if googlebooks ID exists, will find info from API
-      if (googleID) {
-        try {
-          const response = await fetch(
-            `https://www.googleapis.com/books/v1/volumes/${googleID}?key=${api}`
-          );
-          const data = await response.json();
-          setBookInfo(data.volumeInfo);
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    }
     async function getAllListings() {
       const { data, error } = await supabase
         .from("Listings")
@@ -63,19 +56,10 @@ export default function AvailableListings({ route }) {
         .eq("book_title", listing.book_title);
       setListings(data);
     }
-    async function getBookOwner() {
-      const { data, error } = await supabase
-        .from("Users")
-        .select("username")
-        .eq("user_id", listing.user_id);
-      setUserName(data[0].username);
-    }
-    getBookInfo();
     getAllListings();
-    getBookOwner();
   }, []);
-  // remove <p> and <br> from description
-  const blurb = bookInfo.description;
+
+  const blurb = listing.description;
   let newBlurb;
   if (blurb) {
     const regex = /<\/?[^>]+>/g;
@@ -83,101 +67,249 @@ export default function AvailableListings({ route }) {
   }
 
   return (
-    <View
-      style={
-        Platform.OS === "web"
-          ? { ...styles.container, ...styles.webFix }
-          : styles.container
-      }
-    >
-      <View style={styles.halfPage}>
-        <View style={styles.bookInfoBox}>
-          <LinearGradient
-            colors={["#307361", "rgba(169, 169, 169, 0.10)"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
+    <View style={page}>
+      <View
+        style={{
+          flex: 6,
+          shadowOpacity: 1,
+          shadowRadius: 8,
+          shadowOffset: 8,
+        }}
+      >
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text
             style={{
-              borderRadius: 30,
-              overflow: "hidden",
-              height: "100%",
-              marginBottom: 25,
+              ...heading,
+              textAlign: "center",
             }}
           >
-            <Text style={styles.title}> {bookInfo.title}</Text>
-            <View style={styles.bookCardContainer}>
-              <Image
-                style={styles.bookCard}
-                source={{ uri: listing.img_url }}
-              />
-            </View>
-            {Object.keys(bookInfo).length > 0 ? (
-              <View>
-                <Text style={styles.author}> {bookInfo.authors}</Text>
-                <Text style={styles.text}>
-                  Released on {bookInfo.publishedDate}
-                </Text>
-                <Pressable
-                  onPress={() => setIsModalVisible(true)}
-                  style={styles.descriptionButton}
-                >
-                  <Text style={styles.text}>About</Text>
+            Listings
+          </Text>
+        </View>
+      </View>
+      <View
+        style={{
+          flex: 27,
+          justifyContent: "center",
+          alignItems: "center",
+          height: container1Height,
+          width: width,
+        }}
+      >
+        <LinearGradient
+          colors={[PTGreen, PTBlue]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={gradTile}
+        >
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              flex: 1,
+              width: "89.78%",
+            }}
+          >
+            <Text numberOfLines={2} style={tileHeaderBox}>
+              {listing.book_title}
+            </Text>
+          </View>
+          <Image style={tileImage} source={{ uri: listing.img_url }} />
+          <View style={{ justifyContent: "center", flex: 1 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                width: bookImageWidth,
+                justifyContent: "space-between",
+              }}
+            >
+              <View
+                style={{
+                  height: bookImageWidth / 5,
+                  width: bookImageWidth / 5,
+                  borderRadius: bookImageWidth / 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View style={{ justifyContent: "flex-start" }}>
+                  <Ionicons
+                    name="add-outline"
+                    size={36}
+                    style={{
+                      color: PTG1,
+                      alignSelf: "stretch",
+                      width: "100%",
+                      height: "100%",
+                    }}
+                    onPress={() =>
+                      navigation.navigate("CreateListing", {
+                        currTitle: listing.book_title,
+                        authors: listing.author,
+                        currDescription: listing.description,
+                        imgUrl: listing.img_url,
+                        navigation: navigation,
+                        book_id: listing.google_book_id,
+                      })
+                    }
+                  />
+                </View>
+              </View>
+              <View
+                style={{
+                  height: bookImageWidth / 5,
+                  width: bookImageWidth / 5,
+                  justifyContent: "center",
+                }}
+              >
+                <WishListButton
+                  listing={listing}
+                  id={id}
+                  wishListed={wishListed}
+                  setWishListed={setWishListed}
+                  iconSize={24}
+                  styles={{
+                    heartContainer: styles.heartContainer,
+                    heart: styles.heart,
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  height: bookImageWidth / 5,
+                  width: bookImageWidth / 5,
+                  justifyContent: "center",
+                }}
+              >
+                <Pressable onPress={() => setIsModalVisible(true)}>
+                  <Entypo
+                    name="dots-three-horizontal"
+                    size={height * 0.0223}
+                    color={PTG1}
+                    style={{ textAlignVertical: "center", textAlign: "center" }}
+                  />
                 </Pressable>
 
-                <Modal isVisible={isModalVisible} backdropOpacity={2}>
+                <Modal isVisible={isModalVisible}>
                   <View style={styles.modal}>
-                    {/* <ScrollView> */}
+                    <LinearGradient
+                      colors={[PTGreen, PTBlue]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                      }}
+                    >
                       <View
-                        style={{ flexDirection: "column", alignItems: "left" }}
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          width: width,
+                          height: (height / 27) * 2,
+                        }}
                       >
-                        <Text style={styles.text}>{newBlurb}</Text>
-                        <View>
-                          <Pressable
-                            onPress={() => setIsModalVisible(false)}
-                            style={styles.closeButton}
-                          >
-                            <Text style={styles.text}>Close</Text>
-                          </Pressable>
-                        </View>
+                        <MaterialCommunityIcons
+                          name="chevron-double-down"
+                          size={36}
+                          color={PTG1}
+                          style={{ alignSelf: "center" }}
+                          onPress={() => setIsModalVisible(false)}
+                        />
                       </View>
-                    {/* </ScrollView> */}
+                      <View
+                        style={{
+                          flexDirection: "column",
+                          alignItems: "left",
+                          width: width * 0.9334,
+                          height: height - (height / 27) * 2,
+                        }}
+                      >
+                        <Text style={subHeading}> </Text>
+                        <Text style={{ ...tileHeaderBox, textAlign: "left" }}>
+                          {listing.book_title}
+                        </Text>
+                        <Text style={subHeading}> </Text>
+                        <Text style={subHeading}>{listing.author}</Text>
+                        <Text style={subHeading}> </Text>
+                        <Text style={subHeading}>{newBlurb}</Text>
+                      </View>
+                    </LinearGradient>
                   </View>
                 </Modal>
               </View>
-            ) : (
-              <Text style={styles.text}> No information available </Text>
-            )}
-          </LinearGradient>
-        </View>
+            </View>
+          </View>
+        </LinearGradient>
       </View>
+      <View
+        style={{
+          flex: 21,
+        }}
+      >
+        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+          <LinearGradient
+            colors={[PTGreen, PTBlue]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{
+              height: 5,
+              width: "100%",
+              zIndex: 1,
+              elevation: 1,
+            }}
+          ></LinearGradient>
+        </View>
 
-      <View style={[styles.halfPage, {marginTop: 30}]}>
-        <Text style={styles.title}>Books listed by users:</Text>
-        <FlatList
-          data={listings}
-          keyExtractor={(item) => item.book_id}
-          renderItem={({ item }) => (
-            <View style={styles.listItem}>
-              <Text style={styles.text}>
-                {" "}
-                Posted by {userName} on{" "}
-                {new Date(item.date_posted).toLocaleDateString()}{" "}
-              </Text>
-              <Text style={styles.text}> Condition is {item.condition} </Text>
-              <Pressable style={styles.descriptionButton}>
+        <View
+          style={{
+            flex: 8,
+          }}
+        >
+          <FlatList
+            data={listings}
+            keyExtractor={(item) => item.book_id}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <View style={styles.listingContainer}>
                 <ListedBook
-                  username={userName}
+                  userName={userName}
                   route={{ session: session, listing: item }}
                 />
-              </Pressable>
-            </View>
-          )}
-        />
+              </View>
+            )}
+            contentContainerStyle={{ flex: 1, zIndex: 0, elevation: 0 }}
+          />
+        </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  listingContainer: {
+    height: cardContainerHeight,
+    width: width,
+    justifyContent: "center",
+    alignContent: "center",
+    zIndex: 0,
+    elevation: 0,
+  },
+  heartContainer: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  heart: {
+    textAlign: "center",
+    textAlignVertical: "center",
+    position: "absolute",
+    color: PTG1,
+  },
   container: {
     backgroundColor: "#272727",
     flex: 1,
@@ -189,9 +321,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   modal: {
-    flex: 1,
+    width: width,
+    height: height,
+    alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 0,
+    backgroundColor: PTG4,
   },
   title: {
     fontSize: 18,
@@ -214,7 +350,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   closeButton: {
-    // position: "absolute",
     top: 60,
     right: 10,
     borderRadius: 50,
@@ -264,5 +399,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderBlockColor: "white",
     paddingTop: 10,
+  },
+  seeAllButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
   },
 });

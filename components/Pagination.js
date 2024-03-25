@@ -1,42 +1,58 @@
 import { StyleSheet, View, Dimensions, Animated } from "react-native";
 
-const screenHeight = Dimensions.get('screen').height;
-const screenWidth = Dimensions.get('screen').width;
+const { PTSwatches } = require('../Styling')
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches
+
+const { height, width } = Dimensions.get("window");
 
 export default function Pagination ({listings, scrollX}) {
     return (
-        <View style={styles.container}>
+        <View 
+            style={{
+                flex: 1/3, 
+                flexDirection: 'row', 
+                justifyContent: "space-between",
+                width: "33%"
+            }}>
             {
                 listings.map((_, idx) => {
-                    const inputRange = [(idx - 1) * screenWidth, idx * screenWidth, (idx + 1) * screenWidth];
+                    const inputRange = [(idx - 1) * width, idx * width, (idx + 1) * width];
+                    const minWidth = width*0.0112
+                    const maxWidth = 1.33*minWidth
+                    const minRad = minWidth/2
+                    const maxRad = maxWidth/2
+                    
+                    const color = scrollX.interpolate({
+                      inputRange,
+                      outputRange: [PTG2, PTG1, PTG2],
+                      extrapolate: "clamp",
+                    });
+
                     const dotWidth = scrollX.interpolate({
                         inputRange,
-                        outputRange: [12, 30, 12],
+                        outputRange: [minWidth, maxWidth, minWidth],
                         extrapolate: 'clamp',
                     })
+                    
+                    const dotRad = scrollX.interpolate({
+                        inputRange,
+                        outputRange: [minRad, maxRad, minRad],
+                        extrapolate: 'clamp',
+                    })
+
                     return <Animated.View
                         key={idx.toString()}
-                        style={[styles.dot, {width: dotWidth}]} />
+                        style={{
+                            justifyContent:"center",
+                            alignSelf: "center",
+                            borderRadius: dotRad,
+                            margin: dotRad, 
+                            height: dotWidth,
+                            width: dotWidth, 
+                            backgroundColor: color
+                    }} />
                 })
             }
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    dot: {
-        width: 12,
-        height: 12,
-        borderRadius: 6,
-        // backgroundColor: '#777',
-        backgroundColor: 'white',
-        margin: 2,
-    },
-    container: {
-        flex: 1,
-        flexDirection: 'row',
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-})

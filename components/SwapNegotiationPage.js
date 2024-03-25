@@ -1,51 +1,108 @@
-import {
-  Text,
-  StyleSheet,
-  Pressable,
-  View,
-  Dimensions,
-  Image,
-} from "react-native";
-import {
-  ScreenWidth,
-  ScreenHeight,
-  color,
-} from "react-native-elements/dist/helpers";
-import { useNavigation } from "@react-navigation/native";
-import supabase from "../config/supabaseClient";
-import { useEffect, useState } from "react";
-import { Entypo, Ionicons } from "@expo/vector-icons";
 import { JosefinSans_400Regular } from "@expo-google-fonts/dev";
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  Octicons
+} from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import { useEffect, useRef, useState } from "react";
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import Modal from "react-native-modal";
+import supabase from "../config/supabaseClient";
+import LibraryBookItem from "./LibraryBookItem";
+
+const { PTStyles, PTSwatches } = require("../Styling");
+const {
+  heading,
+  subHeading,
+  body,
+  page,
+  pillButton,
+  roundButton,
+  roundButtonPressed,
+} = PTStyles;
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
+const { width, height } = Dimensions.get("screen");
+const pageHeight = height - (height / 27) * 4;
+const containerWidth = width - (2 * width) / 27;
+
+const headerFlex = 3;
+const userInfoFlex = 7;
+const booksFlex = 14;
+const buttonsFlex = 3;
 
 export default function SwapNegotiationPage({ route }) {
-  const [title, setTitle] = useState([]);
   const navigation = useNavigation();
   const [user1ProfilePic, setUser1ProfilePic] = useState();
   const [user2ProfilePic, setUser2ProfilePic] = useState();
   const [user2BookUrl, setUser2BookUrl] = useState("");
   const [reconsidered, setReconsidered] = useState(false);
-  const [key, setKey] = useState(Date.now());
+  const [timeKey, setTimeKey] = useState(Date.now());
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [activeUserLibrary, setActiveUserLibrary] = useState([]);
+  const [nonActiveUserLibrary, setNonActiveUserLibrary] = useState([]);
+  const activeUserLibraryRef = useRef(activeUserLibrary);
+  const nonActiveUserLibraryRef = useRef(nonActiveUserLibrary);
 
+  // Passed down props from swap card or notifications
+  const { info, session, type } = route.params;
+
+  const [currType, setCurrType] = useState(type);
+
+  if (currType === "activeReceived") {
+    setCurrType("received");
+  }
+  if (currType === "activeSent") {
+    setCurrType("sent");
+  }
+
+  const [currSwap, setCurrSwap] = useState(info);
   const {
-    user1_book,
-    user2_book,
-    info,
-    session,
-    user2_book_url,
-    user2_book_info,
-  } = route.params;
+    pending_swap_id,
+    user1_author,
+    user1_book_imgurl,
+    user1_book_title,
+    user1_id,
+    user1_listing_id,
+    user1_username,
+    user1_category,
+    user1_condition,
+    user1_desc,
+    user2_author,
+    user2_book_imgurl,
+    user2_book_title,
+    user2_id,
+    user2_listing_id,
+    user2_username,
+    user2_category,
+    user2_condition,
+    user2_desc,
+  } = currSwap;
 
-  useEffect(() => {
-    if (reconsidered) {
-      let newUser2BookInfo = { ...user2_book_info };
-      setUser2BookUrl(newUser2BookInfo.img_url);
-    }
-    setReconsidered(false);
-  }, [reconsidered, user2_book_info, key]);
+  const activeUserID =
+    session.user.id === info.user1_id ? info.user1_id : info.user2_id;
+  const nonActiveUserID =
+    session.user.id === info.user1_id ? info.user2_id : info.user1_id;
+  const [activeUserCheck, setActiveUserCheck] = useState();
+  const [modalUserID, setModalUserID] = useState();
+  const [modalLibrary, setModalLibrary] = useState();
+
+  // State to trigger fetchAllListings
+  const [triggerFetch, setTriggerFetch] = useState(false);
 
   // MVP ONLY - NEEDS REFACTORING TO BE SCALABLE!
   useEffect(() => {
-    switch (session.user.id) {
+    switch (info.user1_id) {
       case "10240ee4-1b43-4749-afbe-1356c83af4da":
         setUser1ProfilePic(
           require("../assets/ExampleUserProfilePictures/Nav.jpg")
@@ -78,7 +135,6 @@ export default function SwapNegotiationPage({ route }) {
         break;
     }
   }, []);
-
   useEffect(() => {
     switch (info.user2_id) {
       case "10240ee4-1b43-4749-afbe-1356c83af4da":
@@ -115,102 +171,934 @@ export default function SwapNegotiationPage({ route }) {
   }, []);
 
   useEffect(() => {
-    getTransferData().then((res) => {
-      setTitle([`${res.user1_book_title}`, `${res.user2_book_title}`]);
-    });
-  }, []);
+    fetchAllListings();
+  }, [triggerFetch]);
 
   useEffect(() => {
-    if (user2_book && user2BookUrl !== user2_book.user2_book_imgurl) {
-      setUser2BookUrl(user2_book.user2_book_imgurl);
-    }
-  }, [user2_book, user2BookUrl]);
+    fetchAllListings();
+    handleUserIDChange();
+  }, [activeUserID, nonActiveUserID]);
 
-    async function getTransferData() {
-        const { data, error } = await supabase
-            .from('Pending_Swaps')
-            .select()
-            .eq('pending_swap_id', user1_book ? user1_book.pending_swap_id : info.swap_offer_id);
+  useEffect(() => {
+    updateSwapInfo(currSwap);
+  }, [currSwap]);
 
-        return data[0];
-    }
+  function handleUserIDChange() {
+    setTriggerFetch((prev) => !prev);
+  }
 
-    async function updateSwapHistory(info) {
-        const { data, error } = await supabase.from('Swap_History').insert([info]);
-    }
+  async function getListings(user_id) {
+    const { data, error } = await supabase
+      .from("Listings")
+      .select("*")
+      .eq("user_id", user_id)
+      .order("date_posted", { ascending: false });
 
-    async function removeData(infoResponse) {
-        await Promise.all([supabase.from('Pending_Swaps').delete().eq('pending_swap_id', infoResponse.pending_swap_id), supabase.from('Listings').delete().eq('book_id', infoResponse.user1_listing_id), supabase.from('Listings').delete().eq('book_id', infoResponse.user2_listing_id)]);
+    if (error) {
+      // alert(error);
+    } else {
+      return data;
     }
+  }
 
-    async function rejectBook(info) {
-        await Promise.all([
-            supabase.from('Notifications').insert([
-                {
-                    type: 'Offer_Rejected',
-                    user_id: info.user1_id === session.user.id ? info.user2_id : info.user1_id,
-                    username: session.user.user_metadata.username,
-                },
-            ]),
-            supabase.from('Notifications').delete().eq('swap_offer_id', info.pending_swap_id),
-            supabase.from('Pending_Swaps').delete().eq('pending_swap_id', info.pending_swap_id),
-        ]);
+  async function fetchAllListings() {
+    try {
+      const [activeUserListings, nonActiveUserListings] = await Promise.all([
+        getListings(activeUserID),
+        getListings(nonActiveUserID),
+      ]);
+      // console.log("listings retrieved");
+      setActiveUserLibrary(activeUserListings);
+      setNonActiveUserLibrary(nonActiveUserListings);
+    } catch (error) {
+      console.error("Error fetching listings:", error);
     }
+  }
+
+  async function updateSwapInfo(currSwap) {
+    const { data, error } = await supabase
+      .from("Pending_Swaps")
+      .update(currSwap)
+      .eq("pending_swap_id", currSwap.pending_swap_id);
+    if (error) {
+      // alert("Error", error);
+      console.log(error);
+    }
+    // console.log(data[0]);
+    return data[0];
+  }
+
+  async function getTransferData() {
+    const { data, error } = await supabase
+      .from("Pending_Swaps")
+      .select()
+      .eq("pending_swap_id", info.pending_swap_id);
+    return data[0];
+  }
+
+  async function updateSwapHistory(currSwap) {
+    const swapHistoryObj = currSwap;
+    delete swapHistoryObj.updated_at;
+    delete swapHistoryObj.pending_swap_id;
+    console.log(swapHistoryObj);
+    const { data, error } = await supabase
+       .from("Swap_History")
+       .insert(swapHistoryObj);
+   
+    if (error) {
+       console.error("Error inserting into Swap_History:", error);
+    } else {
+       console.log("Insert successful:", data);
+    }
+   }
+
+  async function removeData(infoResponse) {
+    await Promise.all([
+      supabase
+        .from("Pending_Swaps")
+        .delete()
+        .eq("pending_swap_id", infoResponse.pending_swap_id),
+      supabase
+        .from("Listings")
+        .delete()
+        .eq("book_id", infoResponse.user1_listing_id),
+      supabase
+        .from("Listings")
+        .delete()
+        .eq("book_id", infoResponse.user2_listing_id),
+    ]);
+  }
+
+  async function rejectBook(pending_swap_id) {
+    await Promise.all([
+      supabase.from("Notifications").insert([
+        {
+          type: "Offer_Rejected",
+          user_id:
+            info.user1_id === session.user.id ? info.user2_id : info.user1_id,
+          username: session.user.user_metadata.username,
+        },
+      ]),
+      supabase
+        .from("Notifications")
+        .delete()
+        .eq("swap_offer_id", pending_swap_id),
+      supabase
+        .from("Pending_Swaps")
+        .delete()
+        .eq("pending_swap_id", pending_swap_id),
+    ]);
+  }
+
+  function renderModal(activeUserCheck, user_id, library) {
+    return activeUserCheck === true ? (
+      <View>
+        <View style={{ height: height - (height / 27) * 4 }}>
+          <View
+            style={{
+              justifyContent: "center",
+              width: width,
+              flex: 1,
+            }}
+          >
+            <View style={{ flex: 1 }}></View>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
+                Your Library
+              </Text>
+            </View>
+            <View style={{ flex: 1, justifyContent: "flex-end" }}>
+              <LinearGradient
+                colors={[PTGreen, PTBlue]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  height: 5,
+                  width: "100%",
+                }}
+              ></LinearGradient>
+            </View>
+          </View>
+
+          <View
+            style={{
+              flex: 8,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <FlatList
+              data={activeUserLibrary}
+              renderItem={({ item }) => (
+                <LibraryBookItem
+                  book={item}
+                  id={item.book_id}
+                  inSwapReq={true}
+                  activeUserCheck={true}
+                  activeUserID={activeUserID}
+                  currSwap={currSwap}
+                  setCurrSwap={setCurrSwap}
+                />
+              )}
+              keyExtractor={(item) => item.book_id.toString()}
+              vertical={true}
+              pagingEnabled
+              snapToAlignment="center"
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ height: "100%", alignSelf: "center" }}
+              style={{ flex: 1 }}
+            />
+          </View>
+        </View>
+      </View>
+    ) : (
+      <View>
+        <View style={{ height: height - (height / 27) * 4 }}>
+          <View
+            style={{
+              justifyContent: "center",
+              width: width,
+              flex: 1,
+            }}
+          >
+            <View style={{ flex: 1 }}></View>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Text style={{ ...heading, color: PTG1, textAlign: "center" }}>
+                {session.user.id === info.user1_id
+                  ? info.user2_username
+                  : info.user1_username}
+                {`'s Library`}
+              </Text>
+            </View>
+            <View style={{ flex: 1, justifyContent: "flex-end" }}>
+              <LinearGradient
+                colors={[PTGreen, PTBlue]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  height: 5,
+                  width: "100%",
+                }}
+              ></LinearGradient>
+            </View>
+          </View>
+
+          <View
+            style={{
+              flex: 8,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <FlatList
+              data={nonActiveUserLibrary}
+              renderItem={({ item }) => (
+                <LibraryBookItem
+                  book={item}
+                  id={item.book_id}
+                  inSwapReq={true}
+                  activeUserCheck={false}
+                  activeUserID={activeUserID}
+                  currSwap={currSwap}
+                  setCurrSwap={setCurrSwap}
+                />
+              )}
+              keyExtractor={(item) => item.book_id.toString()}
+              vertical={true}
+              pagingEnabled
+              snapToAlignment="center"
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ height: "100%", alignSelf: "center" }}
+              style={{ flex: 1 }}
+            />
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  function renderSwap(currType, info) {
+    switch (currType) {
+      case "received":
+        return (
+          <View style={{ justifyContent: "space-between" }}>
+            <View style={styles.booksAndArrows}>
+              <Pressable
+                style={
+                  user1_book_imgurl
+                    ? styles.bookCard
+                    : {
+                        ...styles.bookCard,
+                        borderWidth: 2,
+                        borderColor: PTG1,
+                        borderStyle: "dashed",
+                        justifyContent: "center",
+                      }
+                }
+                onPress={() => {
+                  setActiveUserCheck(true);
+                  setModalUserID(activeUserID);
+                  setModalLibrary(activeUserLibrary);
+                  setIsModalVisible(true);
+                }}
+              >
+                {user1_book_imgurl ? (
+                  <Image
+                    source={{
+                      uri: user1_book_imgurl,
+                    }}
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                ) : (
+                  <Text
+                    style={{ ...heading, color: PTG1, textAlign: "center" }}
+                  >
+                    ?
+                  </Text>
+                )}
+                {user1_listing_id && (
+                  <View
+                    style={{
+                      height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
+                      width: "100%",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                        fontWeight: "600",
+                      }}
+                    >
+                      {user1_book_title}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {user1_author}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      Condition:
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {user1_condition}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {user1_category}
+                    </Text>
+                  </View>
+                )}
+              </Pressable>
+
+              <View style={{ justifyContent: "center" }}>
+                <Octicons
+                  name="arrow-switch"
+                  size={36}
+                  color={PTG1}
+                  style={{ textAlign: "center", width: "100%" }}
+                />
+              </View>
+
+              <Pressable
+                style={
+                  user2_book_imgurl
+                    ? styles.bookCard
+                    : {
+                        ...styles.bookCard,
+                        borderWidth: 2,
+                        borderColor: PTG1,
+                        borderStyle: "dashed",
+                        justifyContent: "center",
+                      }
+                }
+                onPress={() => {
+                  setActiveUserCheck(false);
+                  setModalUserID(nonActiveUserID);
+                  setModalLibrary(nonActiveUserLibrary);
+                  setIsModalVisible(true);
+                }}
+              >
+                {user2_book_imgurl ? (
+                  <Image
+                    source={{
+                      uri: user2_book_imgurl,
+                    }}
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                ) : (
+                  <Text
+                    style={{ ...heading, color: PTG1, textAlign: "center" }}
+                  >
+                    ?
+                  </Text>
+                )}
+                {user2_listing_id && (
+                  <View
+                    style={{
+                      height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
+                      width: "100%",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                        fontWeight: "600",
+                      }}
+                    >
+                      {user2_book_title}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {user2_author}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      Condition:
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {user2_condition}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {" "}
+                    </Text>
+                    <Text
+                      style={{
+                        ...body,
+                      }}
+                    >
+                      {user2_category}
+                    </Text>
+                  </View>
+                )}
+              </Pressable>
+
+              <Modal isVisible={isModalVisible}>
+                <View style={styles.modal}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      width: width,
+                      height: (height / 27) * 2,
+                      backgroundColor: PTGreen,
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      name="chevron-double-down"
+                      size={36}
+                      color={PTG1}
+                      style={{ alignSelf: "center" }}
+                      onPress={() => {
+                        setIsModalVisible(false);
+                      }}
+                    />
+                  </View>
+                  {renderModal(activeUserCheck, modalUserID, modalLibrary)}
+
+                  <View
+                    style={{
+                      width: width,
+                      height: (height / 27) * 2,
+                      backgroundColor: PTG4,
+                    }}
+                  >
+                    <LinearGradient
+                      colors={[PTGreen, PTBlue]}
+                      start={{ x: 1, y: 1 }}
+                      end={{ x: 0, y: 0 }}
+                      style={{
+                        height: 5,
+                        width: "100%",
+                      }}
+                    ></LinearGradient>
+                  </View>
+                </View>
+              </Modal>
+            </View>
+
+            <View
+              style={{
+                height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
+                width: "100%",
+                justifyContent: "space-between",
+              }}
+            ></View>
+          </View>
+        );
+      case "sent":
+        return (
+          <View style={styles.booksAndArrows}>
+            <Pressable
+              style={
+                user2_book_imgurl
+                  ? styles.bookCard
+                  : {
+                      ...styles.bookCard,
+                      borderWidth: 2,
+                      borderColor: PTG1,
+                      borderStyle: "dashed",
+                      justifyContent: "center",
+                    }
+              }
+              onPress={() => {
+                setActiveUserCheck(true);
+                setModalUserID(activeUserID);
+                setModalLibrary(activeUserLibrary);
+                setIsModalVisible(true);
+              }}
+            >
+              {user2_book_imgurl ? (
+                <Image
+                  source={{
+                    uri: user2_book_imgurl,
+                  }}
+                  style={{ width: "100%", height: "100%" }}
+                />
+              ) : (
+                <View
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text
+                    style={{ ...heading, color: PTG1, textAlign: "center" }}
+                  >
+                    ?
+                  </Text>
+                </View>
+              )}
+
+              {user2_listing_id && (
+                <View
+                  style={{
+                    height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
+                    width: "100%",
+                  }}
+                >
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {" "}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                      fontWeight: "600",
+                    }}
+                  >
+                    {user2_book_title}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {" "}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {user2_author}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {" "}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    Condition:
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {user2_condition}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {" "}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {user2_category}
+                  </Text>
+                </View>
+              )}
+            </Pressable>
+
+            <View style={{ justifyContent: "center" }}>
+              <Octicons
+                name="arrow-switch"
+                size={36}
+                color={PTG1}
+                style={{ textAlign: "center", width: "100%" }}
+              />
+            </View>
+
+            <Pressable
+              style={
+                user1_book_imgurl
+                  ? styles.bookCard
+                  : {
+                      ...styles.bookCard,
+                      borderWidth: 2,
+                      borderColor: PTG1,
+                      borderStyle: "dashed",
+                      justifyContent: "center",
+                    }
+              }
+              onPress={() => {
+                setActiveUserCheck(false);
+                setModalUserID(nonActiveUserID);
+                setModalLibrary(nonActiveUserLibrary);
+                setIsModalVisible(true);
+              }}
+            >
+              {user1_book_imgurl ? (
+                <Image
+                  source={{
+                    uri: user1_book_imgurl,
+                  }}
+                  style={{ width: "100%", height: "100%" }}
+                />
+              ) : (
+                <View
+                  style={{
+                    backgroundColor: PTRed,
+                    width: "100%",
+                    height: "100%",
+                  }}
+                >
+                  <Text
+                    style={{ ...heading, color: PTG1, textAlign: "center" }}
+                  >
+                    ?
+                  </Text>
+                </View>
+              )}
+              {user1_listing_id && (
+                <View
+                  style={{
+                    height: (14 * pageHeight) / 27 - (5 * containerWidth) / 9,
+                    width: "100%",
+                  }}
+                >
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {" "}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                      fontWeight: "600",
+                    }}
+                  >
+                    {user1_book_title}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {" "}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {user1_author}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {" "}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    Condition:
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {user1_condition}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {" "}
+                  </Text>
+                  <Text
+                    style={{
+                      ...body,
+                    }}
+                  >
+                    {user1_category}
+                  </Text>
+                </View>
+              )}
+            </Pressable>
+
+            <Modal isVisible={isModalVisible}>
+              <View style={styles.modal}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    width: width,
+                    height: (height / 27) * 2,
+                    backgroundColor: PTGreen,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="chevron-double-down"
+                    size={36}
+                    color={PTG1}
+                    style={{ alignSelf: "center" }}
+                    onPress={() => {
+                      setIsModalVisible(false);
+                    }}
+                  />
+                </View>
+
+                {renderModal(activeUserCheck, modalUserID, modalLibrary)}
+
+                <View
+                  style={{
+                    width: width,
+                    height: (height / 27) * 2,
+                    backgroundColor: PTG4,
+                  }}
+                >
+                  <LinearGradient
+                    colors={[PTGreen, PTBlue]}
+                    start={{ x: 1, y: 1 }}
+                    end={{ x: 0, y: 0 }}
+                    style={{
+                      height: 5,
+                      width: "100%",
+                    }}
+                  ></LinearGradient>
+                </View>
+              </View>
+            </Modal>
+          </View>
+        );
+      default:
+        return null;
+    }
+  }
 
   return (
-    <View style={styles.page}>
-      <View>
-        <Text style={styles.heading}>
-          Your Offer
-        </Text>
-      </View>
-      <View style={styles.booksAndProfilePics}>
-        <View style={styles.profilePics}>
-          <View style={styles.picAndName}>
-            <Image source={user1ProfilePic} style={styles.user1Profile} />
-            <Text style={styles.body}>{info.user1_username}</Text>
-          </View>
-          <Ionicons
-            name="chatbubbles-outline"
-            size={60}
-            style={styles.icon}
-            onPress={() => {
-              navigation.navigate("ChatWindow", {
-                sender: user1_book
-                  ? user1_book.user1_id
-                  : info.swapData.user_id,
-                receiver: user1_book ? user1_book.user2_id : info.user_id,
-                username: user1_book
-                  ? user1_book.user2_username
-                  : info.username,
-                session: session,
-              });
+    <SafeAreaView style={page}>
+      <View style={{ height: pageHeight, alignItems: "center" }}>
+        <View style={{ flex: headerFlex, justifyContent: "center" }}>
+          <Text
+            style={{
+              ...heading,
+              textAlign: "center",
             }}
-          />
-          <View style={styles.picAndName}>
-            <Image source={user2ProfilePic} style={styles.user2Profile} />
-            <Text style={styles.body}>{info.user2_username}</Text>
-          </View>
-        </View>
-        <View style={styles.booksAndArrows}>
-          <Image
-            source={{ uri: info.user1_book_imgurl }}
-            style={styles.bookCard}
-          />
-          <Text style={styles.arrows}>
-            <Entypo name="arrow-long-right" size={60} color="#C1514B" />
-            <Entypo name="arrow-long-left" size={60} color="#06A77D" />
+          >
+            Your Offer
           </Text>
-          <Image
-            source={{
-              uri:
-                user2BookUrl || user2_book_url 
-            }}
-            style={styles.bookCard}
-          />
         </View>
+
+        <View style={styles.userInfo}>
+          <View style={styles.profilePics}>
+            <View style={styles.picAndName}>
+              <Image
+                source={
+                  activeUserID === info.user1_id
+                    ? user1ProfilePic
+                    : user2ProfilePic
+                }
+                style={styles.profileImg}
+              />
+              <View
+                style={{
+                  height: (7 * pageHeight) / 27 - (10 * containerWidth) / 27,
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={{ ...subHeading, textAlign: "center" }}>
+                  {activeUserID === info.user1_id
+                    ? info.user1_username
+                    : info.user2_username}
+                </Text>
+              </View>
+            </View>
+
+            <View
+              style={{
+                height: (10 * containerWidth) / 27,
+                justifyContent: "center",
+                alignSelf: "flex-start",
+              }}
+            >
+              <Pressable
+                onPress={() => {
+                  navigation.navigate("ChatWindow", {
+                    sender: nonActiveUserID,
+                    receiver: activeUserID,
+                    username:
+                      activeUserID === info.user1_id
+                        ? info.user2_username
+                        : info.user1_username,
+                    session: session,
+                  });
+                }}
+                key={
+                  activeUserID === info.user1_id
+                    ? info.user2_username
+                    : info.user1_username
+                }
+                style={roundButton}
+              >
+                <Ionicons
+                  name="chatbubbles-outline"
+                  size={30}
+                  color={PTG1}
+                  style={{ textAlign: "center", width: "100%" }}
+                />
+              </Pressable>
+            </View>
+
+            <View style={styles.picAndName}>
+              <Image
+                source={
+                  activeUserID === info.user1_id
+                    ? user2ProfilePic
+                    : user1ProfilePic
+                }
+                style={styles.profileImg}
+              />
+              <View
+                style={{
+                  height: (7 * pageHeight) / 27 - (10 * containerWidth) / 27,
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={{ ...subHeading, textAlign: "center" }}>
+                  {activeUserID === info.user1_id
+                    ? info.user2_username
+                    : info.user1_username}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+        <View style={styles.books}>{renderSwap(currType, info)}</View>
+        {/* Experimental */}
+
         <View style={styles.buttons}>
-          <Pressable
+          {/* <Pressable
             style={styles.accept}
             onPress={() => {
               getTransferData()
@@ -227,38 +1115,74 @@ export default function SwapNegotiationPage({ route }) {
             }}
           >
             <Text style={styles.body}>Accept</Text>
-          </Pressable>
-          <Pressable
+          </Pressable> */}
+          <View
+            style={{ width: (10 * containerWidth) / 27, alignItems: "center" }}
+          >
+            <Pressable
+              style={{
+                ...pillButton,
+                backgroundColor: PTGreen,
+                width: (9 * containerWidth) / 27,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                updateSwapHistory(currSwap);
+                removeData(currSwap);
+                navigation.navigate("Home");
+              }}
+            >
+              <Text style={body}>Accept Offer</Text>
+            </Pressable>
+          </View>
+
+          {/* <Pressable
             style={styles.reconsider}
             onPress={() => {
               getTransferData().then((res) => {
                 navigation.navigate("ReconsiderLibrary", {
                   info: res,
                   setReconsidered: setReconsidered,
-                  setKey: setKey,
+                  setTimeKey: setTimeKey,
                 });
               });
             }}
           >
             <Text style={styles.body}>Reconsider</Text>
-          </Pressable>
-          <Pressable
-            style={styles.reject}
-            onPress={() => {
-              getTransferData().then((res) => {
-                rejectBook(res);
-              });
-            }}
+          </Pressable> */}
+          <View
+            style={{ width: (10 * containerWidth) / 27, alignItems: "center" }}
           >
-            <Text style={styles.body}>Reject Offer</Text>
-          </Pressable>
+            <Pressable
+              style={{
+                ...pillButton,
+                backgroundColor: PTRed,
+                width: (9 * containerWidth) / 27,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                rejectBook(pending_swap_id);
+                navigation.navigate("Home");
+              }}
+            >
+              <Text style={body}>Reject Offer</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  modal: {
+    width: width,
+    height: height,
+    alignSelf: "center",
+    backgroundColor: PTG4,
+  },
   heading: {
     fontSize: 28,
     fontWeight: "bold",
@@ -271,22 +1195,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  booksAndProfilePics: {
-    margin: "auto",
-    display: "flex",
+  userInfo: {
+    width: containerWidth,
     justifyContent: "space-between",
-    // borderColor: "gray",
-    // borderWidth: 5,
-    width: ScreenWidth * 0.9,
-    height: 600,
+    flex: userInfoFlex,
   },
   profilePics: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
+  books: {
+    justifyContent: "space-between",
+    width: containerWidth,
+    flex: booksFlex,
+  },
+  buttons: {
+    flex: buttonsFlex,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: containerWidth,
+  },
   booksAndArrows: {
     flexDirection: "row",
+    height: (5 * containerWidth) / 9,
     justifyContent: "space-between",
   },
   bookContainer: {
@@ -297,28 +1230,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 180,
     width: 120,
-    borderRadius: 16,
+    // borderRadius: 16,
   },
-  user1Profile: {
-    borderRadius: 60,
-    height: 120,
-    width: 120,
+  profileImg: {
+    // borderRadius: containerWidth / 6,
+    // height: containerWidth / 3,
+    // width: containerWidth / 3,
+    borderRadius: (10 * containerWidth) / 54,
+    height: (10 * containerWidth) / 27,
+    width: (10 * containerWidth) / 27,
     resizeMode: "cover",
-    borderColor: "#C1514B",
-    borderWidth: 3,
-  },
-  user2Profile: {
-    borderRadius: 60,
-    height: 120,
-    width: 120,
-    resizeMode: "cover",
-    borderColor: "#06A77D",
-    borderWidth: 3,
   },
   bookCard: {
-    borderRadius: 16,
-    height: 180,
-    width: 120,
+    // borderRadius: 16,
+    height: (5 * containerWidth) / 9,
+    width: (10 * containerWidth) / 27,
     resizeMode: "contain",
   },
   pick_book: {
@@ -345,13 +1271,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: JosefinSans_400Regular,
     color: "white",
-  },
-  icon: {
-    color: "#4B7095",
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
   },
   accept: {
     justifyContent: "center",

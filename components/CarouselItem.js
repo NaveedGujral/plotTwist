@@ -1,80 +1,231 @@
-import { View, StyleSheet, Text, Image, Dimensions } from "react-native";
-// import { useFonts } from "expo-font";
-// import {
-// 	JosefinSans_400Regular,
-// } from "@expo-google-fonts/dev";
+
+import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useEffect, useState } from "react";
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import Modal from "react-native-modal";
+import WishListButton from "./WishListButton";
+import { Ionicons } from "@expo/vector-icons";
+import { Entypo, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
-const screenWidth = Dimensions.get("screen").width;
-const screenHeight = Dimensions.get("screen").height;
+const { height, width } = Dimensions.get("window");
 
-// const [fontsLoaded] = useFonts({
-//     JosefinSans_400Regular,
-// });
+const { PTStyles, PTSwatches } = require("../Styling");
+const { heading, subHeading, body, gradTile, tileHeaderBox, tileImage } =
+  PTStyles;
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 
-// if (!fontsLoaded) {
-//     return <Text>Loading...</Text>;
-// }
+const pageHeight = height - (height / 27) * 4;
+const bookImageWidth = width * 0.4445 * 0.9334;
+const viewHeight = 2 * (pageHeight / 3);
+const containerHeight = viewHeight - viewHeight / 4;
 
-export default function CarouselItem({ item }) {
-	return (
-		<View style={styles.container}>
-			<LinearGradient
-				colors={["#307361", "rgba(169, 169, 169, 0.10)"]}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 1, y: 1 }}
-				style={{
-					borderRadius: 30,
-					overflow: "hidden",
-				}}
-			>
-				<View style={styles.card}>
-						<Image style={styles.image} source={{ uri: item.img_url }} />
-					{/* <Text style={styles.title}>{item.book_title}</Text>
-					<Text style={styles.author}>{item.author}</Text> */}
-				</View>
-			</LinearGradient>
-		</View>
-	);
+export default function CarouselItem({ item, id }) {
+  const navigation = useNavigation();
+  const [wishListed, setWishListed] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const blurb = item.description;
+  let newBlurb;
+  if (blurb) {
+    const regex = /<\/?[^>]+>/g;
+    newBlurb = blurb.replace(regex, "");
+  }
+
+  return (
+    <Pressable
+      onPress={() =>
+        navigation.navigate("AvailableListings", { listing: item })
+      }
+      style={styles.container}
+    >
+      <LinearGradient
+        colors={[PTGreen, PTBlue]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={gradTile}
+      >
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            flex: 1,
+            width: "89.78%",
+          }}
+        >
+          <Text adjustsFontSizeToFit numberOfLines={2} style={tileHeaderBox}>
+            {item.book_title}
+          </Text>
+        </View>
+        <Image style={tileImage} source={{ uri: item.img_url }} />
+
+        <View style={{ justifyContent: "center", flex: 1 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              width: bookImageWidth,
+              justifyContent: "space-between",
+            }}
+          >
+            <View
+              style={{
+                height: bookImageWidth / 5,
+                width: bookImageWidth / 5,
+                // borderRadius: bookImageWidth / 10,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View style={{ justifyContent: "flex-start" }}>
+                <Ionicons
+                  name="add-outline"
+                  size={36}
+                  style={{
+                    color: PTG1,
+                    alignSelf: "stretch",
+                    width: "100%",
+                    height: "100%",
+                  }}
+                  onPress={() =>
+                    navigation.navigate("CreateListing", {
+                      currTitle: item.book_title,
+                      authors: item.author,
+                      currDescription: item.description,
+                      imgUrl: item.img_url,
+                      navigation: navigation,
+                      book_id: item.google_book_id,
+                    })
+                  }
+                />
+              </View>
+            </View>
+            <View
+              style={{
+                height: bookImageWidth / 5,
+                width: bookImageWidth / 5,
+                justifyContent: "center",
+              }}
+            >
+              <WishListButton
+                listing={item}
+                id={id}
+                wishListed={wishListed}
+                setWishListed={setWishListed}
+                iconSize={24}
+                styles={{
+                  heartContainer: styles.heartContainer,
+                  heart: styles.heart,
+                }}
+              />
+            </View>
+            <View
+                style={{
+                  height: bookImageWidth / 5,
+                  width: bookImageWidth / 5,
+                  justifyContent: "center",
+                }}
+              >
+                <Pressable onPress={() => setIsModalVisible(true)}>
+                  <Entypo
+                    name="dots-three-horizontal"
+                    size={height * 0.0223}
+                    color={PTG1}
+                    style={{ textAlignVertical: "center", textAlign: "center" }}
+                  />
+                </Pressable>
+
+                <Modal isVisible={isModalVisible}>
+                  <View style={styles.modal}>
+                    <LinearGradient
+                      colors={[PTGreen, PTBlue]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          width: width,
+                          height: (height / 27) * 2,
+                        }}
+                      >
+                        <MaterialCommunityIcons
+                          name="chevron-double-down"
+                          size={36}
+                          color={PTG1}
+                          style={{ alignSelf: "center" }}
+                          onPress={() => setIsModalVisible(false)}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: "column",
+                          alignItems: "left",
+                          width: width * 0.9334,
+                          height: height - (height / 27) * 2,
+                        }}
+                      >
+                        <Text style={subHeading}> </Text>
+                        <Text style={{ ...tileHeaderBox, textAlign: "left" }}>
+                          {item.book_title}
+                        </Text>
+                        <Text style={subHeading}> </Text>
+                        <Text style={subHeading}>{item.author}</Text>
+                        <Text style={subHeading}> </Text>
+                        <Text style={subHeading}>{newBlurb}</Text>
+                      </View>
+                    </LinearGradient>
+                  </View>
+                </Modal>
+                
+              </View>
+          </View>
+        </View>
+      </LinearGradient>
+    </Pressable>
+  );
 }
 
 const styles = StyleSheet.create({
-	image: {
-		flex: 1,
-        alignItems: "center",
-		height: 180 * 1.5,
-		width: 120 * 1.5,
-		borderRadius: 16,
-		marginBottom: 10,
-		marginTop: 10,
-		resizeMode: "cover",
-	},
-	container: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		height: screenHeight * 0.4 * 0.9,
-		width: screenWidth,
-	},
-	card: {
-		width: screenWidth * 0.8,
-		height: 400,
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	title: {
-		textAlign: "center",
-        paddingHorizontal: 10,
-        fontFamily: "JosefinSans_400Regular",
-        fontSize: 14,
-        paddingHorizontal: 10,
-
-	},
-	author: {
-		textAlign: "center",
-        paddingHorizontal: 10,
-        fontFamily: "JosefinSans_400Regular",
-        fontSize: 13,
-	},
+  heartContainer: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  heart: {
+    textAlign: "center",
+    textAlignVertical: "center",
+    position: "absolute",
+    color: PTG1,
+  },
+  modal: {
+    width: width,
+    height: height,
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 0,
+    backgroundColor: PTG4,
+  },
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: containerHeight,
+    width: width,
+  },
 });

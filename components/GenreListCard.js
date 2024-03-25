@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
 import { Dimensions, Image, Pressable, StyleSheet, View } from "react-native";
-
 import { useState } from "react";
 import WishListButton from "./WishListButton";
 
@@ -9,11 +8,11 @@ const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { height, width } = Dimensions.get("window");
 
 const pageHeight = height - (height / 27) * 4;
-const viewHeight = 5 * (pageHeight / 18);
-const containerHeight = 3*width / 8;
+const viewHeight = 8 * (pageHeight / 9);
+const containerHeight = viewHeight / 3.5;
 
-export default function BookListCard({ listing, id }) {
-  const [wishListed, setWishListed] = useState(false);
+export default function GenreListCard({ listing, id }) {
+  const [wishListed, setWishListed] = useState();
   const navigation = useNavigation();
 
   return (
@@ -26,33 +25,31 @@ export default function BookListCard({ listing, id }) {
       >
         <Image style={styles.bookImage} source={{ uri: listing.img_url }} />
       </Pressable>
-      <View style={{ flex: 1 }}>
-        <WishListButton
-          listing={listing}
-          id={id}
-          wishListed={wishListed}
-          setWishListed={setWishListed}
-          iconSize={18}
-          styles={{
-            heartContainer: styles.heartContainer,
-            heart: styles.heart,
-          }}
-        />
-      </View>
+      <WishListButton
+        listing={listing}
+        id={id}
+        wishListed={wishListed}
+        setWishListed={setWishListed}
+        iconSize={18}
+        styles={{
+          heartContainer: styles.heartContainer,
+          heart: styles.heart,
+        }}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   cardContainer: {
-    flexDirection: "row",
-    height: containerHeight,
-    width: width / 4,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   bookCard: {
-    height: 3*width / 8,
-    width: width / 4,
-    alignSelf: "center",
+    width: (7 * width) / 27,
+    height: (7 * containerHeight) / 9,
   },
   bookImage: {
     width: "100%",
@@ -66,15 +63,15 @@ const styles = StyleSheet.create({
     height: (2 * width) / 27,
     borderRadius: width / 27,
     backgroundColor: PTG1,
-    // right: width / 81,
-    // top: containerHeight / 9 + width / 81,
-    right: width/81,
-    top: width/81,
+    right: width / 27 + width / 81,
+    top: containerHeight / 9 + width / 81,
     justifyContent: "center",
     alignItems: "center",
     opacity: 0.85,
   },
   heart: {
+    textAlign: "center",
+    textAlignVertical: "center",
     position: "absolute",
     color: PTRed,
   },

@@ -1,222 +1,203 @@
-import { View, Text, Pressable, Dimensions, Platform } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  Dimensions,
+  Platform,
+  Image,
+  Animated,
+} from "react-native";
+import { FadeIn, FadeOut } from "react-native-reanimated";
 import { useEffect, useState, useRef } from "react";
 import supabase from "../config/supabaseClient";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
-// import { FontAwesome } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
-import {
-	JosefinSans_400Regular,
-} from "@expo-google-fonts/dev";
+import { JosefinSans_400Regular } from "@expo-google-fonts/dev";
 
 import BookList from "./BookList";
 import TopTenCarousel from "./TopTenCarousel";
+import { SafeAreaView } from "react-native-safe-area-context";
 
+const { PTStyles, PTSwatches, importFonts } = require("../Styling");
+const { heading, subHeading, body, page, roundButton } = PTStyles;
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
 const { height, width } = Dimensions.get("window");
 
+const pageHeight = height - (height / 27) * 4;
+const catViewHeight = pageHeight / 3;
+
 const HomeScreen = ({ navigation }) => {
-	const [categories, setCategories] = useState([]);
-	const [currSession, setCurrSession] = useState();
-	const [topTen, setTopTen] = useState([]);
-	const scrollRef = useRef();
-	const [scrollOffset, setScrollOffset] = useState(0);
-	const scrollOffsetLimit = 200;
+  const [categories, setCategories] = useState([]);
+  const [currSession, setCurrSession] = useState();
+  const [topTen, setTopTen] = useState([]);
+  const scrollRef = useRef();
+  const [scrollOffset, setScrollOffset] = useState(0);
+  const scrollOffsetLimit = 200;
+  const [trigger, setTrigger] = useState(false);
 
-	useEffect(() => {
-		async function compareId(id) {
-			const { data, error } = await supabase
-				.from("Users")
-				.select("*")
-				.match({ user_id: id });
-			return data;
-		}
-		async function getData() {
-			const { data, error } = await supabase.auth.getSession();
-			const { session } = data;
-			setCurrSession(session.user.id);
-			return session.user.id;
-		}
-		getData()
-			.then((id) => {
-				return compareId(id);
-			})
-			.then((data) => {
-				if (data.length === 0) {
-					navigation.navigate("UserProfile");
-				}
-			});
-	}, []);
+  const channel = supabase
+    .channel("Listings")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+      },
+      (payload) => {
+        console.log(payload);
+        setTrigger(!trigger);
+      }
+    )
+    .subscribe();
 
-	useEffect(() => {
-		async function getCategories() {
-			const { data, error } = await supabase.from("Listings").select("Category");
-			const catArr = [];
-			data.forEach((obj) => {
-				if (!catArr.includes(obj.Category)) catArr.push(obj.Category);
-			});
-			setCategories(catArr);
-		}
+  useEffect(() => {
+    async function compareId(id) {
+      const { data, error } = await supabase
+        .from("Users")
+        .select("*")
+        .match({ user_id: id });
+      return data;
+    }
+    async function getData() {
+      const { data, error } = await supabase.auth.getSession();
+      const { session } = data;
+      setCurrSession(session.user.id);
+      return session.user.id;
+    }
+    getData()
+      .then((id) => {
+        return compareId(id);
+      })
+      .then((data) => {
+        if (data.length === 0) {
+          navigation.navigate("UserProfile");
+        }
+      });
+  }, []);
 
-		async function getTopTen(table) {
-			const { data, error } = await supabase
-				.from(table)
-				.select()
-				.order("no_of_wishlists", { ascending: false })
-				.range(0, 9);
-			setTopTen(data);
-		}
+  importFonts();
 
-		getTopTen("Listings");
-		getCategories();
-	}, []);
+  useEffect(() => {
+    async function getCategories() {
+      const { data, error } = await supabase
+        .from("Listings")
+        .select("category")
+        .order('category', { ascending: true})
+      const catArr = [];
+      data.forEach((obj) => {
+        if (!catArr.includes(obj.category)) catArr.push(obj.category);
+      });
+      setCategories(catArr);
+    }
 
-	const [fontsLoaded] = useFonts({
-		JosefinSans_400Regular,
-	});
+    async function getTopTen(table) {
+      const { data, error } = await supabase
+        .from(table)
+        .select()
+        .order("no_of_wishlists", { ascending: false })
+        .range(0, 9);
+      setTopTen(data);
+    }
 
-	if (!fontsLoaded) {
-		return <Text>Loading...</Text>;
-	}
+    getTopTen("Listings");
+    getCategories();
+  }, [trigger]);
 
-	return (
-		<View style={{ flex: 1 }}>
-			<View style={{ flex: 1 }}>
-				<ScrollView
-					showsVerticalScrollIndicator={false}
-					ref={scrollRef}
-					onScroll={(event) => {
-						setScrollOffset(event.nativeEvent.contentOffset.y);
-					}}
-					scrollEventThrottle={16}
-				>
-					<View
-						style={
-							Platform.OS === "web"
-								? { ...styles.container, ...styles.webFix }
-								: styles.container
-						}
-					>
-						<Text style={styles.spotlight}>Spotlight</Text>
-				<Text style={styles.topTen}>Top 10 Charts</Text>
-						<TopTenCarousel listings={topTen} />
-						{categories.map((category) => {
-							return (
-								<BookList categoryName={category} key={category} id={currSession} />
-							);
-						})}
-						<StatusBar style="auto" />
-					</View>
-				</ScrollView>
-				<Pressable
-					style={styles.BTTContainer}
-					onPress={() => {
-						scrollRef.current?.scrollTo({
-							y: 0,
-							animated: true,
-						});
-					}}
-				>
-					<View style={styles.BTTCircle}>
-						<Ionicons
-							name="arrow-up"
-							size={35}
-							color="black"
-							style={styles.BTTArrow}
-						/>
-					</View>
-				</Pressable>
-			</View>
-			{scrollOffset > scrollOffsetLimit && (
-				<Pressable
-					style={
-						Platform.OS === "web"
-							? { ...styles.BTTContainer, ...styles.BTTHeight }
-							: styles.BTTContainer
-					}
-					onPress={() => {
-						scrollRef.current?.scrollTo({
-							y: 0,
-							animated: true,
-						});
-					}}
-				>
-					<View style={styles.BTTCircle}>
-						<Ionicons
-							name="arrow-up"
-							size={30}
-							color="black"
-							style={styles.BTTArrow}
-						/>
-					</View>
-				</Pressable>
-			)}
-		</View>
-	);
+  return (
+    <SafeAreaView style={page}>
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          ref={scrollRef}
+          onScroll={(event) => {
+            setScrollOffset(event.nativeEvent.contentOffset.y);
+          }}
+          scrollEventThrottle={16}
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: "space-between",
+          }}
+          style={{ height: "100%" }}
+        >
+          <View style={{ flex: 2, backgroundColor: PTG4 }}>
+            <TopTenCarousel listings={topTen} id={currSession} trigger={trigger}/>
+          </View>
+          <View style={{ flex: 1 }}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                backgroundColor: PTG4,
+              }}
+            >
+              <Text
+                style={{
+                  ...heading,
+                  textAlign: "center",
+                  paddingTop: catViewHeight / 54,
+                }}
+              >
+                Genre
+              </Text>
+            </View>
+            <View style={{ flex: 5, backgroundColor: PTG4 }}>
+              {categories.map((category) => {
+                return (
+                  <BookList
+                    categoryName={category}
+                    key={category}
+                    id={currSession}
+                    trigger={trigger}
+                  />
+                );
+              })}
+            </View>
+            <StatusBar style="auto" />
+          </View>
+        </ScrollView>
+      </View>
+      {scrollOffset > scrollOffsetLimit && (
+        <Pressable
+          style={{
+            position: "absolute",
+            right: width * 0.5 - width / 18,
+            top: height / 54,
+          }}
+          onPress={() => {
+            scrollRef.current?.scrollTo({
+              y: 0,
+              animated: true,
+            });
+          }}
+        >
+          <View
+            style={{
+              ...roundButton,
+              shadowColor: PTG4,
+              shadowOffset: {
+                width: 0,
+                height: 8,
+              },
+              shadowOpacity: 0.45,
+              shadowRadius: 8,
+              elevation: 1,
+              zIndex: 1,
+            }}
+          >
+            <MaterialCommunityIcons
+              name="chevron-double-up"
+              size={30}
+              color={PTG1}
+              style={{ textAlign: "center", width: "100%" }}
+            />
+          </View>
+        </Pressable>
+      )}
+    </SafeAreaView>
+  );
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: "center",
-		paddingTop: 20,
-		paddingBottom: 20,
-		backgroundColor: "#272727",
-	},
-	webFix: {
-		marginBottom: height * 0.09,
-	},
-	spotlight: {
-		fontSize: 28,
-		fontWeight: "bold",
-		textAlign: "center",
-		marginBottom: 7,
-		color: "white",
-		fontFamily: "JosefinSans_400Regular",
-	},
-	topTen: {
-		fontSize: 16,
-		marginBottom: 10,
-		textAlign: "center",
-		color: "white",
-		fontFamily: "JosefinSans_400Regular",
-	},
-	header: {
-		fontSize: 29,
-		fontFamily: "JosefinSans_400Regular",
-		fontWeight: 500,
-		color: "white",
-		marginBottom: 25,
-	},
-	BTTContainer: {
-		position: "absolute",
-		bottom: 15,
-		right: 15,
-	},
-	BTTHeight: {
-		bottom: 98,
-	},
-	BTTCircle: {
-		width: 50,
-		height: 50,
-		borderRadius: 25,
-		backgroundColor: "white",
-		shadowColor: "#000",
-		shadowOffset: {
-			width: 0,
-			height: 8,
-		},
-		shadowOpacity: 0.45,
-		shadowRadius: 8,
-		elevation: 16,
-		justifyContent: "center",
-		alignContent: "center",
-	},
-	BTTArrow: {
-		textAlign: "center",
-		width: "100%",
-	},
-});
 
 export default HomeScreen;

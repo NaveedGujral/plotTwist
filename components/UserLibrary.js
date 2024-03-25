@@ -1,233 +1,187 @@
-import { React, useCallback, useEffect, useState } from "react";
-import supabase from "../config/supabaseClient";
 import {
-	Text,
-	View,
-	Image,
-	ScrollView,
-	Dimensions,
-	StyleSheet,
-	RefreshControl,
-	Pressable,
-} from "react-native";
-import { useFonts } from "expo-font";
-import {
-	VollkornSC_400Regular,
-	Bellefair_400Regular,
-	CormorantGaramond_400Regular,
-	JosefinSans_400Regular,
+  Bellefair_400Regular,
+  CormorantGaramond_400Regular,
+  JosefinSans_400Regular,
+  VollkornSC_400Regular,
 } from "@expo-google-fonts/dev";
+import { Feather } from "@expo/vector-icons";
+import { useFonts } from "expo-font";
+import { React, useCallback, useEffect, useState } from "react";
+import LibraryBookItem from "./LibraryBookItem";
+import {
+  Dimensions,
+  Image,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import Collapsible from "react-native-collapsible";
+import supabase from "../config/supabaseClient";
+
+const { PTStyles, PTSwatches } = require("../Styling");
+const {
+  heading,
+  subHeading,
+  body,
+  page,
+  pillButton,
+  roundButton,
+  roundButtonPressed,
+  bookImage1,
+} = PTStyles;
+const { PTGreen, PTBlue, PTRed, PTG1, PTG2, PTG3, PTG4 } = PTSwatches;
+const { height, width } = Dimensions.get("screen");
+const pageHeight = height - (height / 27) * 4;
+const viewHeight = (8 * pageHeight) / 9;
+const containerHeight = viewHeight / 3.5;
 
 const UserLibrary = ({ session }) => {
-	const [books, setBooks] = useState([]);
-	const [refreshing, setRefreshing] = useState(false);
-	const [isDescriptionCollapsed, setIsDescriptionCollapsed] = useState(true)
+  const [userLibrary, setUserLibrary] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [isDescriptionCollapsed, setIsDescriptionCollapsed] = useState(true);
+  const [username, setUsername] = useState("");
 
-	useEffect(() => {
-		if (session) getListings(session?.user?.user_metadata?.username);
-	}, []);
+  // experimental
+  // const [testState, setTestState] = useState(false)
+  const [trigger, setTrigger] = useState(false)
 
-	useEffect(() => {
-		setIsDescriptionCollapsed(Array(books.length).fill(true));
-	}, [books]);
+  const channel = supabase
+  .channel('Listings')
+  .on(
+    'postgres_changes',
+    {
+      event: '*',
+      schema: 'public',
+    },
+    (payload) => {
+      console.log(payload)
+      console.log("triggered in userLibrary")
+      setTrigger(!trigger)
+    }
+  )
+  .subscribe()
 
-	const onRefresh = useCallback(async () => {
-		setRefreshing(true);
-		const { data, error } = await supabase
-			.from("Listings")
-			.select("*")
-			.eq("user_id", session.user.id)
-			.order("date_posted", { ascending: false });
+  useEffect(() => {
+    getListings();
+  }, [trigger]);
 
-		if (error) {
-			alert(error);
-		} else {
-			setBooks(data);
-		}
-		setRefreshing(false);
-	}, []);
+  // useEffect(() => {
+  //   console.log("parent testState", testState)
+  // }, [testState])
 
-	async function getListings(username) {
-		const { data, error } = await supabase
-			.from("Listings")
-			.select("*")
-			.eq("user_id", session.user.id)
-			.order("date_posted", { ascending: false });
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    const { data, error } = await supabase
+      .from("Listings")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .order("date_posted", { ascending: false });
 
-		if (error) {
-			alert(error);
-		} else {
-			setBooks(data);
-		}
-	}
+    if (error) {
+      alert(error);
+    } else {
+      setUserLibrary(data);
+    }
+    setRefreshing(false);
+  }, []);
 
-	const removeFromLibrary = async (book) => {
-		const { data, error } = await supabase
-			.from("Listings")
-			.delete()
-			.eq("book_id", book.book_id);
+  async function getListings() {
+    const { data, error } = await supabase
+      .from("Listings")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .order("date_posted", { ascending: false });
 
-		if (error) {
-			alert(error);
-		} else {
-			setBooks(books.filter((item) => item.book_id !== book.book_id));
-		}
-	};
+    if (error) {
+      alert(error);
+    } else {
+      setUserLibrary(data);
+    }
+  }
 
-	const [fontsLoaded] = useFonts({
-		VollkornSC_400Regular,
-		Bellefair_400Regular,
-		CormorantGaramond_400Regular,
-		JosefinSans_400Regular,
-	});
+  const [fontsLoaded] = useFonts({
+    VollkornSC_400Regular,
+    Bellefair_400Regular,
+    CormorantGaramond_400Regular,
+    JosefinSans_400Regular,
+  });
 
-	if (!fontsLoaded) {
-		return <Text>Loading...</Text>;
-	}
+  if (!fontsLoaded) {
+    return <Text>Loading...</Text>;
+  }
 
-	return (
-		<ScrollView
-			contentContainerStyle={styles.container}
-			refreshControl={
-				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-			}
-		>
-			<Text style={styles.headerText}>User Library</Text>
-			{books.map((book, index) => (
-				<LinearGradient
-					key={index}
-					colors={["#307361", "rgba(169, 169, 169, 0.10)"]}
-					start={{ x: 0, y: 0 }}
-					end={{ x: 1, y: 1 }}
-					style={{
-						borderRadius: 30,
-						overflow: "hidden",
-						marginBottom: 25,
-					}}
-				>
-					<View key={book.book_id} style={styles.bookContainer}>
-						<Text style={styles.categoryText}>{book.Category}</Text>
-						<Text style={styles.titleText}>{book.book_title}</Text>
-						<Text style={styles.authorText}>{book.author}</Text>
-						<Image source={{ uri: book.img_url }} style={styles.image} />
-						<Pressable
-							onPress={() => {
-								let newCollapsedStates = [...isDescriptionCollapsed];
-								newCollapsedStates[index] = !newCollapsedStates[index];
-								setIsDescriptionCollapsed(newCollapsedStates);
-							}}
-							style={styles.descriptionButton}
-						>
-							<Text style={{ color: "white", fontFamily: "JosefinSans_400Regular" }}>
-								{isDescriptionCollapsed[index]
-									? "Show Description"
-									: "Hide Description"}
-							</Text>
-						</Pressable>
-						<Collapsible collapsed={isDescriptionCollapsed[index]}>
-							<Text style={styles.descriptionText}>{book.description}</Text>
-						</Collapsible>
-						<Pressable onPress={() => removeFromLibrary(book)} style={styles.button}>
-							<Text style={{ color: "white", fontFamily: "JosefinSans_400Regular" }}>
-								Remove
-							</Text>
-						</Pressable>
-					</View>
-				</LinearGradient>
-			))}
-		</ScrollView>
-	);
+  
+
+
+  return (
+    <View style={page}>
+      <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}></View>
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text
+            style={{
+              ...heading,
+              textAlign: "center",
+            }}
+          >
+            Your Library
+          </Text>
+        </View>
+        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+           <LinearGradient
+        colors={[PTGreen, PTBlue]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{
+          height: 5,
+          width: "100%",
+        }}
+      ></LinearGradient>
+        </View>
+      </View>
+
+      <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
+        <FlatList
+          data={userLibrary}
+          renderItem={({ item }) => (
+            <LibraryBookItem 
+            book={item} 
+            id={item.book_id} 
+            inSwapReq={false} 
+            activeUserCheck={true} 
+            />
+          )}
+          keyExtractor={(item) => item.book_id.toString()}
+          vertical={true}
+          pagingEnabled
+          snapToAlignment="center"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ height: "100%", alignSelf: "center" }}
+          style={{ flex: 1 }}
+        />
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-	container: {
-		justifyContent: "center",
-		alignItems: "center",
-		padding: 16,
-		marginBottom: Dimensions.get("window").height * 0.09,
-		backgroundColor: "#272727",
-	},
-	headerText: {
-		fontFamily: "JosefinSans_400Regular",
-		fontSize: 28,
-		fontWeight: "bold",
-		marginBottom: 16,
-		color: "white",
-	},
-	bookContainer: {
-		alignItems: "center",
-		backgroundColor: "rgba(169, 169, 169, 0.15)",
-		padding: 16,
-		width: Dimensions.get("window").width - 32,
-	},
-	titleText: {
-		fontSize: 24,
-		fontWeight: "bold",
-		textAlign: "center",
-		marginBottom: 8,
-		color: "white",
-		fontFamily: "JosefinSans_400Regular",
-	},
-	authorText: {
-		fontSize: 16,
-		marginBottom: 8,
-		color: "white",
-		fontFamily: "JosefinSans_400Regular",
-		textAlign: "center",
-	},
-	image: {
-		alignItems: "center",
-		height: 180 * 1.5,
-		width: 120 * 1.5,
-		borderRadius: 16 * 1.5,
-		marginBottom: 10,
-		marginTop: 10,
-		resizeMode: "cover",
-	},
-	descriptionText: {
-		fontSize: 17,
-		color: "white",
-		fontFamily: "CormorantGaramond_400Regular",
-		textAlign: "justify",
-		paddingHorizontal: 10,
-		paddingVertical: 10,
-	},
-	categoryText: {
-		fontSize: 20,
-		marginBottom: 10,
-		color: "white",
-		fontFamily: "VollkornSC_400Regular",
-	},
-	button: {
-		backgroundColor: "#C1514B",
-		fontSize: 13,
-		fontWeight: "bold",
-		paddingVertical: 10,
-		paddingHorizontal: 20,
-		borderRadius: 15,
-		marginTop: 10,
-		textAlign: "center",
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	descriptionButton: {
-		backgroundColor: "#3B8D77",
-		fontSize: 13,
-		fontWeight: "bold",
-		paddingVertical: 10,
-		paddingHorizontal: 20,
-		borderRadius: 15,
-		marginTop: 10,
-		textAlign: "center",
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-	},
+  bookImage: {
+    width: (2 * (containerHeight - (2 * width) / 27)) / 3,
+    borderRadius: width / 27,
+    height: "100%",
+    resizeMode: "cover",
+  },
+  listContainer: {
+    display: "flex",
+    position: "relative",
+    height: containerHeight,
+    width: width - (2 * width) / 27,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 export default UserLibrary;
-
-// descriptions -> collapse all atm, collapse 1 only
